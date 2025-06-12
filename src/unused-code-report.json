@@ -1,0 +1,771 @@
+{
+  "summary": {
+    "totalFiles": 110,
+    "activeFiles": 31,
+    "unusedFiles": 21,
+    "possiblyUnused": 58
+  },
+  "unusedFiles": [
+    {
+      "file": "patients/components/PatientActionsBar.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/components/PatientFilterBar.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/components/PatientStatsSection.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/components/PatientsList.jsdoc.ts",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/components/details/PatientAllergies.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/components/details/PatientDetailsLayout.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/components/details/PatientHeader.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/components/details/PatientHistory.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/components/details/PatientMedicalHistory.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/components/details/PatientMedications.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/components/details/PatientVitals.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/components/rightsidebar/PatientRightSidebar copy.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/components/rightsidebar/PatientRightSidebar.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/components/table/PatientTable.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "patients/types/patient.types.ts",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "practitioners/components/PractitionerActionsBar.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "practitioners/components/PractitionerFilterBar.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "practitioners/components/PractitionerStatsSection.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "practitioners/components/details/LeanPractitionerLayout.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "practitioners/components/table/PractitionerTable.tsx",
+      "reason": "File is never imported and has no exports"
+    },
+    {
+      "file": "practitioners/types/practitioner.types.ts",
+      "reason": "File is never imported and has no exports"
+    }
+  ],
+  "possiblyUnused": [
+    {
+      "file": "patients/components/PatientFilters.tsx",
+      "exports": [
+        "PatientFilters"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/components/PatientForm.tsx",
+      "exports": [
+        "PatientForm"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/components/PatientRightSidebar.tsx",
+      "exports": [
+        "PatientRightSidebar"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/components/PatientsList.tsx",
+      "exports": [
+        "PatientsList"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/components/details/Sidebar.tsx",
+      "exports": [
+        "Sidebar"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/components/details/tabs/PatientAppointmentsTab.tsx",
+      "exports": [
+        "PatientAppointmentsTab"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/components/details/tabs/PatientClinicalTab.tsx",
+      "exports": [
+        "PatientClinicalTab"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/components/details/tabs/PatientOverviewTab.tsx",
+      "exports": [
+        "PatientOverviewTab"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/components/details/tabs/PatientVitalsTab.tsx",
+      "exports": [
+        "PatientVitalsTab"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/config/patientListConfig.ts",
+      "exports": [
+        "patientListConfig"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/hooks/usePatientDetails.ts",
+      "exports": [
+        "usePatientDetails"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/hooks/usePatientFilters.ts",
+      "exports": [
+        "usePatientFilters"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/hooks/usePatientList.ts",
+      "exports": [
+        "usePatientList"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/utils/patientDataUtils.ts",
+      "exports": [
+        "formatPatientName",
+        "extractNameParts",
+        "calculateAge",
+        "extractPhoneNumbers",
+        "extractEmail",
+        "extractAddress",
+        "extractIdentifier",
+        "extractMaritalStatus",
+        "extractLanguage",
+        "extractGeneralPractitioner",
+        "getHeightImperial",
+        "getWeightImperial",
+        "calculateBMI",
+        "getFormattedRegistrationDate",
+        "processVitalsFromObservations",
+        "processClinicalData",
+        "processAppointments",
+        "transformPatientForDisplay",
+        "validatePatientForDisplay",
+        "displayOrDash",
+        "formatDateForDisplay",
+        "getPatientInitials",
+        "getPatientAvatarColor",
+        "getPatientStatusColor",
+        "validatePatientForm",
+        "createEmptyPatient",
+        "mergePatientUpdates",
+        "getDefaultVitals",
+        "getDefaultAppointments",
+        "processClinicalDataFromResponses",
+        "getPatientPhone",
+        "calculateCombinedLoadingState",
+        "formatErrorMessage"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/utils/patientFormatters.ts",
+      "exports": [
+        "formatPatientName",
+        "getPatientPhone",
+        "getPatientEmail",
+        "getPatientAddress",
+        "calculateAge",
+        "formatDate",
+        "getPatientIdentifier",
+        "getInitials",
+        "getAvatarColor",
+        "getStatusColor"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/utils/patientTransformers.ts",
+      "exports": [
+        "convertPatientFromFHIR",
+        "formatPatientForTable",
+        "calculatePatientStats"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "patients/utils/patientValidation.ts",
+      "exports": [
+        "validatePatientName",
+        "validateBirthDate",
+        "validateGender",
+        "validateContactPoint",
+        "validateTelecom",
+        "validateAddress",
+        "validateIdentifier",
+        "validatePatient",
+        "validatePatientCreate",
+        "validatePatientUpdate",
+        "getFieldValidationMessage",
+        "getFieldValidationMessages",
+        "validatePatientId"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/PractitionerFilters.tsx",
+      "exports": [
+        "PractitionerFilters"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/PractitionerForm.tsx",
+      "exports": [
+        "PractitionerForm"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/PractitionersList.tsx",
+      "exports": [
+        "PractitionersList"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/create/PractitionerCreateForm.tsx",
+      "exports": [
+        "PractitionerCreateForm"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/details/LeanDesignSystem.tsx",
+      "exports": [
+        "SPACE",
+        "LeanCard",
+        "LeanCardContent",
+        "MetadataBlock",
+        "MetadataItem",
+        "SectionHeader",
+        "CompactChip",
+        "TabCard",
+        "LeanListItem",
+        "QualificationItem",
+        "StatsGrid",
+        "StatCard",
+        "ScheduleGrid",
+        "leanTheme"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/details/PractitionerAvatar.tsx",
+      "exports": [
+        "PractitionerAvatar"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/details/PractitionerDetail.tsx",
+      "exports": [
+        "PractitionerDetail"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/details/PractitionerDetailsLayout.tsx",
+      "exports": [
+        "PractitionerDetailsLayout"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/details/PractitionerExperience.tsx",
+      "exports": [
+        "PractitionerExperience"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/details/PractitionerHeader.tsx",
+      "exports": [
+        "PractitionerHeader"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/details/PractitionerQualifications.tsx",
+      "exports": [
+        "PractitionerQualifications"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/details/PractitionerRightSidebar.tsx",
+      "exports": [
+        "PractitionerRightSidebar"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/details/Sidebar.tsx",
+      "exports": [
+        "Sidebar"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/details/tabs/PractitionerEducationTab.tsx",
+      "exports": [
+        "PractitionerEducationTab"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/details/tabs/PractitionerExperienceTab.tsx",
+      "exports": [
+        "PractitionerExperienceTab"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/details/tabs/PractitionerOverviewTab.tsx",
+      "exports": [
+        "PractitionerOverviewTab"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/details/tabs/PractitionerScheduleTab.tsx",
+      "exports": [
+        "PractitionerScheduleTab"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/edit/AddressSection.tsx",
+      "exports": [
+        "AddressSection"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/edit/CommunicationSection.tsx",
+      "exports": [
+        "CommunicationSection"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/edit/ContactInfoSection.tsx",
+      "exports": [
+        "ContactInfoSection"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/edit/DynamicFieldManager.tsx",
+      "exports": [
+        "DynamicFieldManager"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/edit/FormCard.tsx",
+      "exports": [
+        "FormCard"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/edit/PersonalInfoSection.tsx",
+      "exports": [
+        "PersonalInfoSection"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/edit/PhotoSection.tsx",
+      "exports": [
+        "PhotoSection"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/components/edit/QualificationsSection.tsx",
+      "exports": [
+        "QualificationsSection"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/config/practitionerListConfig.ts",
+      "exports": [
+        "practitionerListConfig"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/constants/practitioner.constants.ts",
+      "exports": [
+        "FHIR_SYSTEMS",
+        "SPECIALIZATION_MAPPINGS",
+        "DEFAULT_SPECIALIZATION",
+        "LANGUAGE_CODES",
+        "DEFAULT_LANGUAGES",
+        "CONTACT_SYSTEMS",
+        "CONTACT_USE_TYPES",
+        "ADDRESS_USE_TYPES",
+        "GENDER_TYPES",
+        "PRACTITIONER_DEFAULTS",
+        "VALIDATION_CONSTRAINTS",
+        "UI_DISPLAY",
+        "CACHE_KEYS",
+        "PRACTITIONER_EVENTS",
+        "ERROR_MESSAGES",
+        "getSpecializationCode",
+        "getLanguageText",
+        "isValidContactSystem",
+        "isValidContactUseType",
+        "isValidAddressUseType",
+        "isValidGenderType"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/hooks/example.tsx",
+      "exports": [
+        "PractitionerListExample"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/hooks/usePractitionerFilters.ts",
+      "exports": [
+        "usePractitionerFilters"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/hooks/usePractitionerList.ts",
+      "exports": [
+        "usePractitionerList"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/services/PractitionerService.ts",
+      "exports": [
+        "PractitionerService",
+        "getPractitionerService"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/utils/createValidation.ts",
+      "exports": [
+        "validatePractitionerForm",
+        "hasValidationErrors"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/utils/edit/formStateUtils.ts",
+      "exports": [
+        "hasUnsavedChanges",
+        "resetFormValues",
+        "getFormCompletionPercentage"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/utils/edit/formValidationUtils.ts",
+      "exports": [
+        "validatePersonalInfo",
+        "validateAddress",
+        "validatePhoto",
+        "validateCommunication",
+        "validateQualifications",
+        "validateContactInfo",
+        "validatePractitionerForm"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/utils/formUtils.ts",
+      "exports": [
+        "createChangeHandler",
+        "createArrayFieldHandler",
+        "createNestedFieldHandler",
+        "createFileUploadHandler",
+        "createDebouncedHandler",
+        "createFormReset",
+        "useFormModified"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/utils/practitionerDataUtils.ts",
+      "exports": [
+        "formatPractitionerName",
+        "extractNameParts",
+        "extractPhone",
+        "extractEmail",
+        "extractPhoto",
+        "extractLanguages",
+        "extractAddress",
+        "extractQualification",
+        "extractSpecialties",
+        "calculateExperience",
+        "getFormattedJoinDate",
+        "transformPractitionerForDisplay",
+        "validatePractitionerForDisplay"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/utils/practitionerTransformUtils.ts",
+      "exports": [
+        "transformFormDataToFHIR",
+        "transformFHIRToFormData"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/utils/transformationUtils.ts",
+      "exports": [
+        "transformPractitioner",
+        "extractSpecialization",
+        "extractAvailableTime",
+        "formValuesToFHIR",
+        "fhirToFormValues",
+        "getDisplayName",
+        "formatPhoneNumber",
+        "getPrimaryContact",
+        "clearTransformationCache",
+        "batchTransformPractitioners"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/utils/transformers/practitioner.transformer.ts",
+      "exports": [
+        "extractPractitionerId",
+        "formatPractitionerName",
+        "extractNameParts",
+        "extractContactInfo",
+        "extractAddressInfo",
+        "extractQualificationInfo",
+        "extractLanguages",
+        "calculateAge",
+        "extractPhotoInfo",
+        "formatDate",
+        "transformPractitionerForDisplay",
+        "batchTransformPractitioners",
+        "clearTransformationCache",
+        "transformers"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/utils/validationUtils.ts",
+      "exports": [
+        "validateEmail",
+        "validatePhone",
+        "validateRequired",
+        "validateDate",
+        "validateName",
+        "validateAddress",
+        "validateFile",
+        "validatePractitionerForm",
+        "hasValidationErrors"
+      ],
+      "reason": "File has exports but is never imported"
+    },
+    {
+      "file": "practitioners/utils/validators/practitioner.validator.ts",
+      "exports": [
+        "validateName",
+        "validateBirthDate",
+        "validateGender",
+        "validatePhoneNumber",
+        "validateEmail",
+        "validateContact",
+        "validateAddress",
+        "validatePhoto",
+        "validateQualification",
+        "validateCommunication",
+        "validatePractitionerForm",
+        "validatePractitionerResource",
+        "validators"
+      ],
+      "reason": "File has exports but is never imported"
+    }
+  ],
+  "activeFiles": [
+    {
+      "file": "patients/components/details/index.ts",
+      "importedBy": [],
+      "imports": [],
+      "exports": [
+        "default as PatientDetailsLayout",
+        "default as PatientHeader",
+        "default as PatientVitals",
+        "default as PatientHistory",
+        "default as Sidebar"
+      ]
+    },
+    {
+      "file": "patients/components/details/tabs/index.ts",
+      "importedBy": [],
+      "imports": [],
+      "exports": []
+    },
+    {
+      "file": "patients/components/index.ts",
+      "importedBy": [],
+      "imports": [],
+      "exports": [
+        "default as PatientsList",
+        "default as PatientFilterBar",
+        "default as PatientStatsSection",
+        "default as PatientActionsBar"
+      ]
+    },
+    {
+      "file": "patients/components/rightsidebar/index.ts",
+      "importedBy": [],
+      "imports": [],
+      "exports": [
+        "default as PatientRightSidebar"
+      ]
+    },
+    {
+      "file": "patients/hooks/index.ts",
+      "importedBy": [],
+      "imports": [],
+      "exports": []
+    },
+    {
+      "file": "patients/index.ts",
+      "importedBy": [],
+      "imports": [],
+      "exports": [
+        "default as PatientListPage"
+      ]
+    },
+    {
+      "file": "patients/pages/PatientCreatePage.tsx",
+      "importedBy": [],
+      "imports": [
+        "react-router-dom",
+        "@refinedev/core",
+        "@mui/material",
+        "@mui/material/Grid2",
+        "@refinedev/mui",
+        "react-hook-form",
+        "@medplum/fhirtypes",
+        "../../../utils/logger"
+      ],
+      "exports": [
+        "PatientCreatePage"
+      ]
+    },
+    {
+      "file": "patients/pages/PatientDashboardPage.tsx",
+      "importedBy": [],
+      "imports": [
+        "react",
+        "next/navigation",
+        "next/navigation",
+        "./PatientDetailsPage"
+      ],
+      "exports": []
+    },
+    {
+      "file": "patients/pages/PatientDetailsPage.tsx",
+      "importedBy": [],
+      "imports": [
+        "react",
+        "next/navigation",
+        "@mui/material",
+        "react-i18next",
+        "@/components/ui/layout/DashboardLayout",
+        "../components/details/PatientDetailsLayout",
+        "../hooks/usePatientDetails"
+      ],
+      "exports": []
+    },
+    {
+      "file": "patients/pages/PatientEditPage.tsx",
+      "importedBy": [],
+      "imports": [
+        "react",
+        "react-i18next",
+        "next/navigation",
+        "@medplum/fhirtypes",
+        "../../../components/common/ResourceEditPage",
+        "../../../hooks/useResource",
+        "../components/PatientForm",
+        "../../../adapters/PatientAdapter"
+      ],
+      "exports": []
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "language": {
+    "title": "Langue",
+    "add": "Ajouter une langue",
+    "selector": {
+      "title": "Sélectionner la langue",
+      "current": "Langue actuelle",
+      "available": {
+        "en": "English",
+        "fr": "Français"
+      }
+    }
+  },
+  "gender": {
+    "title": "Genre",
+    "male": "Masculin",
+    "female": "Féminin",
+    "other": "Autre",
+    "unknown": "Non spécifié"
+  },
+  "dashboard": "Tableau de bord",
+  "actions": {
+    "title": "Actions",
+    "create": "Créer",
+    "edit": "Modifier",
+    "editProfile": "Modifier le profil",
+    "view": "Voir",
+    "delete": "Supprimer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "reset": "Réinitialiser",
+    "sync": "Synchroniser les modifications"
+  },  "buttons": {
+    "backToList": "Retour à la liste",
+    "tryAgain": "Réessayer",
+    "reloadPage": "Recharger la page",
+    "retry": "Réessayer"
+  },
+  "search": {
+    "title": "Rechercher",
+    "placeholder": "Rechercher {{type}}",
+    "selectOption": "Sélectionner une option",
+    "back": "Retour",
+    "backToResults": "Retour aux résultats"
+  },
+  "filter": {
+    "title": "Filtrer",
+    "all": "Tous",
+    "clearAll": "Tout effacer",
+    "clearFilters": "Effacer les filtres",
+    "reset": "Réinitialiser",
+    "apply": "Appliquer"
+  },
+  "phone": "Téléphone",
+  "email": "E-mail",
+  "address": "Adresse",
+  "languages": "Langues",
+  "patients": "patients",  "supportedFormats": "Formats supportés : JPG, PNG, GIF (Max 5MB)",
+  "none": "Aucun",
+  "notProvided": "Non fourni",
+  "notAvailable": "Non disponible",
+  "unknownCity": "Ville inconnue",
+  "unknownCountry": "Pays inconnu",
+  "locationNotSpecified": "Localisation non spécifiée",
+  "yearsExperience": "{{years}}+ années d'expérience",
+  "recently": "Récemment",
+  "responseTime": "< 2 heures",
+  "offlineMode": "Vous travaillez actuellement hors ligne. Les modifications seront synchronisées lorsque la connectivité sera rétablie.",
+  "offlineCreated": "Créé en mode hors ligne",
+  "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce praticien ?",
+  "confirmEdit": "Êtes-vous sûr de vouloir modifier ce praticien ?",
+  "confirmView": "Êtes-vous sûr de vouloir voir ce praticien ?",  "pagination": {
+    "noRecords": "Aucun enregistrement trouvé",
+    "noResults": "Aucun résultat à afficher",
+    "showing": "Affichage de {{count}} sur {{total}} éléments",
+    "rowsPerPage": "Lignes par page",
+    "of": "sur"
+  },
+  "period": {
+    "title": "Période",
+    "years": "{{count}} années",
+    "months": "{{count}} mois",
+    "days": "{{count}} jours"
+  },
+  "status": {
+    "title": "Statut",
+    "active": "Actif",
+    "inactive": "Inactif"
+  },
+  "errors": {
+    "invalidImageFile": "Fichier image invalide",
+    "fileSizeLimitExceeded": "Limite de taille de fichier dépassée",
+    "errorOccurred": "Une erreur s'est produite",
+    "unknownError": "Une erreur inconnue s'est produite",
+    "somethingWentWrong": "Quelque chose s'est mal passé",
+    "unexpectedError": "Une erreur inattendue s'est produite"
+  },
+  "labels": {
+    "unknownPractitioner": "Professionnel Inconnu",
+    "unknownOrganization": "Organisation Inconnue",
+    "unknownPatient": "Patient Inconnu"
+  }
+}

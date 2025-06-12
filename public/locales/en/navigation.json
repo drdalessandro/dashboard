@@ -1,0 +1,9 @@
+{
+  "dashboard": "Dashboard",
+  "patients": "Patients",
+  "practitioners": "Practitioners", 
+  "prescriptions": "Prescriptions",
+  "settings": "Settings",
+  "profile": "Profile",
+  "logout": "Logout"
+}

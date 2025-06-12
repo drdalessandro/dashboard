@@ -1,0 +1,126 @@
+/* Enhanced globals.css with complete design tokens from HTML templates */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans:wght@400;500;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* CSS Variables matching HTML template design tokens */
+:root {
+  /* Primary color palette */
+  --color-primary: #1993e5;
+  --color-primary-content: #ffffff;
+  --color-primary-dark: #1476b7;
+  --color-primary-light: #47abed;
+
+  /* Secondary color palette */
+  --color-secondary: #e7eef3;
+  --color-secondary-content: #0e161b;
+  --color-secondary-dark: #c4d1dd;
+  --color-secondary-light: #ffffff;
+
+  /* Background colors */
+  --color-background: #ffffff;
+  --color-foreground: #f9fafb;
+  --color-border: #e7eef3;
+
+  /* Text colors */
+  --color-copy: #0e161b;
+  --color-copy-light: #4e7a97;
+  --color-copy-lighter: #8a9faa;
+
+  /* Status colors */
+  --color-success: #28a745;
+  --color-warning: #ffc107;
+  --color-error: #dc3545;
+  --color-disabled: #d1d5db;
+
+  /* Additional utility colors */
+  --color-info: #17a2b8;
+  --color-light: #f8f9fa;
+  --color-dark: #343a40;
+
+  /* Shadow tokens */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Border radius tokens */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+}
+
+/* Global base styles matching HTML templates */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Inter", "Noto Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-foreground);
+  color: var(--color-copy);
+  font-family: "Inter", "Noto Sans", sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* Status badge utilities matching HTML template */
+.badge-active {
+  background-color: #dcfce7 !important;
+  color: #15803d !important;
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.badge-inactive {
+  background-color: #fee2e2 !important;
+  color: #b91c1c !important;
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.badge-pending {
+  background-color: #fef3c7 !important;
+  color: #d97706 !important;
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+
+/* Table utilities matching HTML template */
+.table-header-sortable {
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.table-header-sortable:hover {
+  background-color: var(--color-foreground);
+}
+
+.table-header-sortable .sort-icon {
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.table-header-sortable:hover .sort-icon {
+  opacity: 1;
+}
+
+/* .css-1c46gw8 .MuiBox-root {
+  padding: 0 !important;
+} */

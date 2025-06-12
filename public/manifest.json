@@ -1,0 +1,31 @@
+{
+  "short_name": "Gandall Health",
+  "name": "Gandall Group Healthcare Platform",
+  "description": "Comprehensive healthcare platform for Sub-Saharan Africa with offline-first capabilities",
+  "icons": [
+    {
+      "src": "/assets/brand/favicon.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/brand/logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/assets/brand/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "theme_color": "#2A8A8E",
+  "background_color": "#FFFFFF",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": ["healthcare", "medical", "health"]
+}

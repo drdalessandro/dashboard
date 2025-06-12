@@ -1,0 +1,219 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "practitioner": "Practitioner",
+    "schedule": "Schedule",
+    "statistics": "Statistics",
+    "settings": "Settings"
+  },
+  "common": {
+    "noRecords": "No Practitioners Found",
+    "noResults": "No practitioners available. Try adding a new practitioner.",
+    "offlineUnavailable": "Unable to load practitioners while offline",
+    "confirmDelete": "Are you sure you want to delete this practitioner?",
+    "notFound": "Practitioner not found",
+    "showing": "Showing {{count}} of {{total}} practitioners",
+    "rowsPerPage": "Rows per page"
+  },
+  "details": {
+    "title": "Practitioner Details",
+    "personalInfo": "Personal Information",
+    "contactInfo": "Contact Information",
+    "qualifications": "Professional Qualifications",
+    "qualification": "Professional Qualification",
+    "institution": "Institution",
+    "tabs": {
+      "overview": "Overview",
+      "education": "Education",
+      "experience": "Experience",
+      "schedule": "Schedule"
+    },
+    "overview": {
+      "qualifications": "Professional Qualifications",
+      "yearsExperience": "{{years}} Years Experience",
+      "present": "2018 - Present",
+      "languages": "Languages Spoken",
+      "certifications": "Certifications & Licenses"
+    },
+    "education": {
+      "title": "Educational Background"
+    },
+    "experience": {
+      "title": "Professional Experience"
+    },
+    "schedule": {
+      "title": "Schedule & Availability",
+      "availability": "Weekly Availability",
+      "appointmentStats": "Appointment Statistics",
+      "totalAppointments": "Total Appointments",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "unknownPractitioner": "Unknown Practitioner",
+  "generalPractitioner": "General Practitioner",
+  "noSpecialties": "No specialties listed",
+  "experienceNotAvailable": "Experience not available",
+  "dateNotAvailable": "Date not available",
+  "defaultBio": "{{name}} is a dedicated healthcare professional committed to providing quality care.",
+  "thePractitioner": "The practitioner",
+  "medicalDegree": "Medical Degree",
+  "medicalSchool": "Medical School",
+  "healthCenter": "Community Health Center",
+  "boardCertification": "Board Certification",
+  "medicalBoard": "Medical Board",
+  "errorLoadingPractitioner": "Error loading practitioner",
+  "errorLoadingPractitionerData": "Error loading practitioner data",
+  "practitionerNotFound": "Practitioner not found",
+  "noCertifications": "No certifications on file",
+  "noEducationInfo": "No education information available",
+  "noExperienceInfo": "No experience information available",
+  "notAvailable": "Schedule not available",
+  "titles": {
+    "list": "Practitioners List",
+    "create": "Create New Practitioner",
+    "details": "Practitioner Details",
+    "edit": "Edit Practitioner Profile"
+  },
+  "filters": {
+    "title": "Filter Practitioners",
+    "specialization": "Specialization",
+    "qualification": "Qualification",
+    "categories": {
+      "status": "Status",
+      "gender": "Gender",
+      "specialization": "Specialization",
+      "qualification": "Qualification"
+    },
+    "status": {
+      "title": "Status",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "name": "Practitioner Name",
+    "gender": {
+      "title": "Gender",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "unknown": "Not Specified"
+    },
+    "clearAll": "Clear All"
+  },
+  "steps": {
+    "personalInfo": "Personal Information",
+    "contactInfo": "Contact Information",
+    "qualifications": "Qualifications",
+    "experience": "Experience",
+    "schedule": "Schedule"
+  },
+  "fields": {
+    "name": "Name",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "birthDate": "Birth Date",
+    "photo": "Photo",
+    "gender": {
+      "title": "Gender",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "unknown": "Not Specified"
+    },
+    "qualifications": "Qualifications",
+    "qualification": "Qualification",
+    "specialization": "Specialization",
+    "contact": {
+      "title": "Contact Details",
+      "home": "Home",
+      "work": "Work",
+      "mobile": "Mobile",
+      "fax": "Fax",
+      "url": "URL",
+      "system": "Contact System",
+      "use": "Contact Use",
+      "value": "Contact Value",
+      "phone": "Phone Number",
+      "email": "Email Address"
+    },
+    "address": {
+      "title": "Address",
+      "home": "Home Address",
+      "work": "Work Address",
+      "line1": "Address Line 1",
+      "line2": "Address Line 2",
+      "city": "City",
+      "state": "State/Region",
+      "postalCode": "Postal Code",
+      "district": "District",
+      "country": "Country",
+      "use": "Address Use",
+      "type": "Address Type"
+    },
+    "status": "Status"
+  },
+  "addressUses": {
+    "home": "Home",
+    "work": "Work",
+    "temp": "Temporary"
+  },
+  "actions": {
+    "title": "Actions",
+    "create": "Create Practitioner",
+    "edit": "Edit Practitioner",
+    "view": "View Practitioner",
+    "delete": "Delete Practitioner",
+    "save": "Save Practitioner",
+    "saving": "Saving Practitioner",
+    "add": "Add Practitioner",
+    "clickToSelectPhoto": "Click to select a new headshot image",
+    "uploadPhoto": "Upload Photo",
+    "changePhoto": "Change Photo",
+    "removePhoto": "Remove Photo"
+  },
+  "stats": {
+    "total": "Total Practitioners",
+    "active": "Active Practitioners",
+    "inactive": "Inactive Practitioners",
+    "new": "New Practitioners"
+  },
+  "search": {
+    "placeholder": "Search by practitioner name..."
+  },
+  "filter": {
+    "title": "Filter"
+  },
+  "messages": {
+    "created": "Practitioner created successfully",
+    "updated": "Practitioner profile updated",
+    "notFound": "Practitioner not found",
+    "noPractitioners": "No Practitioners Found",
+    "noPractitionersOffline": "Unable to load practitioners while offline",
+    "noPractitionersOnline": "No practitioners available. Try adding a new practitioner."
+  },
+  "syncStatus": {
+    "title": "Sync Status",
+    "synced": "Synced",
+    "notSynced": "Not Synced",
+    "pending": "Pending",
+    "error": "Error"
+  },
+  "sidebar": {
+    "quickActions": "Quick Actions",
+    "scheduleAppointment": "Schedule Appointment",
+    "sendMessage": "Send Message",
+    "offlineActionsLimited": "Some actions are limited while offline",
+    "statistics": "Statistics",
+    "totalPatients": "Total Patients",
+    "refreshPatients": "Refresh patient data",
+    "errorLoadingPatients": "Error loading patients",
+    "responseTime": "Response Time",
+    "availability": "Availability",
+    "nextAvailable": "Next Available",
+    "recentPatients": "Recent Patients",
+    "errorLoadingRecentPatients": "Unable to load recent patients",
+    "noRecentPatients": "No recent patients found",
+    "viewAllPatients": "View All Patients",
+    "offlineMode": "You are currently offline. Some features may be limited."
+  }
+}

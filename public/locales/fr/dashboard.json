@@ -1,0 +1,30 @@
+{
+  "page_title": "Tableau de Bord de Santé",
+  "page_description": "Aperçu des métriques de santé et des informations sur les patients",
+  "appointments": {
+    "title": "Rendez-vous à venir",
+    "status": {
+      "upcoming": "À venir",
+      "in_progress": "En cours", 
+      "pending": "En attente"
+    }
+  },
+  "patient_statistics": {
+    "title": "Statistiques des Patients",
+    "new_patients": "Nouveaux Patients",
+    "total_patients": "Total des Patients",
+    "active_patients": "Patients Actifs"
+  },
+  "revenue": {
+    "title": "Aperçu des Revenus",
+    "total": "Revenu Total",
+    "average": "Moyenne Mensuelle",
+    "chart_description": "Tendances des revenus mensuels"
+  },
+  "latest_patients": {
+    "title": "Derniers Patients",
+    "name": "Nom",
+    "email": "E-mail",
+    "status": "Statut"
+  }
+}

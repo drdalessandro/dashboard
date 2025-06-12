@@ -1,0 +1,106 @@
+{
+  "language": {
+    "title": "Language",
+    "add": "Add Language",
+    "selector": {
+      "title": "Select Language",
+      "current": "Current Language",
+      "available": {
+        "en": "English",
+        "fr": "Français"
+      }
+    }
+  },
+  "gender": {
+    "title": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "unknown": "Not Specified"
+  },
+  "dashboard": "Dashboard",
+  "actions": {
+    "title": "Actions",
+    "create": "Create",
+    "edit": "Edit",
+    "editProfile": "Edit Profile",
+    "view": "View",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "sync": "Sync Changes"
+  },
+  "buttons": {
+    "backToList": "Back to List",
+    "tryAgain": "Try Again",
+    "reloadPage": "Reload Page",
+    "retry": "Retry"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search {{type}}",
+    "selectOption": "Select an option",
+    "back": "Back",
+    "backToResults": "Back to results"
+  },
+  "filter": {
+    "title": "Filter",
+    "all": "All",
+    "clearAll": "Clear All",
+    "clearFilters": "Clear Filters",
+    "reset": "Reset",
+    "apply": "Apply"
+  },
+  "phone": "Phone",
+  "email": "Email",
+  "address": "Address",
+  "languages": "Languages",
+  "patients": "patients",
+  "supportedFormats": "Supported formats: JPG, PNG, GIF (Max 5MB)",
+  "none": "None",
+  "notProvided": "Not provided",
+  "notAvailable": "Not available",
+  "unknownCity": "Unknown City",
+  "unknownCountry": "Unknown Country",
+  "locationNotSpecified": "Location not specified",
+  "yearsExperience": "{{years}}+ years experience",
+  "recently": "Recently",
+  "responseTime": "< 2 hours",
+  "offlineMode": "You are currently working offline. Changes will be synchronized when connectivity is restored.",
+  "offlineCreated": "Created while offline",
+  "confirmDelete": "Are you sure you want to delete this practitioner?",
+  "confirmEdit": "Are you sure you want to edit this practitioner?",
+  "confirmView": "Are you sure you want to view this practitioner?",
+  "pagination": {
+    "noRecords": "No records found",
+    "noResults": "No results to display",
+    "showing": "Showing {{count}} of {{total}} items",
+    "rowsPerPage": "Rows per page",
+    "of": "of"
+  },
+  "period": {
+    "title": "Period",
+    "years": "{{count}} years",
+    "months": "{{count}} months",
+    "days": "{{count}} days"
+  },
+  "status": {
+    "title": "Status",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "errors": {
+    "invalidImageFile": "Invalid image file",
+    "fileSizeLimitExceeded": "File size limit exceeded",
+    "errorOccurred": "An error occurred",
+    "unknownError": "An unknown error occurred",
+    "somethingWentWrong": "Something went wrong",
+    "unexpectedError": "An unexpected error occurred"
+  },
+  "labels": {
+    "unknownPractitioner": "Unknown Practitioner",
+    "unknownOrganization": "Unknown Organization",
+    "unknownPatient": "Unknown Patient"
+  }
+}

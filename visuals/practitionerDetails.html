@@ -1,0 +1,162 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+    <link as="style"
+        href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+        onload="this.rel='stylesheet'" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <title>Stitch Design</title>
+    <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+</head>
+
+<body class="bg-slate-100" style='font-family: Inter, "Noto Sans", sans-serif;'>
+    <div class="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <header
+                class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 bg-white px-6 py-3 shadow-sm">
+                <div class="flex items-center gap-3 text-slate-800">
+                    <span class="material-icons text-3xl text-blue-600">local_hospital</span>
+                    <h2 class="text-slate-800 text-xl font-bold">HealthConnect</h2>
+                </div>
+                <nav class="flex items-center gap-2">
+                    <a class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium rounded-md"
+                        href="#">Dashboard</a>
+                    <a class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium rounded-md"
+                        href="#">Patients</a>
+                    <a class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium rounded-md" href="#">Care
+                        Plans</a>
+                    <a class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium rounded-md"
+                        href="#">Tasks</a>
+                    <a class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium rounded-md"
+                        href="#">Reports</a>
+                </nav>
+                <div class="flex items-center gap-4">
+                    <button
+                        class="flex items-center justify-center rounded-full h-10 w-10 hover:bg-slate-100 text-slate-600">
+                        <span class="material-icons text-2xl">notifications</span>
+                    </button>
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-slate-200"
+                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBM1lNfWxkNvAE3xYE3rrOFcHDnD0Z5DocMOM79bq6LB9kAYmWkWrGfdLZcKKJjeGXobzqG1YFdbARdxB8nXZ1xGF8-gG9cq_of4PLfKflhf9DS-Ez8k47rE-tvXmxPB2EGATpJmrk2w9m2cGeJhE6ko7OTDjcs5KV-DA_7osp8p9AKAOudovyg51tFyh8G9itG52ngsKY6tNBlD8_ucivlK9Utwyj_srXer52gk56GhcnGRGQUoowTHeBqO425R07mS4sGLNfEu-I");'>
+                    </div>
+                </div>
+            </header>
+            <main class="flex-1 px-8 py-10 md:px-12 lg:px-20 xl:px-40">
+                <div class="mx-auto max-w-5xl">
+                    <div class="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+                        <div>
+                            <h1 class="text-3xl font-bold text-slate-800">Practitioner Details</h1>
+                            <p class="text-sm text-slate-500">View and manage practitioner information.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-8">
+                        <section class="rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden">
+                            <header class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                                <h2 class="text-xl font-semibold text-slate-700">Identity</h2>
+                            </header>
+                            <div class="p-6">
+                                <div class="flex flex-col gap-6 md:flex-row md:items-start">
+                                    <div class="flex-shrink-0">
+                                        <div class="h-32 w-32 rounded-full bg-cover bg-center border-4 border-slate-100 shadow-md"
+                                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCakOWXusEsGQ2GlnK6BR0SzjSfERNyHNs0LQ009BNWvAGDavLFC2u3LOE13u3La4thIorhxKwf27yTCh9zbYzLzE1OEd7iGYV8w3oyH51oRn6N-XmqJf5-1ldNo6yqsgvh9BUGNb9BWkkpcN7TzDDDggDUeTUs6kBQgsnoGBoyRU66D2_EURG_whOdhd9CjsUSibY2BJesMA_M6AXYh8UeZCg6qDIz05TLdHRAoCwiKODb9-E-K8ACajCI50IPVUGLJzo6j094GXg");'>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow space-y-1 pt-2">
+                                        <p class="text-2xl font-bold text-slate-800">Dr. Amelia Chen, <span
+                                                class="font-medium text-slate-500">MD</span></p>
+                                        <p class="text-sm text-slate-500">NINA: 1234567890</p>
+                                        <dl class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 pt-2">
+                                            <div>
+                                                <dt class="text-sm font-medium text-slate-500">Full Name</dt>
+                                                <dd class="text-sm text-slate-700">Amelia Chen</dd>
+                                            </div>
+                                            <div>
+                                                <dt class="text-sm font-medium text-slate-500">Gender</dt>
+                                                <dd class="text-sm text-slate-700">Female</dd>
+                                            </div>
+                                            <div>
+                                                <dt class="text-sm font-medium text-slate-500">Birthdate</dt>
+                                                <dd class="text-sm text-slate-700">1988-05-15</dd>
+                                            </div>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden">
+                            <header class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                                <h2 class="text-xl font-semibold text-slate-700">Professional</h2>
+                            </header>
+                            <div class="p-6">
+                                <dl class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+                                    <div>
+                                        <dt class="text-sm font-medium text-slate-500">Role</dt>
+                                        <dd class="text-sm text-slate-700">Physician</dd>
+                                    </div>
+                                    <div>
+                                        <dt class="text-sm font-medium text-slate-500">Specialty</dt>
+                                        <dd class="text-sm text-slate-700">Internal Medicine</dd>
+                                    </div>
+                                    <div>
+                                        <dt class="text-sm font-medium text-slate-500">Qualifications</dt>
+                                        <dd class="text-sm text-slate-700">MD, Board Certified</dd>
+                                    </div>
+                                </dl>
+                            </div>
+                        </section>
+                        <section class="rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden">
+                            <header class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                                <h2 class="text-xl font-semibold text-slate-700">Contact</h2>
+                            </header>
+                            <div class="p-6">
+                                <dl class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+                                    <div>
+                                        <dt class="text-sm font-medium text-slate-500">Phone</dt>
+                                        <dd class="text-sm text-slate-700">(555) 123-4567</dd>
+                                    </div>
+                                    <div>
+                                        <dt class="text-sm font-medium text-slate-500">Email</dt>
+                                        <dd class="text-sm text-slate-700">amelia.chen@healthconnect.com</dd>
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <dt class="text-sm font-medium text-slate-500">Address</dt>
+                                        <dd class="text-sm text-slate-700">123 Medical Plaza, Anytown, CA 91234</dd>
+                                    </div>
+                                </dl>
+                            </div>
+                        </section>
+                        <section class="rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden">
+                            <header class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                                <h2 class="text-xl font-semibold text-slate-700">Organization</h2>
+                            </header>
+                            <div class="p-6">
+                                <dl class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+                                    <div>
+                                        <dt class="text-sm font-medium text-slate-500">Organization</dt>
+                                        <dd class="text-sm text-slate-700"><a class="text-blue-600 hover:underline"
+                                                href="#">Anytown Medical Center</a></dd>
+                                    </div>
+                                    <div>
+                                        <dt class="text-sm font-medium text-slate-500">Department</dt>
+                                        <dd class="text-sm text-slate-700">Internal Medicine</dd>
+                                    </div>
+                                </dl>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <div class="fixed bottom-8 right-8 z-50">
+            <button
+                class="flex items-center justify-center gap-2 rounded-full bg-blue-600 px-6 py-4 text-white shadow-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-150">
+                <span class="material-icons">add</span>
+                <span class="text-sm font-medium">Create/Link Record</span>
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>

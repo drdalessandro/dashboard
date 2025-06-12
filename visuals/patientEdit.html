@@ -1,0 +1,648 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+    <link as="style"
+        href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+        onload="this.rel='stylesheet'" rel="stylesheet" />
+    <title>Stitch Design</title>
+    <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style>
+        .group:not([open]) .group-open\:hidden {
+            display: none;
+        }
+
+        .group[open] .group-open\:block {
+            display: block;
+        }
+
+        .group[open] .group-open\:rotate-180 {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden"
+        style="--select-button-svg: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(73,115,156)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z%27%3e%3c/path%3e%3c/svg%3e'); font-family: Inter, &quot;Noto Sans&quot;, sans-serif;">
+        <div class="flex h-full grow">
+            <aside class="flex w-64 flex-col border-r border-slate-200 bg-white p-6">
+                <div class="flex items-center gap-3 pb-8">
+                    <div class="size-8 text-blue-600">
+                        <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"
+                                fill="currentColor"></path>
+                        </svg>
+                    </div>
+                    <h1 class="text-slate-900 text-xl font-bold leading-tight tracking-[-0.015em]">Health Records</h1>
+                </div>
+                <nav class="flex-1 space-y-2">
+                    <a class="flex items-center gap-3 rounded-md px-3 py-2.5 text-slate-700 hover:bg-slate-100 hover:text-blue-600 text-sm font-medium leading-normal"
+                        href="#">
+                        <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M213.38,117.62l-80-80A8,8,0,0,0,120,40H40a8,8,0,0,0-8,8V168a8,8,0,0,0,12.69,6.32L88,131.06V208a8,8,0,0,0,8,8h96a8,8,0,0,0,8-8V160a8,8,0,0,0-16,0v40H104V120a8,8,0,0,0-2.38-5.62l-24-24V56h70.63l72.69,72.69a8,8,0,0,0,5.44,2.31H240a8,8,0,0,0,0-16H216A8,8,0,0,0,213.38,117.62ZM82.38,117.62L117.31,82.7l-24-24L59.06,92.94Zm3.31-3.31L48,80V56H72Zm114.31,29.63a8,8,0,0,0-11.32,0L168,164.69l-10.34-10.35a8,8,0,0,0-11.32,11.32L162.34,182a8,8,0,0,0,11.32,0L194,161.66A8,8,0,0,0,200,143.94Z">
+                            </path>
+                        </svg>
+                        Dashboard
+                    </a>
+                    <a class="flex items-center gap-3 rounded-md bg-blue-50 px-3 py-2.5 text-blue-600 text-sm font-semibold leading-normal"
+                        href="#">
+                        <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M240,144v64a16,16,0,0,1-16,16H32a16,16,0,0,1-16-16V48A16,16,0,0,1,32,32H96a8,8,0,0,1,0,16H32V208H224V144a8,8,0,0,1,16,0Zm-93.66-42.34a8,8,0,0,0,11.32,0l80-80a8,8,0,0,0-11.32-11.32L136,100.69V24a8,8,0,0,0-16,0v76.69L89.66,70.34a8,8,0,0,0-11.32,11.32Z">
+                            </path>
+                        </svg>
+                        Patients
+                    </a>
+                    <a class="flex items-center gap-3 rounded-md px-3 py-2.5 text-slate-700 hover:bg-slate-100 hover:text-blue-600 text-sm font-medium leading-normal"
+                        href="#">
+                        <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V72H40V56ZM40,88H216v64H160a8,8,0,0,0-5.66,2.34l-24,24a8,8,0,0,1-11.31,0l-24-24A8,8,0,0,0,96,152H40Zm176,100H163.31l18.35-18.34a8,8,0,0,0-11.32-11.32L144,184.69l-26.34-26.35a8,8,0,0,0-11.32,11.32L124.69,188H40V168H96a16,16,0,0,1,11.31,4.69l24,24a16,16,0,0,0,22.63,0l24-24A16,16,0,0,1,189.31,168H216Z">
+                            </path>
+                        </svg>
+                        Practitioners
+                    </a>
+                    <a class="flex items-center gap-3 rounded-md px-3 py-2.5 text-slate-700 hover:bg-slate-100 hover:text-blue-600 text-sm font-medium leading-normal"
+                        href="#">
+                        <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,16V80H48V48ZM48,96H80v32a8,8,0,0,1-16,0V96Zm160,112H48V144H208v16a8,8,0,0,1-16,0V144H176v16a8,8,0,0,1-16,0V144H128v16a8,8,0,0,1-16,0V144H80v48H48v-16H64a8,8,0,0,1,0-16H48v-8H208v24Z">
+                            </path>
+                        </svg>
+                        Report
+                    </a>
+                    <a class="flex items-center gap-3 rounded-md px-3 py-2.5 text-slate-700 hover:bg-slate-100 hover:text-blue-600 text-sm font-medium leading-normal"
+                        href="#">
+                        <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M232,100.79a16.08,16.08,0,0,0-10.26-14.9L200,78.34V48a8,8,0,0,0-8-8H161.66a16,16,0,0,0-14.9-10.26L139.21,24,128,16l-11.21,8-7.55,3.77A16,16,0,0,0,104.56,40H72a8,8,0,0,0-8,8V78.34L42.26,85.89A16.08,16.08,0,0,0,32,100.79L24,132l8,31.21a16.08,16.08,0,0,0,10.26,14.9L64,185.66V216a8,8,0,0,0,8,8h30.34a16,16,0,0,0,14.9,10.26L128,240l11.21-8,7.55-3.77a16,16,0,0,0,14.9-10.26H192a8,8,0,0,0,8-8V185.66l21.74-7.55a16.08,16.08,0,0,0,10.26-14.9L240,132Zm-16.56,55.55L192,165.61V184H169.11A24.13,24.13,0,0,0,148,196.38l-7.14,3.57-12.8,8.53-12.8-8.53-7.14-3.57A24.13,24.13,0,0,0,86.89,184H64V165.61l-23.44-8.13-7-27.62,7-27.63L64,94.39V72H86.89A24.13,24.13,0,0,0,108,59.62l7.14-3.57,12.8-8.53,12.8,8.53,7.14,3.57A24.13,24.13,0,0,0,169.11,72H192V94.39l23.44,8.13,7,27.63Zm-47-27.1a12,12,0,1,1-17,17,12,12,0,0,1,17-17Z">
+                            </path>
+                        </svg>
+                        Settings
+                    </a>
+                </nav>
+                <div class="mt-auto border-t border-slate-200 pt-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCnszAJhlWerqsgDeHTx6Y5Wa3aImWh81c4FQkHyh42jrtMpULbF1nOgCXijQF54KI7OZRGTUSit-o21ozVbujgo9XWp-RLyL3F9-srUuFYs5WgoA5aTC9a5nk_VcigJjjnQYwjDhxSBEq3xCG6CUcCSoCC4JdGhzcsqLGyAgB3WcrlLzxVvL1UNjBecFReICTCFbBisrqUdT4gkvkyly_C5XccTAxhF_dWZpLsHxu5XyGzUw8fKbUoDoR5tkDameysY4CqrohtC08m");'>
+                        </div>
+                        <div>
+                            <p class="text-slate-900 text-sm font-semibold leading-normal">Dr. Sarah Miller</p>
+                            <a class="text-blue-600 hover:text-blue-700 text-xs font-medium leading-none" href="#">View
+                                Profile</a>
+                        </div>
+                    </div>
+                    <a class="flex items-center gap-3 rounded-md px-3 py-2.5 text-slate-700 hover:bg-slate-100 hover:text-red-600 text-sm font-medium leading-normal"
+                        href="#">
+                        <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M120,40V24a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm88.38,76.67a8,8,0,0,0-8.22-1.8L188,119a8,8,0,1,0,7.86,13.94l12.13-4.05a8,8,0,0,0,1.8-8.22ZM128,72a56,56,0,1,0,56,56A56.06,56.06,0,0,0,128,72Zm0,96a40,40,0,1,1,40-40A40,40,0,0,1,128,168ZM48.34,126.88a8,8,0,0,0-1.8,8.22l4.05,12.13a8,8,0,0,0,13.94-7.86L60.48,127A8,8,0,0,0,48.34,126.88ZM152,224a8,8,0,0,1-8,8H112a8,8,0,0,1-6.4-12.8l48-64a8,8,0,0,1,12.8,9.6L153,176h23a24,24,0,0,0,24-24,8,8,0,0,1,16,0,40,40,0,0,1-40,40H152Z">
+                            </path>
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </aside>
+            <div class="flex flex-1 flex-col">
+                <header
+                    class="flex items-center justify-end whitespace-nowrap border-b border-solid border-b-slate-200 px-10 py-4 bg-white shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <button
+                            class="flex cursor-pointer items-center justify-center rounded-full h-10 w-10 bg-slate-100 hover:bg-slate-200 text-slate-700">
+                            <div data-icon="Bell" data-size="20px" data-weight="regular">
+                                <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCnszAJhlWerqsgDeHTx6Y5Wa3aImWh81c4FQkHyh42jrtMpULbF1nOgCXijQF54KI7OZRGTUSit-o21ozVbujgo9XWp-RLyL3F9-srUuFYs5WgoA5aTC9a5nk_VcigJjjnQYwjDhxSBEq3xCG6CUcCSoCC4JdGhzcsqLGyAgB3WcrlLzxVvL1UNjBecFReICTCFbBisrqUdT4gkvkyly_C5XccTAxhF_dWZpLsHxu5XyGzUw8fKbUoDoR5tkDameysY4CqrohtC08m");'>
+                        </div>
+                    </div>
+                </header>
+                <main class="flex-1 px-10 py-8 bg-slate-100">
+                    <div class="mx-auto max-w-5xl">
+                        <div class="mb-8">
+                            <h2 class="text-slate-900 text-3xl font-bold leading-tight">Edit Patient Details</h2>
+                            <p class="text-slate-600 text-base font-normal leading-normal mt-1">Update patient
+                                information in the system.</p>
+                        </div>
+                        <div class="space-y-6">
+                            <details class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden"
+                                open="">
+                                <summary
+                                    class="flex cursor-pointer items-center justify-between p-6 hover:bg-slate-50 transition-colors">
+                                    <div>
+                                        <h3 class="text-slate-800 text-lg font-semibold leading-tight">Personal
+                                            Information</h3>
+                                        <p class="text-slate-500 text-sm font-normal leading-normal mt-1">Edit the
+                                            patient's basic details such as name, date of birth, and gender.</p>
+                                    </div>
+                                    <div class="text-slate-500 group-open:rotate-180 transition-transform">
+                                        <svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </summary>
+                                <div
+                                    class="p-6 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                                    <div class="flex flex-col md:col-span-1">
+                                        <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Photo</p>
+                                        <div class="flex items-center gap-4">
+                                            <div class="relative">
+                                                <img alt="Patient photo" class="h-20 w-20 rounded-full object-cover"
+                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcPSlXr0PCu1UkvtkT3acOaeMzix4BpYFO6sOmxQvz0I1piz6qDglDaLU7bHkjvSZEdRRV5Df4-B_SpY3AWdnonrWx5NP4fk1BTcGp0EDFmh0bKinwEBJ2TLZXTZ4Vl-6DxnNLqJkolayTWz3AVkxV2IuAhKTCcje8IQcSAAAcocrvnOWE1dfQBvIHJQzAkmWvYSVfQ3gFTDURXzTOtaOaezsXWGFUm2TXgBSuPhUBOn7qZEhrT5lKcGi3yiOaA6DZvEc49XyGuSIO" />
+                                                <button
+                                                    class="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-slate-700 text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                                    <svg fill="currentColor" height="16" viewBox="0 0 16 16" width="16"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm-2.646 2.646L3 10.5V13.5h2.5L12.207 6.793l-2.5-2.5zM15.5 13a.5.5 0 0 1-.5.5H1a.5.5 0 0 1 0-1h14a.5.5 0 0 1 .5.5z">
+                                                        </path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <input class="hidden" id="patient-photo-upload" type="file" />
+                                            <label
+                                                class="cursor-pointer rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                                                for="patient-photo-upload"> Change Photo </label>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col md:col-span-1">
+                                        <label class="flex flex-col">
+                                            <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Status</p>
+                                            <select
+                                                class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 bg-[image:--select-button-svg] placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal appearance-none">
+                                                <option selected="" value="active">Active</option>
+                                                <option value="inactive">Inactive</option>
+                                                <option value="on-hold">On Hold</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                    <label class="flex flex-col">
+                                        <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Identifier
+                                            (NINA)</p>
+                                        <input
+                                            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                            placeholder="Enter NINA" />
+                                    </label>
+                                    <div class="flex flex-col justify-end">
+                                        <div class="flex items-center pb-2 h-11">
+                                            <input
+                                                class="form-checkbox h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                id="deceased-checkbox" type="checkbox" />
+                                            <label class="ml-2 text-sm font-medium text-slate-700"
+                                                for="deceased-checkbox">Deceased</label>
+                                        </div>
+                                        <div class="hidden" id="deceased-datetime-container">
+                                            <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Deceased
+                                                Datetime</p>
+                                            <input
+                                                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                                type="datetime-local" />
+                                        </div>
+                                    </div>
+                                    <label class="flex flex-col">
+                                        <p class="text-slate-700 text-sm font-medium leading-normal pb-2">First Name
+                                            <span class="text-red-500">*</span>
+                                        </p>
+                                        <input
+                                            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                            value="Sarah" />
+                                    </label>
+                                    <label class="flex flex-col">
+                                        <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Last Name
+                                            <span class="text-red-500">*</span>
+                                        </p>
+                                        <input
+                                            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                            value="Miller" />
+                                    </label>
+                                    <label class="flex flex-col">
+                                        <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Date of Birth
+                                            <span class="text-red-500">*</span>
+                                        </p>
+                                        <input
+                                            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                            type="date" value="1985-07-15" />
+                                    </label>
+                                    <label class="flex flex-col">
+                                        <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Gender <span
+                                                class="text-red-500">*</span></p>
+                                        <select
+                                            class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 bg-[image:--select-button-svg] placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal appearance-none">
+                                            <option selected="" value="female">Female</option>
+                                            <option value="male">Male</option>
+                                            <option value="other">Other</option>
+                                            <option value="unknown">Prefer not to say</option>
+                                        </select>
+                                    </label>
+                                    <label class="flex flex-col">
+                                        <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Marital Status
+                                        </p>
+                                        <select
+                                            class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 bg-[image:--select-button-svg] placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal appearance-none">
+                                            <option value="">Select status</option>
+                                            <option value="single">Single</option>
+                                            <option selected="" value="married">Married</option>
+                                            <option value="divorced">Divorced</option>
+                                            <option value="widowed">Widowed</option>
+                                        </select>
+                                    </label>
+                                    <div class="flex flex-col md:col-span-1">
+                                        <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Preferred
+                                            Languages</p>
+                                        <div class="relative">
+                                            <select
+                                                class="form-multiselect block w-full rounded-md border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-normal leading-normal text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                id="preferred-languages" multiple="">
+                                                <option value="en">English</option>
+                                                <option value="es">Spanish</option>
+                                                <option value="fr">French</option>
+                                                <option value="de">German</option>
+                                                <option value="zh">Mandarin</option>
+                                                <option value="ja">Japanese</option>
+                                                <option value="ko">Korean</option>
+                                                <option value="ar">Arabic</option>
+                                                <option value="pt">Portuguese</option>
+                                                <option value="ru">Russian</option>
+                                            </select>
+                                            <div
+                                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
+                                                <svg class="fill-current h-4 w-4" viewBox="0 0 20 20"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z">
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <p class="text-xs text-slate-500 mt-1">Hold Ctrl/Cmd to select multiple
+                                            languages.</p>
+                                    </div>
+                                    <div class="flex flex-col md:col-span-1">
+                                    </div>
+                                </div>
+                            </details>
+                            <details
+                                class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                                <summary
+                                    class="flex cursor-pointer items-center justify-between p-6 hover:bg-slate-50 transition-colors">
+                                    <div>
+                                        <h3 class="text-slate-800 text-lg font-semibold leading-tight">Contact
+                                            Information</h3>
+                                        <p class="text-slate-500 text-sm font-normal leading-normal mt-1">Manage
+                                            patient's contact methods like phone, email, and address.</p>
+                                    </div>
+                                    <div class="text-slate-500 group-open:rotate-180 transition-transform">
+                                        <svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </summary>
+                                <div
+                                    class="p-6 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                                    <label class="flex flex-col md:col-span-2">
+                                        <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Address</p>
+                                        <input
+                                            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                            value="123 Main Street, Anytown, USA" />
+                                    </label>
+                                    <div class="flex flex-col md:col-span-2">
+                                        <button
+                                            class="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 self-start mb-2"
+                                            type="button">
+                                            <svg class="bi bi-geo-alt-fill" fill="currentColor" height="16"
+                                                viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z">
+                                                </path>
+                                            </svg>
+                                            Add GPS Location
+                                        </button>
+                                    </div>
+                                    <div class="md:col-span-2 space-y-4" id="phone-numbers-container">
+                                        <div class="flex items-end gap-2">
+                                            <label class="flex flex-col flex-1">
+                                                <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Phone
+                                                    Number</p>
+                                                <input
+                                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                                    type="tel" value="(555) 123-4567" />
+                                            </label>
+                                            <button class="p-2 text-slate-500 hover:text-slate-700" type="button">
+                                                <svg class="bi bi-trash" fill="currentColor" height="20"
+                                                    viewBox="0 0 16 16" width="20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z">
+                                                    </path>
+                                                    <path
+                                                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                                                        fill-rule="evenodd"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button
+                                        class="md:col-span-2 flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                                        id="add-phone-button" type="button">
+                                        <svg class="bi bi-plus-circle" fill="currentColor" height="16"
+                                            viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z">
+                                            </path>
+                                            <path
+                                                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z">
+                                            </path>
+                                        </svg>
+                                        Add Phone Number
+                                    </button>
+                                    <div class="md:col-span-2 space-y-4" id="email-addresses-container">
+                                        <div class="flex items-end gap-2">
+                                            <label class="flex flex-col flex-1">
+                                                <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Email
+                                                </p>
+                                                <input
+                                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                                    type="email" value="sarah.miller@example.com" />
+                                            </label>
+                                            <button class="p-2 text-slate-500 hover:text-slate-700" type="button">
+                                                <svg class="bi bi-trash" fill="currentColor" height="20"
+                                                    viewBox="0 0 16 16" width="20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z">
+                                                    </path>
+                                                    <path
+                                                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                                                        fill-rule="evenodd"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button
+                                        class="md:col-span-2 flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                                        id="add-email-button" type="button">
+                                        <svg class="bi bi-plus-circle" fill="currentColor" height="16"
+                                            viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z">
+                                            </path>
+                                            <path
+                                                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z">
+                                            </path>
+                                        </svg>
+                                        Add Email Address
+                                    </button>
+                                </div>
+                            </details>
+                            <details
+                                class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                                <summary
+                                    class="flex cursor-pointer items-center justify-between p-6 hover:bg-slate-50 transition-colors">
+                                    <div>
+                                        <h3 class="text-slate-800 text-lg font-semibold leading-tight">Insurance</h3>
+                                        <p class="text-slate-500 text-sm font-normal leading-normal mt-1">Add or update
+                                            patient's insurance details.</p>
+                                    </div>
+                                    <div class="text-slate-500 group-open:rotate-180 transition-transform">
+                                        <svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </summary>
+                                <div class="p-6 border-t border-slate-200">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                                        <label class="flex flex-col">
+                                            <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Insurance
+                                                Provider</p>
+                                            <input
+                                                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                                value="United Healthcare" />
+                                        </label>
+                                        <label class="flex flex-col">
+                                            <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Policy
+                                                Number</p>
+                                            <input
+                                                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                                value="UHC123456789" />
+                                        </label>
+                                        <label class="flex flex-col md:col-span-2">
+                                            <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Group
+                                                Number</p>
+                                            <input
+                                                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                                value="GRP98765" />
+                                        </label>
+                                    </div>
+                                    <button
+                                        class="mt-6 flex items-center gap-2 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2.5 text-sm font-medium leading-normal">
+                                        <svg fill="currentColor" height="16" viewBox="0 0 256 256" width="16"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z">
+                                            </path>
+                                        </svg>
+                                        Add another insurance
+                                    </button>
+                                </div>
+                            </details>
+                            <details
+                                class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                                <summary
+                                    class="flex cursor-pointer items-center justify-between p-6 hover:bg-slate-50 transition-colors">
+                                    <div>
+                                        <h3 class="text-slate-800 text-lg font-semibold leading-tight">Emergency Contact
+                                        </h3>
+                                        <p class="text-slate-500 text-sm font-normal leading-normal mt-1">Provide
+                                            details for patient's emergency contacts.</p>
+                                    </div>
+                                    <div class="text-slate-500 group-open:rotate-180 transition-transform">
+                                        <svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </summary>
+                                <div class="p-6 border-t border-slate-200">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                                        <label class="flex flex-col">
+                                            <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Emergency
+                                                Contact Name</p>
+                                            <input
+                                                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                                value="John Miller" />
+                                        </label>
+                                        <label class="flex flex-col">
+                                            <p class="text-slate-700 text-sm font-medium leading-normal pb-2">
+                                                Relationship</p>
+                                            <select
+                                                class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 bg-[image:--select-button-svg] placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal appearance-none">
+                                                <option value="">Select relationship</option>
+                                                <option selected="" value="spouse">Spouse</option>
+                                                <option value="parent">Parent</option>
+                                                <option value="child">Child</option>
+                                                <option value="sibling">Sibling</option>
+                                                <option value="friend">Friend</option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        </label>
+                                        <label class="flex flex-col md:col-span-2">
+                                            <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Emergency
+                                                Contact Phone</p>
+                                            <input
+                                                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                                type="tel" value="(555) 987-6543" />
+                                        </label>
+                                    </div>
+                                    <button
+                                        class="mt-6 flex items-center gap-2 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2.5 text-sm font-medium leading-normal">
+                                        <svg fill="currentColor" height="16" viewBox="0 0 256 256" width="16"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z">
+                                            </path>
+                                        </svg>
+                                        Add another contact
+                                    </button>
+                                </div>
+                            </details>
+                            <details
+                                class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                                <summary
+                                    class="flex cursor-pointer items-center justify-between p-6 hover:bg-slate-50 transition-colors">
+                                    <div>
+                                        <h3 class="text-slate-800 text-lg font-semibold leading-tight">Other Information
+                                        </h3>
+                                        <p class="text-slate-500 text-sm font-normal leading-normal mt-1">Additional
+                                            patient information like Primary Care Physician.</p>
+                                    </div>
+                                    <div class="text-slate-500 group-open:rotate-180 transition-transform">
+                                        <svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </summary>
+                                <div
+                                    class="p-6 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                                    <label class="flex flex-col md:col-span-2">
+                                        <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Primary Care
+                                            Physician</p>
+                                        <input
+                                            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal"
+                                            value="Dr. Emily Carter" />
+                                    </label>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </main>
+                <footer class="sticky bottom-0 bg-white border-t border-slate-200 shadow-md z-10">
+                    <div class="mx-auto max-w-5xl px-10 py-4">
+                        <div class="flex justify-end gap-3">
+                            <button
+                                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md h-10 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium leading-normal">
+                                <span class="truncate">Cancel</span>
+                            </button>
+                            <button
+                                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium leading-normal">
+                                <span class="truncate">Save Changes</span>
+                            </button>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    <script>
+        const deceasedCheckbox = document.getElementById('deceased-checkbox');
+        const deceasedDatetimeContainer = document.getElementById('deceased-datetime-container');
+        deceasedCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                deceasedDatetimeContainer.classList.remove('hidden');
+            } else {
+                deceasedDatetimeContainer.classList.add('hidden');
+            }
+        });
+        // Function to add new phone input
+        function addPhoneInput() {
+            const container = document.getElementById('phone-numbers-container');
+            const newPhoneGroup = document.createElement('div');
+            newPhoneGroup.className = 'flex items-end gap-2';
+            newPhoneGroup.innerHTML = `
+            <label class="flex flex-col flex-1">
+              <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Phone Number</p>
+              <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal" type="tel" placeholder="e.g. (555) 555-5555" />
+            </label>
+            <button type="button" class="p-2 text-slate-500 hover:text-red-600" onclick="removeInputGroup(this)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+              </svg>
+            </button>
+          `;
+            container.appendChild(newPhoneGroup);
+        }
+        // Function to add new email input
+        function addEmailInput() {
+            const container = document.getElementById('email-addresses-container');
+            const newEmailGroup = document.createElement('div');
+            newEmailGroup.className = 'flex items-end gap-2';
+            newEmailGroup.innerHTML = `
+            <label class="flex flex-col flex-1">
+              <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Email</p>
+              <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 px-3.5 py-2.5 text-sm font-normal leading-normal" type="email" placeholder="e.g. name@example.com" />
+            </label>
+            <button type="button" class="p-2 text-slate-500 hover:text-red-600" onclick="removeInputGroup(this)">
+               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+              </svg>
+            </button>
+          `;
+            container.appendChild(newEmailGroup);
+        }
+        // Function to remove an input group (phone or email)
+        function removeInputGroup(buttonElement) {
+            buttonElement.parentElement.remove();
+        }
+        document.getElementById('add-phone-button').addEventListener('click', addPhoneInput);
+        document.getElementById('add-email-button').addEventListener('click', addEmailInput);
+        // Attach remove handlers to initial delete buttons
+        document.querySelectorAll('#phone-numbers-container .flex.items-end.gap-2 button[type="button"]').forEach(button => {
+            button.addEventListener('click', () => removeInputGroup(button));
+        });
+        document.querySelectorAll('#email-addresses-container .flex.items-end.gap-2 button[type="button"]').forEach(button => {
+            button.addEventListener('click', () => removeInputGroup(button));
+        });
+    </script>
+</body>
+
+</html>

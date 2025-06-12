@@ -1,0 +1,9 @@
+{
+  "dashboard": "Tableau de bord",
+  "patients": "Patients",
+  "practitioners": "Praticiens", 
+  "prescriptions": "Prescriptions",
+  "settings": "Paramètres",
+  "profile": "Profil",
+  "logout": "Déconnexion"
+}

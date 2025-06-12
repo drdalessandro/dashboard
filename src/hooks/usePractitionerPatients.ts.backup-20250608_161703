@@ -1,0 +1,192 @@
+/**
+ * usePractitionerPatients.fixed.ts - LOOP-FREE VERSION
+ * 
+ * Completely rewritten to avoid all circular dependencies and infinite loops
+ * Uses manual Medplum client calls instead of useResource hooks
+ */
+
+import React from 'react';
+import { Encounter, Patient, Bundle } from '@medplum/fhirtypes';
+import { useMedplum } from './useMedplum';
+import { createLogger } from '../utils/logger';
+import { formatHumanName } from '../utils/fhir/resourceUtils';
+
+const logger = createLogger('usePractitionerPatients');
+
+export interface PractitionerPatientData {
+    id: string;
+    name: string;
+    lastEncounterDate?: string;
+    encounterType?: string;
+}
+
+export interface UsePractitionerPatientsResult {
+    totalPatientCount: number;
+    recentPatients: PractitionerPatientData[];
+    isLoading: boolean;
+    error: Error | null;
+    refetch: () => Promise<void>;
+}
+
+export interface UsePractitionerPatientsOptions {
+    recentLimit?: number;
+    enabled?: boolean;
+}
+
+/**
+ * FIXED VERSION: Direct Medplum client usage to avoid circular dependencies
+ */
+export function usePractitionerPatients(
+    practitionerId: string,
+    options: UsePractitionerPatientsOptions = {}
+): UsePractitionerPatientsResult {
+    const { recentLimit = 10, enabled = true } = options;
+    const medplum = useMedplum();
+    
+    // State management
+    const [patientData, setPatientData] = React.useState<PractitionerPatientData[]>([]);
+    const [totalCount, setTotalCount] = React.useState<number>(0);
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [error, setError] = React.useState<Error | null>(null);
+    
+    // Track if component is mounted to avoid state updates after unmount
+    const isMountedRef = React.useRef(true);
+    
+    React.useEffect(() => {
+        return () => {
+            isMountedRef.current = false;
+        };
+    }, []);
+
+    /**
+     * Fetch practitioner patients using direct Medplum client
+     */
+    const fetchPractitionerPatients = React.useCallback(async () => {
+        if (!practitionerId || !enabled || !medplum.client) {
+            return;
+        }
+
+        // Prevent concurrent fetches
+        if (isLoading) {
+            return;
+        }
+
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            logger.debug(`Fetching patients for practitioner: ${practitionerId}`);
+
+            // Strategy 1: Try general-practitioner search first
+            let patients: Patient[] = [];
+            let totalPatientCount = 0;
+
+            try {
+                const searchParams = new URLSearchParams({
+                    'general-practitioner': `Practitioner/${practitionerId}`,
+                    '_sort': '-_lastUpdated',
+                    '_count': '100'
+                });
+
+                const bundle = await medplum.client.search('Patient', searchParams.toString());
+                
+                if (bundle && bundle.entry) {
+                    patients = bundle.entry
+                        .map(entry => entry.resource as Patient)
+                        .filter(Boolean);
+                    totalPatientCount = bundle.total || patients.length;
+                }
+                
+                logger.debug(`Found ${patients.length} patients via general-practitioner`);
+            } catch (err) {
+                logger.debug('General-practitioner search failed, trying encounters');
+                
+                // Strategy 2: Fallback to encounter-based search
+                try {
+                    const encounterParams = new URLSearchParams({
+                        'participant': `Practitioner/${practitionerId}`,
+                        '_sort': '-date',
+                        '_count': '50'
+                    });
+
+                    const encounterBundle = await medplum.client.search('Encounter', encounterParams.toString());
+                    
+                    if (encounterBundle && encounterBundle.entry) {
+                        // Extract unique patient IDs
+                        const patientIds = new Set<string>();
+                        encounterBundle.entry.forEach(entry => {
+                            const encounter = entry.resource as Encounter;
+                            const patientRef = encounter.subject?.reference;
+                            if (patientRef && patientRef.startsWith('Patient/')) {
+                                patientIds.add(patientRef.replace('Patient/', ''));
+                            }
+                        });
+
+                        // Fetch patient details for unique IDs
+                        const patientPromises = Array.from(patientIds).slice(0, 20).map(async (id) => {
+                            try {
+                                return await medplum.client.readResource('Patient', id);
+                            } catch {
+                                return null;
+                            }
+                        });
+
+                        const fetchedPatients = await Promise.all(patientPromises);
+                        patients = fetchedPatients.filter(Boolean) as Patient[];
+                        totalPatientCount = patientIds.size;
+                    }
+                } catch (encounterErr) {
+                    logger.warn('Encounter search also failed:', encounterErr);
+                }
+            }
+
+            // Only update state if component is still mounted
+            if (isMountedRef.current) {
+                // Process results
+                const recentPatients = patients.slice(0, recentLimit).map(patient => ({
+                    id: patient.id || '',
+                    name: formatHumanName(patient.name) || 'Unknown Patient',
+                    lastEncounterDate: patient.meta?.lastUpdated,
+                    encounterType: 'Primary Care'
+                }));
+
+                setTotalCount(totalPatientCount);
+                setPatientData(recentPatients);
+            }
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : String(err);
+            logger.error(`Failed to fetch patients: ${errorMessage}`);
+            
+            if (isMountedRef.current) {
+                setError(new Error(`Failed to load patients: ${errorMessage}`));
+            }
+        } finally {
+            if (isMountedRef.current) {
+                setIsLoading(false);
+            }
+        }
+    }, [practitionerId, enabled, recentLimit, medplum.client]);
+
+    // Fetch data when practitioner ID changes
+    React.useEffect(() => {
+        if (enabled && practitionerId && medplum.client) {
+            // Use a small delay to prevent rapid re-fetching
+            const timeoutId = setTimeout(() => {
+                fetchPractitionerPatients();
+            }, 100);
+
+            return () => clearTimeout(timeoutId);
+        }
+    }, [practitionerId, enabled, medplum.client]);
+
+    return {
+        totalPatientCount: totalCount,
+        recentPatients: patientData,
+        isLoading,
+        error,
+        refetch: fetchPractitionerPatients
+    };
+}
+
+// Export as default for easy replacement
+export default usePractitionerPatients;

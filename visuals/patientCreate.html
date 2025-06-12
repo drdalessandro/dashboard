@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+    <link as="style"
+        href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B600%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+        rel="stylesheet" />
+    <title>Stitch Design</title>
+    <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+</head>
+
+<body class="bg-slate-50 text-slate-900 antialiased" style='font-family: Inter, "Noto Sans", sans-serif;'>
+    <div class="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden"
+        style="--select-button-svg: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(73,115,156)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z%27%3e%3c/path%3e%3c/svg%3e');">
+        <div class="layout-container flex h-full grow">
+            <aside class="flex w-64 flex-col border-r border-slate-200 bg-white p-6">
+                <div class="flex items-center gap-3 text-slate-800">
+                    <div class="size-8 text-[#0c7ff2]">
+                        <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"
+                                fill="currentColor"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-semibold leading-tight tracking-tight text-slate-900">Health Records</h2>
+                </div>
+                <nav class="mt-8 flex flex-1 flex-col gap-2">
+                    <a class="flex items-center gap-3 rounded-md bg-sky-100 px-3 py-2.5 text-sm font-medium text-sky-700 hover:bg-sky-100 hover:text-sky-700"
+                        href="#">
+                        <span class="material-icons text-lg">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        href="#">
+                        <span class="material-icons text-lg">people</span>
+                        <span>Patients</span>
+                    </a>
+                    <a class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        href="#">
+                        <span class="material-icons text-lg">medical_services</span>
+                        <span>Practitioners</span>
+                    </a>
+                    <a class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        href="#">
+                        <span class="material-icons text-lg">assessment</span>
+                        <span>Report</span>
+                    </a>
+                    <a class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        href="#">
+                        <span class="material-icons text-lg">settings</span>
+                        <span>Settings</span>
+                    </a>
+                </nav>
+                <div class="mt-auto border-t border-slate-200 pt-6">
+                    <div class="flex items-center gap-3">
+                        <div class="aspect-square size-10 rounded-full bg-cover bg-center bg-no-repeat"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA-dkxAyZR_RKK_aEb5ScQ5LPQgoxA8HfGLME7GaxsoW2Pgz47ptT-P9Vjs-iameZ3sbqnciqfNTE-JtN9rZDg6QAEOAt0YTZoVOQt600Sto75WuoqgkJhecGsjRUoTCnG1UgZRH4zcfFs4iKQzySMgZfm5D0nzOy5zUKHG8WbLSDfD7OwBckGXLTXfsok3I2vzHwewcNXxOWgxL7PJU7GnkHZB3nU84BliA7M80RbC5bYLvJIExxxHZEcJI3AV9HvFUAUUxratcRwy");'>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-slate-700">Dr. Jane Doe</p>
+                            <a class="text-xs text-slate-500 hover:text-[#0c7ff2] hover:underline" href="#">View
+                                Profile</a>
+                        </div>
+                    </div>
+                    <a class="mt-4 flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        href="#">
+                        <span class="material-icons text-lg">logout</span>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </aside>
+            <div class="flex flex-1 flex-col">
+                <header
+                    class="flex items-center justify-end whitespace-nowrap border-b border-slate-200 bg-white px-8 py-4 shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <button
+                            class="flex cursor-pointer items-center justify-center rounded-full h-10 w-10 text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] focus:ring-offset-2">
+                            <span class="sr-only">View notifications</span>
+                            <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </header>
+                <main class="flex-1 overflow-y-auto p-8 lg:px-8">
+                    <div class="w-full max-w-4xl mx-auto">
+                        <div class="mb-8 text-center lg:text-left">
+                            <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">New Patient Record
+                            </h1>
+                            <p class="mt-2 text-base text-slate-600">Enter patient details to create a new record.
+                                Fields marked with <span class="text-red-500">*</span> are required.</p>
+                        </div>
+                        <div class="mb-8">
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm font-medium text-slate-700">Step 1 of 5: Demographics</p>
+                                <p class="text-sm font-medium text-slate-500">20% complete</p>
+                            </div>
+                            <div class="mt-2 h-2.5 w-full rounded-full bg-slate-200">
+                                <div class="h-2.5 rounded-full bg-[#0c7ff2]" style="width: 20%;"></div>
+                            </div>
+                        </div>
+                        <form class="space-y-8">
+                            <section>
+                                <h2 class="mb-6 border-b border-slate-200 pb-3 text-xl font-semibold text-slate-900">
+                                    Personal Information</h2>
+                                <div class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+                                    <div>
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="patient-photo">Photo</label>
+                                        <div class="mt-2 flex items-center gap-x-3">
+                                            <img alt="Patient photo"
+                                                class="h-16 w-16 rounded-full object-cover bg-slate-200"
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDTpdAuuPnOGG_dELW9T05TOqFbNJrdMkPSe8GfANF-ymoWacMIvjpTCxmSF_g-Tv3X4MzomL3PT7EFx0T9K8gnBk9bpdgpAZKFmHVpuFLOSeu_b2sHk4IR1nMtqAwdhsNsQeOVuKXqMvgYYO7sZvRtEGNr_IGG4UytzZ8Q5XOsJwpw7ylwEZfMf4IqhQFKpoC6Q2JJxUE-l__ght7izrgHRn24tIU0YBq7q8ZhV9V77i2BSH326bfX0NJCB43POIIMQbqI9gEgzhq" />
+                                            <input
+                                                class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100"
+                                                id="patient-photo" name="patient-photo" type="file" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="patient-status">Status</label>
+                                        <div class="mt-2">
+                                            <select
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="patient-status" name="patient-status">
+                                                <option value="">Select status</option>
+                                                <option value="active">Active</option>
+                                                <option value="inactive">Inactive</option>
+                                                <option value="on-hold">On Hold</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="identifier-nina">Identifier (NINA) <span
+                                                class="text-red-500">*</span></label>
+                                        <div class="mt-2">
+                                            <input
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="identifier-nina" name="identifier-nina"
+                                                placeholder="Enter NINA identifier" required="" type="text" />
+                                        </div>
+                                    </div>
+                                    <div class="flex items-end">
+                                        <div class="flex h-full items-center">
+                                            <input
+                                                class="h-4 w-4 rounded border-slate-300 text-[#0c7ff2] focus:ring-[#0c7ff2]"
+                                                id="deceased-checkbox" name="deceased" type="checkbox" />
+                                            <label class="ml-2 block text-sm font-medium leading-6 text-slate-900"
+                                                for="deceased-checkbox">Deceased</label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="first-name">First Name <span class="text-red-500">*</span></label>
+                                        <div class="mt-2">
+                                            <input
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="first-name" name="first-name" placeholder="Enter first name"
+                                                required="" type="text" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="last-name">Last Name <span class="text-red-500">*</span></label>
+                                        <div class="mt-2">
+                                            <input
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="last-name" name="last-name" placeholder="Enter last name"
+                                                required="" type="text" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="gender">Gender <span class="text-red-500">*</span></label>
+                                        <div class="mt-2">
+                                            <select
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="gender" name="gender" required="">
+                                                <option value="">Select gender</option>
+                                                <option value="female">Female</option>
+                                                <option value="male">Male</option>
+                                                <option value="other">Other</option>
+                                                <option value="unknown">Unknown</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="birth-date">Birth Date <span class="text-red-500">*</span></label>
+                                        <div class="mt-2">
+                                            <input
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="birth-date" name="birth-date" placeholder="MM/DD/YYYY" required=""
+                                                type="date" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="marital-status">Marital Status</label>
+                                        <div class="mt-2">
+                                            <select
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="marital-status" name="marital-status">
+                                                <option value="">Select marital status</option>
+                                                <option value="single">Single</option>
+                                                <option value="married">Married</option>
+                                                <option value="divorced">Divorced</option>
+                                                <option value="widowed">Widowed</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="language">Preferred Language</label>
+                                        <div class="mt-2">
+                                            <select
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="language" name="language">
+                                                <option value="">Select language</option>
+                                                <option value="en">English</option>
+                                                <option value="es">Spanish</option>
+                                                <option value="fr">French</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="hidden" id="deceased-datetime-container">
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="deceased-datetime">Deceased Datetime</label>
+                                        <div class="mt-2">
+                                            <input
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="deceased-datetime" name="deceased-datetime" type="datetime-local" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section>
+                                <h2 class="mb-6 border-b border-slate-200 pb-3 text-xl font-semibold text-slate-900">
+                                    Contact Information</h2>
+                                <div class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+                                    <div class="sm:col-span-2">
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="phone-numbers">Phone Numbers <span
+                                                class="text-red-500">*</span></label>
+                                        <div class="mt-2 space-y-3" id="phone-numbers-container">
+                                            <div class="flex items-center gap-x-3">
+                                                <input
+                                                    class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                    name="phone[]" placeholder="Enter phone number" required=""
+                                                    type="tel" />
+                                                <button class="text-slate-500 hover:text-[#0c7ff2] focus:outline-none"
+                                                    type="button">
+                                                    <span class="material-icons text-lg">remove_circle_outline</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <button
+                                            class="mt-2 flex items-center text-sm font-medium text-[#0c7ff2] hover:text-[#0a68c4]"
+                                            id="add-phone-button" type="button">
+                                            <span class="material-icons text-lg mr-1">add_circle_outline</span> Add
+                                            Phone Number
+                                        </button>
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="email-addresses">Email Addresses</label>
+                                        <div class="mt-2 space-y-3" id="email-addresses-container">
+                                            <div class="flex items-center gap-x-3">
+                                                <input
+                                                    class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                    name="email[]" placeholder="Enter email address" type="email" />
+                                                <button class="text-slate-500 hover:text-[#0c7ff2] focus:outline-none"
+                                                    type="button">
+                                                    <span class="material-icons text-lg">remove_circle_outline</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <button
+                                            class="mt-2 flex items-center text-sm font-medium text-[#0c7ff2] hover:text-[#0a68c4]"
+                                            id="add-email-button" type="button">
+                                            <span class="material-icons text-lg mr-1">add_circle_outline</span> Add
+                                            Email Address
+                                        </button>
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="address">Address <span class="text-red-500">*</span></label>
+                                        <div class="mt-2">
+                                            <textarea
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="address" name="address" placeholder="Enter full address" required=""
+                                                rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="gps-location">GPS Location (Latitude, Longitude)</label>
+                                        <div class="mt-2 flex items-center gap-x-3">
+                                            <input
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="gps-latitude" name="gps-latitude" placeholder="Latitude"
+                                                type="text" />
+                                            <input
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="gps-longitude" name="gps-longitude" placeholder="Longitude"
+                                                type="text" />
+                                            <button
+                                                class="rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] focus:ring-offset-1 flex items-center"
+                                                type="button">
+                                                <span class="material-icons text-lg mr-1">my_location</span> Get Current
+                                                Location
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section>
+                                <h2 class="mb-6 border-b border-slate-200 pb-3 text-xl font-semibold text-slate-900">
+                                    Insurance &amp; Coverage</h2>
+                                <div class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+                                    <div>
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="insurance-provider">Insurance Provider</label>
+                                        <div class="mt-2">
+                                            <input
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="insurance-provider" name="insurance-provider"
+                                                placeholder="Enter insurance provider" type="text" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium leading-6 text-slate-900"
+                                            for="policy-number">Policy Number</label>
+                                        <div class="mt-2">
+                                            <input
+                                                class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                                id="policy-number" name="policy-number"
+                                                placeholder="Enter policy number" type="text" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section>
+                                <h2 class="mb-6 border-b border-slate-200 pb-3 text-xl font-semibold text-slate-900">
+                                    Medical Summary (Optional)</h2>
+                                <div>
+                                    <label class="block text-sm font-medium leading-6 text-slate-900"
+                                        for="medical-history">Medical History</label>
+                                    <div class="mt-2">
+                                        <textarea
+                                            class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6"
+                                            id="medical-history" name="medical-history"
+                                            placeholder="Enter relevant medical history" rows="4"></textarea>
+                                    </div>
+                                </div>
+                            </section>
+                            <section>
+                                <h2 class="mb-6 border-b border-slate-200 pb-3 text-xl font-semibold text-slate-900">
+                                    Review</h2>
+                                <div class="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                                    <div class="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-3">
+                                        <dt class="text-sm font-medium text-slate-500">Name</dt>
+                                        <dd class="text-sm text-slate-900 sm:col-span-2">Sophia Clark</dd>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                                        <dt class="text-sm font-medium text-slate-500">Identifier (NINA)</dt>
+                                        <dd class="text-sm text-slate-900 sm:col-span-2">1234567890</dd>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                                        <dt class="text-sm font-medium text-slate-500">Deceased</dt>
+                                        <dd class="text-sm text-slate-900 sm:col-span-2">No</dd>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                                        <dt class="text-sm font-medium text-slate-500">Gender</dt>
+                                        <dd class="text-sm text-slate-900 sm:col-span-2">Female</dd>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                                        <dt class="text-sm font-medium text-slate-500">Birth Date</dt>
+                                        <dd class="text-sm text-slate-900 sm:col-span-2">05/12/1990</dd>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                                        <dt class="text-sm font-medium text-slate-500">Phone</dt>
+                                        <dd class="text-sm text-slate-900 sm:col-span-2">(555) 123-4567</dd>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                                        <dt class="text-sm font-medium text-slate-500">Address</dt>
+                                        <dd class="text-sm text-slate-900 sm:col-span-2">123 Maple Street, Anytown, CA
+                                            91234</dd>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                                        <dt class="text-sm font-medium text-slate-500">Marital Status</dt>
+                                        <dd class="text-sm text-slate-900 sm:col-span-2">Married</dd>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                                        <dt class="text-sm font-medium text-slate-500">Language</dt>
+                                        <dd class="text-sm text-slate-900 sm:col-span-2">English</dd>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                                        <dt class="text-sm font-medium text-slate-500">Email</dt>
+                                        <dd class="text-sm text-slate-900 sm:col-span-2">sophia.clark@email.com</dd>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                                        <dt class="text-sm font-medium text-slate-500">Insurance</dt>
+                                        <dd class="text-sm text-slate-900 sm:col-span-2">United Health</dd>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                                        <dt class="text-sm font-medium text-slate-500">Policy Number</dt>
+                                        <dd class="text-sm text-slate-900 sm:col-span-2">123456789</dd>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
+                                        <dt class="text-sm font-medium text-slate-500">Medical Summary</dt>
+                                        <dd class="text-sm text-slate-900 sm:col-span-2">No significant medical history
+                                        </dd>
+                                    </div>
+                                </div>
+                            </section>
+                            <div class="flex items-center justify-end gap-x-4 border-t border-slate-200 pt-8">
+                                <button
+                                    class="rounded-md bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500"
+                                    type="button">
+                                    Previous
+                                </button>
+                                <button
+                                    class="rounded-md bg-[#0c7ff2] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#0a68c4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0c7ff2]"
+                                    type="submit">
+                                    Next: Contact Info
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    <div class="fixed bottom-5 right-5 hidden w-full max-w-xs items-center rounded-lg bg-green-500 p-4 text-white shadow-lg"
+        id="toast-success" role="alert">
+        <div
+            class="inline-flex size-8 flex-shrink-0 items-center justify-center rounded-lg bg-green-700 text-green-100">
+            <svg aria-hidden="true" class="size-5" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z">
+                </path>
+            </svg>
+            <span class="sr-only">Check icon</span>
+        </div>
+        <div class="ms-3 text-sm font-normal">Patient record created successfully.</div>
+        <button aria-label="Close"
+            class="-mx-1.5 -my-1.5 ms-auto inline-flex size-8 items-center justify-center rounded-lg bg-green-500 p-1.5 text-green-100 hover:bg-green-600 focus:ring-2 focus:ring-green-300"
+            data-dismiss-target="#toast-success" type="button">
+            <span class="sr-only">Close</span>
+            <svg aria-hidden="true" class="size-3" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+                <path d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" stroke="currentColor" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-width="2"></path>
+            </svg>
+        </button>
+    </div>
+    <script>
+        // Deceased checkbox logic
+        const deceasedCheckbox = document.getElementById('deceased-checkbox');
+        const deceasedDatetimeContainer = document.getElementById('deceased-datetime-container');
+        deceasedCheckbox.addEventListener('change', function () {
+            deceasedDatetimeContainer.classList.toggle('hidden', !this.checked);
+        });
+        // Add Phone Number logic
+        const addPhoneButton = document.getElementById('add-phone-button');
+        const phoneNumbersContainer = document.getElementById('phone-numbers-container');
+        addPhoneButton.addEventListener('click', function () {
+            const newPhoneField = document.createElement('div');
+            newPhoneField.classList.add('flex', 'items-center', 'gap-x-3');
+            newPhoneField.innerHTML = `
+        <input class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6" name="phone[]" placeholder="Enter phone number" type="tel"/>
+        <button type="button" class="text-slate-500 hover:text-[#0c7ff2] focus:outline-none remove-phone-button">
+          <span class="material-icons text-lg">remove_circle_outline</span>
+        </button>
+      `;
+            phoneNumbersContainer.appendChild(newPhoneField);
+            addRemoveButtonListener(newPhoneField.querySelector('.remove-phone-button'));
+        });
+        // Add Email Address logic
+        const addEmailButton = document.getElementById('add-email-button');
+        const emailAddressesContainer = document.getElementById('email-addresses-container');
+        addEmailButton.addEventListener('click', function () {
+            const newEmailField = document.createElement('div');
+            newEmailField.classList.add('flex', 'items-center', 'gap-x-3');
+            newEmailField.innerHTML = `
+        <input class="block w-full rounded-md border-0 bg-slate-100 px-3.5 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#0c7ff2] sm:text-sm sm:leading-6" name="email[]" placeholder="Enter email address" type="email"/>
+        <button type="button" class="text-slate-500 hover:text-[#0c7ff2] focus:outline-none remove-email-button">
+          <span class="material-icons text-lg">remove_circle_outline</span>
+        </button>
+      `;
+            emailAddressesContainer.appendChild(newEmailField);
+            addRemoveButtonListener(newEmailField.querySelector('.remove-email-button'));
+        });
+        // Remove button listener helper
+        function addRemoveButtonListener(button) {
+            button.addEventListener('click', function () {
+                this.parentElement.remove();
+            });
+        }
+        // Initial remove button listeners
+        document.querySelectorAll('.remove-phone-button, .remove-email-button').forEach(button => {
+            addRemoveButtonListener(button);
+        });
+    </script>
+
+</body>
+
+</html>

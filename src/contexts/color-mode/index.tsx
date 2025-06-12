@@ -4,7 +4,8 @@ import CssBaseline from "@mui/material/CssBaseline";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import { ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { RefineThemes } from "@refinedev/mui";
+// Import our custom themes instead of RefineThemes
+import { customLightTheme, customDarkTheme } from "./customTheme";
 import Cookies from "js-cookie";
 import React, {
   type PropsWithChildren,
@@ -60,11 +61,25 @@ export const ColorModeContextProvider: React.FC<
       }}
     >
       <ThemeProvider
-        // you can change the theme colors here. example: mode === "light" ? RefineThemes.Magenta : RefineThemes.MagentaDark
-        theme={mode === "light" ? RefineThemes.Blue : RefineThemes.BlueDark}
+        // Using custom themes with Poppins font (size 14, weight 600)
+        theme={mode === "light" ? customLightTheme : customDarkTheme}
       >
         <CssBaseline />
-        <GlobalStyles styles={{ html: { WebkitFontSmoothing: "auto" } }} />
+        <GlobalStyles 
+          styles={{ 
+            html: { 
+              WebkitFontSmoothing: "auto" 
+            },
+            "body, html": {
+              fontFamily: "'Poppins', sans-serif",
+              fontSize: "14px",
+              fontWeight: 600
+            },
+            "*": {
+              fontFamily: "'Poppins', sans-serif"
+            }
+          }} 
+        />
         {children}
       </ThemeProvider>
     </ColorModeContext.Provider>

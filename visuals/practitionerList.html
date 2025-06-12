@@ -1,0 +1,323 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+    <link as="style"
+        href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+        onload="this.rel='stylesheet'" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <title>Stitch Design</title>
+    <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style type="text/tailwindcss">
+        @layer base {
+          :root {
+            --color-primary: #1993e5;
+            --color-primary-content: #ffffff;
+            --color-primary-dark: #1476b7;
+            --color-primary-light: #47abed;
+            --color-secondary: #e7eef3;
+            --color-secondary-content: #0e161b;
+            --color-secondary-dark: #c4d1dd;
+            --color-secondary-light: #ffffff;
+            --color-background: #ffffff;
+            --color-foreground: #f9fafb;
+            --color-border: #e7eef3;
+            --color-copy: #0e161b;
+            --color-copy-light: #4e7a97;
+            --color-copy-lighter: #8a9faa;
+            --color-success: #28a745;
+            --color-warning: #ffc107;
+            --color-error: #dc3545;
+            --color-disabled: #d1d5db;
+          }
+          body {
+            font-family: "Inter", "Noto Sans", sans-serif;
+          }
+        }
+        .badge-active {
+          @apply bg-green-100 text-green-700;
+        }
+        .badge-inactive {
+          @apply bg-red-100 text-red-700;
+        }
+        .table-header-sortable {
+          @apply cursor-pointer hover:bg-slate-100;
+        }
+        .table-header-sortable .sort-icon {
+          @apply opacity-0 group-hover:opacity-100 transition-opacity;
+        }
+      </style>
+</head>
+
+<body>
+    <div class="relative flex size-full min-h-screen flex-col bg-background group/design-root overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <header
+                class="flex items-center justify-between whitespace-nowrap border-b border-solid border-border px-10 py-3">
+                <div class="flex items-center gap-8">
+                    <div class="flex items-center gap-4 text-primary">
+                        <span class="material-icons text-3xl">health_and_safety</span>
+                        <h2 class="text-copy text-xl font-bold leading-tight tracking-[-0.015em]">HealthConnect</h2>
+                    </div>
+                    <nav class="flex items-center gap-6">
+                        <a class="text-copy-light hover:text-primary text-sm font-medium leading-normal"
+                            href="#">Dashboard</a>
+                        <a class="text-copy-light hover:text-primary text-sm font-medium leading-normal"
+                            href="#">Patients</a>
+                        <a class="text-copy-light hover:text-primary text-sm font-medium leading-normal"
+                            href="#">Encounters</a>
+                        <a class="text-copy-light hover:text-primary text-sm font-medium leading-normal"
+                            href="#">Tasks</a>
+                        <a class="text-copy-light hover:text-primary text-sm font-medium leading-normal"
+                            href="#">Reports</a>
+                    </nav>
+                </div>
+                <div class="flex flex-1 justify-end gap-4 items-center">
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <span class="material-icons text-copy-light">search</span>
+                        </div>
+                        <input
+                            class="form-input block w-full rounded-lg border-border bg-foreground py-2 pl-10 pr-4 text-sm text-copy focus:border-primary focus:ring-primary"
+                            placeholder="Search..." type="search" />
+                    </div>
+                    <button class="relative rounded-lg p-2 text-copy-light hover:bg-foreground hover:text-primary">
+                        <span class="material-icons">notifications</span>
+                        <span class="absolute top-1 right-1 h-2 w-2 rounded-full bg-error"></span>
+                    </button>
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-border"
+                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCshrEVB341NQGLLJ0lNQg-q3Flyr70f_BaKtbFvebIEWZeS5lQFAX__sPbfSEahBcCvPxka4X-GbX3pQiqkda7zrjuswl3JkDdLmQ6Ck6FPkUv_LHrLkT5VUnFsWj1OR51jPz6dlnliuJi-vOpYofabH1juGVcBdSDHtrznEDMXFBD_OpHeVBIftd4CjsbUfjLAmWN2Qd2zCYFmqrtEguauAieepbd8M1WAwVLlOp9l9xsWxRrwDB-KDSFp79Mj0L4B0k-etGGaCw");'>
+                    </div>
+                </div>
+            </header>
+            <main class="flex flex-1 justify-center py-8 bg-foreground">
+                <div class="layout-content-container flex flex-col w-full max-w-6xl px-4">
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                        <h1 class="text-copy text-3xl font-bold">Practitioners</h1>
+                        <button
+                            class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-content hover:bg-primary-dark transition-colors">
+                            <span class="material-icons text-lg">add</span>
+                            <span class="truncate">Add Practitioner</span>
+                        </button>
+                    </div>
+                    <div class="mb-6 flex gap-4">
+                        <div class="relative flex-grow">
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <span class="material-icons text-copy-light">search</span>
+                            </div>
+                            <input
+                                class="form-input block w-full rounded-lg border-border bg-background py-2.5 pl-10 pr-4 text-sm text-copy focus:border-primary focus:ring-primary"
+                                placeholder="Search by name or ID" type="search" />
+                        </div>
+                        <button
+                            class="flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-copy-light hover:bg-slate-50 hover:text-copy">
+                            <span class="material-icons text-lg">filter_list</span>
+                            <span>Filter</span>
+                        </button>
+                        <button
+                            class="flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-copy-light hover:bg-slate-50 hover:text-copy">
+                            <span class="material-icons text-lg">more_vert</span>
+                            <span>Bulk Actions</span>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto rounded-lg border border-border bg-background shadow-sm">
+                        <table class="min-w-full divide-y divide-border">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="group table-header-sortable px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-copy-light"
+                                        scope="col">
+                                        <div class="flex items-center">
+                                            Name/ID
+                                            <span class="material-icons sort-icon ml-1 text-sm">sort</span>
+                                        </div>
+                                    </th>
+                                    <th class="group table-header-sortable px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-copy-light"
+                                        scope="col">
+                                        <div class="flex items-center">
+                                            Specialization
+                                            <span class="material-icons sort-icon ml-1 text-sm">sort</span>
+                                        </div>
+                                    </th>
+                                    <th class="group table-header-sortable px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-copy-light"
+                                        scope="col">
+                                        <div class="flex items-center">
+                                            Organization
+                                            <span class="material-icons sort-icon ml-1 text-sm">sort</span>
+                                        </div>
+                                    </th>
+                                    <th class="group table-header-sortable px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-copy-light"
+                                        scope="col">
+                                        <div class="flex items-center">
+                                            Contact
+                                            <span class="material-icons sort-icon ml-1 text-sm">sort</span>
+                                        </div>
+                                    </th>
+                                    <th class="group table-header-sortable px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-copy-light"
+                                        scope="col">
+                                        <div class="flex items-center">
+                                            Status
+                                            <span class="material-icons sort-icon ml-1 text-sm">sort</span>
+                                        </div>
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-copy-light"
+                                        scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border bg-background">
+                                <tr>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <a class="text-sm font-medium text-primary hover:text-primary-dark hover:underline"
+                                            href="#">Dr. Emily Carter</a>
+                                        <div class="text-xs text-copy-light">ID: 12345</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">Cardiology</td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">
+                                        <a class="text-primary hover:text-primary-dark hover:underline" href="#">City
+                                            Hospital</a>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">
+                                        emily.carter@example.com</td>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <span
+                                            class="badge-active inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold leading-5">
+                                            Active </span>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
+                                        <a class="text-primary hover:text-primary-dark" href="#">Edit</a>
+                                        <a class="ml-2 text-error hover:text-red-700" href="#">Delete</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <a class="text-sm font-medium text-primary hover:text-primary-dark hover:underline"
+                                            href="#">Dr. Robert Davis</a>
+                                        <div class="text-xs text-copy-light">ID: 67890</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">Pediatrics</td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">
+                                        <a class="text-primary hover:text-primary-dark hover:underline"
+                                            href="#">Community Clinic</a>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">
+                                        robert.davis@example.com</td>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <span
+                                            class="badge-active inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold leading-5">
+                                            Active </span>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
+                                        <a class="text-primary hover:text-primary-dark" href="#">Edit</a>
+                                        <a class="ml-2 text-error hover:text-red-700" href="#">Delete</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <a class="text-sm font-medium text-primary hover:text-primary-dark hover:underline"
+                                            href="#">Dr. Olivia Green</a>
+                                        <div class="text-xs text-copy-light">ID: 24680</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">Dermatology</td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">
+                                        <a class="text-primary hover:text-primary-dark hover:underline" href="#">Skin
+                                            Care Center</a>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">
+                                        olivia.green@example.com</td>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <span
+                                            class="badge-inactive inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold leading-5">
+                                            Inactive </span>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
+                                        <a class="text-primary hover:text-primary-dark" href="#">Edit</a>
+                                        <a class="ml-2 text-error hover:text-red-700" href="#">Delete</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <a class="text-sm font-medium text-primary hover:text-primary-dark hover:underline"
+                                            href="#">Dr. Ethan Harris</a>
+                                        <div class="text-xs text-copy-light">ID: 13579</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">Neurology</td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">
+                                        <a class="text-primary hover:text-primary-dark hover:underline" href="#">Neuro
+                                            Institute</a>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">
+                                        ethan.harris@example.com</td>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <span
+                                            class="badge-active inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold leading-5">
+                                            Active </span>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
+                                        <a class="text-primary hover:text-primary-dark" href="#">Edit</a>
+                                        <a class="ml-2 text-error hover:text-red-700" href="#">Delete</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <a class="text-sm font-medium text-primary hover:text-primary-dark hover:underline"
+                                            href="#">Dr. Sophia Clark</a>
+                                        <div class="text-xs text-copy-light">ID: 98765</div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">Oncology</td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">
+                                        <a class="text-primary hover:text-primary-dark hover:underline" href="#">Cancer
+                                            Center</a>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-copy-light">
+                                        sophia.clark@example.com</td>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <span
+                                            class="badge-active inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold leading-5">
+                                            Active </span>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
+                                        <a class="text-primary hover:text-primary-dark" href="#">Edit</a>
+                                        <a class="ml-2 text-error hover:text-red-700" href="#">Delete</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-6 flex items-center justify-between">
+                        <div class="text-sm text-copy-light">
+                            Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span
+                                class="font-medium">10</span> results
+                        </div>
+                        <nav class="inline-flex -space-x-px rounded-md shadow-sm isolate">
+                            <a class="relative inline-flex items-center rounded-l-md border border-border bg-background px-2 py-2 text-sm font-medium text-copy-light hover:bg-slate-50 focus:z-20"
+                                href="#">
+                                <span class="material-icons text-lg">chevron_left</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a aria-current="page"
+                                class="relative z-10 inline-flex items-center border border-primary bg-primary/10 px-4 py-2 text-sm font-medium text-primary focus:z-20"
+                                href="#">1</a>
+                            <a class="relative inline-flex items-center border border-border bg-background px-4 py-2 text-sm font-medium text-copy-light hover:bg-slate-50 focus:z-20"
+                                href="#">2</a>
+                            <a class="relative hidden items-center border border-border bg-background px-4 py-2 text-sm font-medium text-copy-light hover:bg-slate-50 focus:z-20 md:inline-flex"
+                                href="#">3</a>
+                            <span
+                                class="relative inline-flex items-center border border-border bg-background px-4 py-2 text-sm font-medium text-copy-light">...</span>
+                            <a class="relative hidden items-center border border-border bg-background px-4 py-2 text-sm font-medium text-copy-light hover:bg-slate-50 focus:z-20 md:inline-flex"
+                                href="#">10</a>
+                            <a class="relative inline-flex items-center rounded-r-md border border-border bg-background px-2 py-2 text-sm font-medium text-copy-light hover:bg-slate-50 focus:z-20"
+                                href="#">
+                                <span class="sr-only">Next</span>
+                                <span class="material-icons text-lg">chevron_right</span>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+</body>
+
+</html>

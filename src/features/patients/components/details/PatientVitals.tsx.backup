@@ -1,0 +1,168 @@
+/**
+ * PatientVitals
+ * Displays patient vital signs in a grid layout
+ * Implements the vitals section from the design with responsive layout
+ */
+import React from 'react';
+import {
+  Box,
+  Typography,
+  Paper,
+  useTheme,
+  useMediaQuery
+} from '@mui/material';
+import Grid from '@mui/material/Grid';
+import { useTranslation } from 'react-i18next';
+import { Patient } from '@medplum/fhirtypes';
+
+// Define vital sign types for type safety
+interface VitalSign {
+  title: string;
+  value: string | number;
+  unit: string;
+  status: 'normal' | 'high' | 'low';
+  description: string;
+}
+
+interface PatientVitalsProps {
+  patient: Patient;
+}
+
+const PatientVitals: React.FC<PatientVitalsProps> = ({ patient }) => {
+  const { t, i18n } = useTranslation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  // Log translation debugging information
+  React.useEffect(() => {
+    console.log('Current i18n language:', i18n.language);
+    console.log('Current namespace:', i18n.options.ns);
+    console.log('Is initialized:', i18n.isInitialized);
+
+    // Verify specific translation keys
+    try {
+      const currentVitalsLabel = t('patient.currentVitals');
+      const bloodPressureLabel = t('vitals.bloodPressure');
+      console.log('Current Vitals Label:', currentVitalsLabel);
+      console.log('Blood Pressure Label:', bloodPressureLabel);
+    } catch (error) {
+      console.error('Translation key lookup error:', error);
+    }
+  }, [t, i18n]);
+
+  // Mock vital signs data (in a real app, this would come from Observation resources)
+  const vitalSigns: VitalSign[] = [
+    {
+      title: t('vitals.bloodPressure'),
+      value: '120/89',
+      unit: 'mm/Hg',
+      status: 'normal',
+      description: t('vitals.inTheNorm')
+    },
+    {
+      title: t('vitals.heartRate'),
+      value: 120,
+      unit: 'BPM',
+      status: 'high',
+      description: t('vitals.aboveTheNorm')
+    },
+    {
+      title: t('vitals.glucose'),
+      value: 97,
+      unit: 'mg/dl',
+      status: 'normal',
+      description: t('vitals.inTheNorm')
+    },
+    {
+      title: t('vitals.cholesterol'),
+      value: 85,
+      unit: 'mg/dl',
+      status: 'normal',
+      description: t('vitals.inTheNorm')
+    }
+  ];
+
+  // Get color based on status
+  const getStatusColor = (status: string): string => {
+    switch (status) {
+      case 'high':
+        return theme.palette.error.main;
+      case 'low':
+        return theme.palette.warning.main;
+      case 'normal':
+      default:
+        return theme.palette.success.main;
+    }
+  };
+
+  // Get text color based on status
+  const getStatusTextColor = (status: string): string => {
+    switch (status) {
+      case 'high':
+        return theme.palette.error.light;
+      case 'low':
+        return theme.palette.warning.light;
+      case 'normal':
+      default:
+        return theme.palette.success.light;
+    }
+  };
+
+  return (
+    <Box>
+      <Typography variant="h6" component="h2" sx={{ mb: 3, fontWeight: 'bold' }}>
+        {t('patient.currentVitals')}
+      </Typography>
+
+      <Grid container spacing={3}>
+        {vitalSigns.map((vital, index) => (
+          <Grid columns={{ xs: 12, sm: 6, md: 3 }} key={index}>
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2,
+                height: '100%',
+                borderRadius: 2,
+                border: '1px solid',
+                borderColor: 'divider',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+            >
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                {vital.title}
+              </Typography>
+
+              <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 1 }}>
+                <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', mr: 1 }}>
+                  {vital.value}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {vital.unit}
+                </Typography>
+              </Box>
+
+              <Typography
+                variant="body2"
+                sx={{
+                  color: getStatusTextColor(vital.status),
+                  bgcolor: `${getStatusColor(vital.status)}10`,
+                  px: 1,
+                  py: 0.5,
+                  borderRadius: 1,
+                  display: 'inline-block',
+                  alignSelf: 'flex-start',
+                  mt: 'auto'
+                }}
+              >
+                {vital.description}
+              </Typography>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
+  );
+};
+
+export default PatientVitals;

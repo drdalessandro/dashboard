@@ -1,0 +1,50 @@
+{
+    "sections": {
+        "patientInfo": "Informations du Patient",
+        "medicationInfo": "Informations sur le Médicament",
+        "prescriptionDetails": "Détails de l'Ordonnance"
+    },
+    "fields": {
+        "patient": "Patient",
+        "patientId": "ID du Patient",
+        "medication": {
+            "search": "Rechercher un médicament",
+            "selected": "Médicament Sélectionné",
+            "manualEntryNote": "Utilisez la recherche pour RxNorm ou saisissez le nom manuellement",
+            "offlineNote": "Recherche de médicaments limitée en mode hors connexion"
+        },
+        "medicationName": "Nom du Médicament",
+        "dosage": "Dosage",
+        "frequency": "Fréquence",
+        "duration": "Durée",
+        "quantity": "Quantité",
+        "refills": "Renouvellements",
+        "instructions": "Instructions Spéciales",
+        "dateWritten": "Date de Prescription",
+        "status": "Statut"
+    },
+    "status": {
+        "active": "Active",
+        "draft": "Brouillon"
+    },
+    "frequencies": {
+        "once_daily": "Une fois par jour",
+        "twice_daily": "Deux fois par jour",
+        "three_times_daily": "Trois fois par jour",
+        "four_times_daily": "Quatre fois par jour",
+        "every_morning": "Chaque matin",
+        "every_evening": "Chaque soir",
+        "every_4_hours": "Toutes les 4 heures",
+        "every_6_hours": "Toutes les 6 heures",
+        "every_8_hours": "Toutes les 8 heures",
+        "every_12_hours": "Toutes les 12 heures",
+        "as_needed": "Au besoin",
+        "with_meals": "Avec les repas",
+        "after_meals": "Après les repas",
+        "before_meals": "Avant les repas",
+        "at_bedtime": "Au coucher"
+    },
+    "offlineMode": {
+        "saved": "Cette ordonnance sera enregistrée localement et synchronisée lorsque la connexion sera rétablie."
+    }
+}

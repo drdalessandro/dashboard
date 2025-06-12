@@ -1,0 +1,56 @@
+/**
+ * usePractitionerById.ts - Wrapper hook for fetching single practitioner by ID
+ */
+
+import { useEffect, useState } from 'react';
+import { Practitioner } from '@medplum/fhirtypes';
+import { usePractitioner } from './usePractitioner';
+
+interface UsePractitionerByIdResult {
+  data: Practitioner | null;
+  isLoading: boolean;
+  error: Error | null;
+  refetch: () => Promise<void>;
+}
+
+export const usePractitionerById = (id: string | null): UsePractitionerByIdResult => {
+  const practitionerHook = usePractitioner();
+  const [localData, setLocalData] = useState<Practitioner | null>(null);
+  const [localLoading, setLocalLoading] = useState(false);
+  const [localError, setLocalError] = useState<Error | null>(null);
+
+  const fetchPractitioner = async () => {
+    if (!id) {
+      setLocalData(null);
+      setLocalLoading(false);
+      setLocalError(null);
+      return;
+    }
+
+    setLocalLoading(true);
+    setLocalError(null);
+
+    try {
+      const practitioner = await practitionerHook.fetchOne(id);
+      setLocalData(practitioner);
+    } catch (error) {
+      setLocalError(error instanceof Error ? error : new Error('Failed to fetch practitioner'));
+      setLocalData(null);
+    } finally {
+      setLocalLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPractitioner();
+  }, [id]);
+
+  return {
+    data: localData,
+    isLoading: localLoading,
+    error: localError,
+    refetch: fetchPractitioner
+  };
+};
+
+export default usePractitionerById;

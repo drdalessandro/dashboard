@@ -1,0 +1,194 @@
+{
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "practitioner": "Praticien",
+    "schedule": "Calendrier",
+    "statistics": "Statistiques",
+    "settings": "Paramètres"
+  },
+  "common": {
+    "noRecords": "Aucun praticien trouvé",
+    "noResults": "Aucun praticien disponible. Essayez d'en ajouter un nouveau.",
+    "offlineUnavailable": "Impossible de charger les praticiens hors ligne",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce praticien?",
+    "notFound": "Praticien non trouvé",
+    "showing": "Affichage de {{count}} sur {{total}} praticiens",
+    "rowsPerPage": "Lignes par page"
+  },
+  "details": {
+    "title": "Détails du praticien",
+    "personalInfo": "Informations personnelles",
+    "contactInfo": "Coordonnées",
+    "qualifications": "Qualifications professionnelles",
+    "tabs": {
+      "overview": "Aperçu",
+      "education": "Formation",
+      "experience": "Expérience",
+      "schedule": "Horaires"
+    },
+    "overview": {
+      "qualifications": "Qualifications professionnelles",
+      "yearsExperience": "5+ années d'expérience",
+      "present": "2018 - Présent",
+      "languages": "Langues parlées",
+      "certifications": "Certifications et licences"
+    },
+    "education": {
+      "title": "Formation académique"
+    },
+    "experience": {
+      "title": "Expérience professionnelle"
+    },
+    "schedule": {
+      "title": "Horaires et disponibilité",
+      "availability": "Disponibilité hebdomadaire",
+      "appointmentStats": "Statistiques des rendez-vous",
+      "totalAppointments": "Total des rendez-vous",
+      "completed": "Terminés",
+      "cancelled": "Annulés"
+    }
+  },
+  "unknownPractitioner": "Praticien inconnu",
+  "generalPractitioner": "Médecin généraliste",
+  "noSpecialties": "Aucune spécialité répertoriée",
+  "experienceNotAvailable": "Expérience non disponible",
+  "dateNotAvailable": "Date non disponible",
+  "defaultBio": "{{name}} est un professionnel de santé dévoué qui s'engage à fournir des soins de qualité.",
+  "thePractitioner": "Le praticien",
+  "medicalDegree": "Diplôme de médecine",
+  "medicalSchool": "École de médecine",
+  "healthCenter": "Centre de santé communautaire",
+  "boardCertification": "Certification du conseil",
+  "medicalBoard": "Conseil médical",
+  "errorLoadingPractitioner": "Erreur lors du chargement du praticien",
+  "errorLoadingPractitionerData": "Erreur lors du chargement des données du praticien",
+  "practitionerNotFound": "Praticien non trouvé",
+  "noCertifications": "Aucune certification au dossier",
+  "noEducationInfo": "Aucune information de formation disponible",
+  "noExperienceInfo": "Aucune information d'expérience disponible",
+  "notAvailable": "Horaire non disponible",
+  "titles": {
+    "list": "Liste des praticiens",
+    "create": "Créer un nouveau praticien",
+    "details": "Détails du praticien",
+    "edit": "Modifier le profil du praticien"
+  },
+  "filters": {
+    "title": "Filtrer les praticiens",
+    "categories": {
+      "status": "Statut",
+      "gender": "Genre",
+      "specialization": "Spécialisation",
+      "qualification": "Qualification"
+    },
+    "active": "Actifs",
+    "inactive": "Inactifs",
+    "name": "Nom du praticien",
+    "gender": {
+      "male": "Masculin",
+      "female": "Féminin",
+      "other": "Autre",
+      "unknown": "Non spécifié"
+    },
+    "clearAll": "Tout effacer"
+  },
+  "fields": {
+    "name": "Nom",
+    "firstName": "Prénom",
+    "lastName": "Nom de famille",
+    "gender": {
+      "title": "Genre",
+      "male": "Masculin",
+      "female": "Féminin",
+      "other": "Autre",
+      "unknown": "Non spécifié"
+    },
+    "qualifications": "Qualifications",
+    "qualification": "Qualification",
+    "contact": {
+      "title": "Coordonnées",
+      "phone": "Numéro de téléphone",
+      "email": "Adresse e-mail"
+    },
+    "address": {
+      "title": "Adresse",
+      "home": "Adresse personnelle",
+      "work": "Adresse professionnelle",
+      "line1": "Ligne d'adresse 1",
+      "line2": "Ligne d'adresse 2",
+      "city": "Ville",
+      "state": "État/Région",
+      "postalCode": "Code postal",
+      "country": "Pays",
+      "use": "Utilisation de l'adresse",
+      "type": "Type d'adresse"
+    },
+    "syncStatus": "Statut de synchronisation"
+  },
+  "addressUses": {
+    "home": "Personnelle",
+    "work": "Professionnelle",
+    "temp": "Temporaire"
+  },
+  "actions": {
+    "title": "Actions",
+    "create": "Créer un praticien",
+    "edit": "Modifier le praticien",
+    "view": "Voir le praticien",
+    "delete": "Supprimer le praticien",
+    "save": "Enregistrer le praticien",
+    "saving": "Enregistrement en cours",
+    "cancel": "Annuler",
+    "back": "Retour",
+    "clearFilters": "Effacer les filtres",
+    "reset": "Réinitialiser",
+    "apply": "Appliquer",
+    "filters": "Filtres",
+    "filter": "Filtrer",
+    "add": "Ajouter un praticien"
+  },
+  "stats": {
+    "total": "Total des praticiens",
+    "active": "Praticiens actifs",
+    "inactive": "Praticiens inactifs",
+    "new": "Nouveaux praticiens"
+  },
+  "search": {
+    "placeholder": "Rechercher par nom de praticien..."
+  },
+  "filter": {
+    "title": "Filtrer"
+  },
+  "messages": {
+    "created": "Praticien créé avec succès",
+    "updated": "Profil du praticien mis à jour",
+    "notFound": "Praticien non trouvé",
+    "noPractitioners": "Aucun praticien trouvé",
+    "noPractitionersOffline": "Impossible de charger les praticiens hors ligne",
+    "noPractitionersOnline": "Aucun praticien disponible. Essayez d'en ajouter un nouveau."
+  },
+  "syncStatus": {
+    "synced": "Synchronisé",
+    "notSynced": "Non synchronisé",
+    "pending": "En attente",
+    "error": "Erreur"
+  },
+  "sidebar": {
+    "quickActions": "Actions rapides",
+    "scheduleAppointment": "Programmer un rendez-vous",
+    "sendMessage": "Envoyer un message",
+    "offlineActionsLimited": "Certaines actions sont limitées hors ligne",
+    "statistics": "Statistiques",
+    "totalPatients": "Total des patients",
+    "refreshPatients": "Actualiser les données patients",
+    "errorLoadingPatients": "Erreur lors du chargement des patients",
+    "responseTime": "Temps de réponse",
+    "availability": "Disponibilité",
+    "nextAvailable": "Prochaine disponibilité",
+    "recentPatients": "Patients récents",
+    "errorLoadingRecentPatients": "Impossible de charger les patients récents",
+    "noRecentPatients": "Aucun patient récent trouvé",
+    "viewAllPatients": "Voir tous les patients",
+    "offlineMode": "Vous êtes actuellement hors ligne. Certaines fonctionnalités peuvent être limitées."
+  }
+}

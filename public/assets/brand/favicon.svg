@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250" fill="none">
+  <!-- Atom-like symbol with four orbital lines -->
+  <circle cx="125" cy="125" r="125" fill="white"/>
+  <path d="M50 125 C50 65 200 65 200 125 C200 185 50 185 50 125 Z" fill="none" stroke="#2A8A8E" stroke-width="10" />
+  <path d="M70 100 C70 75 180 150 180 100 C180 50 70 125 70 100 Z" fill="none" stroke="#E47846" stroke-width="10" />
+  <path d="M125 70 C165 70 165 180 125 180 C85 180 85 70 125 70 Z" fill="none" stroke="#D83E54" stroke-width="10" />
+  <path d="M80 90 C105 65 145 185 170 160 C195 135 95 70 80 90 Z" fill="none" stroke="#C6D62F" stroke-width="10" />
+  
+  <!-- G letter in the center -->
+  <path d="M110 115 H125 Q135 115 140 120 Q145 125 145 135 Q145 145 140 150 Q135 155 125 155 H110 V115 Z M125 145 Q130 145 132 142 Q135 140 135 135 Q135 130 132 127 Q130 125 125 125 V145 Z" fill="black"/>
+</svg>

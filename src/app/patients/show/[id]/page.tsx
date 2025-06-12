@@ -1,0 +1,87 @@
+"use client";
+
+/**
+ * Patient Detail Page
+ * Updated to match the practitioner pattern for consistency
+ */
+import React from "react";
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'next/navigation';
+import DashboardLayout from '@/components/ui/layout/DashboardLayout';
+import PatientDetailsLayout from "../../../../features/patients/components/details/PatientDetailsLayout";
+import { usePatientDetails } from "../../../../features/patients/hooks/usePatientDetails";
+
+/**
+ * Patient Detail Page Component
+ * Simplified to match practitioner pattern
+ */
+export default function PatientShowPage() {
+  const { t } = useTranslation(['patient', 'common']);
+  const params = useParams<{ id: string }>();
+  const patientId = params?.id || '';
+
+  const {
+    diagnostics,
+    isValidPatientId,
+    patient,
+    patientDisplayData,
+    isLoading,
+    error
+  } = usePatientDetails(patientId);
+
+  // Error handling for invalid ID
+  if (!isValidPatientId) {
+    return (
+      <DashboardLayout>
+        <div style={{ padding: '24px', textAlign: 'center' }}>
+          <div style={{ color: 'red', marginBottom: '16px' }}>
+            {diagnostics.diagnosticMessage || t('common:errors.invalidId')}
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div style={{ padding: '24px', textAlign: 'center' }}>
+          Loading patient details...
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Error state
+  if (error && !isLoading) {
+    return (
+      <DashboardLayout>
+        <div style={{ padding: '24px', textAlign: 'center' }}>
+          <div style={{ color: 'red', marginBottom: '16px' }}>
+            Error: {error.userMessage || 'Failed to load patient'}
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Missing data state
+  if (!patient && !isLoading) {
+    return (
+      <DashboardLayout>
+        <div style={{ padding: '24px', textAlign: 'center' }}>
+          <div style={{ color: 'orange', marginBottom: '16px' }}>
+            Patient not found
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  return (
+    <DashboardLayout>
+      <PatientDetailsLayout patient={patient} />
+    </DashboardLayout>
+  );
+}

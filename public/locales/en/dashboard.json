@@ -1,0 +1,30 @@
+{
+  "page_title": "Healthcare Dashboard",
+  "page_description": "Overview of healthcare metrics and patient information",
+  "appointments": {
+    "title": "Upcoming Appointments",
+    "status": {
+      "upcoming": "Upcoming",
+      "in_progress": "In Progress",
+      "pending": "Pending"
+    }
+  },
+  "patient_statistics": {
+    "title": "Patient Statistics",
+    "new_patients": "New Patients",
+    "total_patients": "Total Patients",
+    "active_patients": "Active Patients"
+  },
+  "revenue": {
+    "title": "Revenue Overview",
+    "total": "Total Revenue",
+    "average": "Monthly Average",
+    "chart_description": "Monthly revenue trends"
+  },
+  "latest_patients": {
+    "title": "Latest Patients",
+    "name": "Name",
+    "email": "Email",
+    "status": "Status"
+  }
+}

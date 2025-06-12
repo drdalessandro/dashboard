@@ -9,9 +9,11 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import { useGetIdentity } from "@refinedev/core";
 import { HamburgerMenu, RefineThemedLayoutV2HeaderProps } from "@refinedev/mui";
 import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 
 type IUser = {
   id: number;
@@ -39,9 +41,19 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
           <Stack
             direction="row"
             width="100%"
-            justifyContent="flex-end"
+            justifyContent="space-between"
             alignItems="center"
           >
+            <Button
+              component={Link}
+              to="/medplum-test"
+              variant="contained"
+              color="secondary"
+              size="small"
+              sx={{ mr: 2 }}
+            >
+              Medplum Test
+            </Button>
             <IconButton
               color="inherit"
               onClick={() => {

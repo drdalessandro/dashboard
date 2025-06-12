@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practitioner Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Noto Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: #64748b;
+            font-size: 1rem;
+        }
+        
+        .section-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background-color: #f8fafc;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #475569;
+        }
+        
+        .section-content {
+            padding: 1.5rem;
+        }
+        
+        .identity-content {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+        
+        .profile-photo {
+            width: 128px;
+            height: 128px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4dd0e1, #00bfa5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            border: 4px solid #f1f5f9;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .identity-details {
+            flex: 1;
+        }
+        
+        .practitioner-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+        
+        .practitioner-title {
+            font-weight: 500;
+            color: #64748b;
+        }
+        
+        .nina-id {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+        
+        .definition-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem 1.5rem;
+        }
+        
+        .definition-list.single-column {
+            grid-template-columns: 1fr;
+        }
+        
+        .definition-item dt {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #64748b;
+            margin-bottom: 0.25rem;
+        }
+        
+        .definition-item dd {
+            font-size: 0.875rem;
+            color: #334155;
+            margin: 0;
+        }
+        
+        .organization-link {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        
+        .organization-link:hover {
+            text-decoration: underline;
+        }
+        
+        .floating-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s;
+        }
+        
+        .floating-button:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-button::before {
+            content: "+";
+            margin-right: 0.5rem;
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Practitioner Details</h1>
+            <p class="page-subtitle">View and manage practitioner information.</p>
+        </div>
+
+        <!-- Identity Section -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2 class="section-title">Identity</h2>
+            </div>
+            <div class="section-content">
+                <div class="identity-content">
+                    <!-- Profile Photo -->
+                    <div class="profile-photo">
+                        A
+                    </div>
+                    
+                    <!-- Identity Details -->
+                    <div class="identity-details">
+                        <h3 class="practitioner-name">
+                            Dr. Amelia Chen, <span class="practitioner-title">MD</span>
+                        </h3>
+                        <p class="nina-id">NINA: 1234567890</p>
+                        
+                        <dl class="definition-list">
+                            <div class="definition-item">
+                                <dt>Full Name</dt>
+                                <dd>Amelia Chen</dd>
+                            </div>
+                            <div class="definition-item">
+                                <dt>Gender</dt>
+                                <dd>Female</dd>
+                            </div>
+                            <div class="definition-item">
+                                <dt>Birthdate</dt>
+                                <dd>1988-05-15</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Professional Section -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2 class="section-title">Professional</h2>
+            </div>
+            <div class="section-content">
+                <dl class="definition-list">
+                    <div class="definition-item">
+                        <dt>Role</dt>
+                        <dd>Physician</dd>
+                    </div>
+                    <div class="definition-item">
+                        <dt>Specialty</dt>
+                        <dd>Internal Medicine</dd>
+                    </div>
+                    <div class="definition-item">
+                        <dt>Qualifications</dt>
+                        <dd>MD, Board Certified</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2 class="section-title">Contact</h2>
+            </div>
+            <div class="section-content">
+                <dl class="definition-list">
+                    <div class="definition-item">
+                        <dt>Phone</dt>
+                        <dd>(555) 123-4567</dd>
+                    </div>
+                    <div class="definition-item">
+                        <dt>Email</dt>
+                        <dd>amelia.chen@healthconnect.com</dd>
+                    </div>
+                </dl>
+                <dl class="definition-list single-column" style="margin-top: 1rem;">
+                    <div class="definition-item">
+                        <dt>Address</dt>
+                        <dd>123 Medical Plaza, Anytown, CA 91234</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Organization Section -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2 class="section-title">Organization</h2>
+            </div>
+            <div class="section-content">
+                <dl class="definition-list">
+                    <div class="definition-item">
+                        <dt>Organization</dt>
+                        <dd><a href="#" class="organization-link">Anytown Medical Center</a></dd>
+                    </div>
+                    <div class="definition-item">
+                        <dt>Department</dt>
+                        <dd>Internal Medicine</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Floating Action Button -->
+        <button class="floating-button">Create/Link Record</button>
+    </div>
+</body>
+</html>

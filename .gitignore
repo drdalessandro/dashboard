@@ -9,6 +9,10 @@
 # testing
 /coverage
 
+# documentations
+/docs
+/backup
+
 # next.js
 /.next/
 /out/
@@ -34,3 +38,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# windsurf rules
+.windsurfrules

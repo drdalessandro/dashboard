@@ -1,0 +1,322 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+    <link as="style"
+        href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+        onload="this.rel='stylesheet'" rel="stylesheet" />
+    <title>Stitch Design</title>
+    <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" />
+    <style>
+        .material-icons {
+            font-family: "Material Icons";
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            -moz-osx-font-smoothing: grayscale;
+            font-feature-settings: "liga";
+        }
+    </style>
+</head>
+
+<body class="bg-slate-100">
+    <div class="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden"
+        style="--select-button-svg: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(100,116,139)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z%27%3e%3c/path%3e%3c/svg%3e'); font-family: Inter, &quot;Noto Sans&quot;, sans-serif;">
+        <div class="layout-container flex h-full grow flex-col">
+            <header
+                class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 bg-white px-10 py-3 shadow-sm">
+                <div class="flex items-center gap-3 text-slate-800">
+                    <div class="size-6 text-blue-600">
+                        <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z"
+                                fill="currentColor"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-slate-800 text-xl font-bold leading-tight tracking-[-0.015em]">HealthPlus</h2>
+                </div>
+                <div class="flex flex-1 justify-end gap-4">
+                    <nav class="flex items-center gap-6">
+                        <a class="text-slate-700 hover:text-blue-600 text-sm font-medium leading-normal"
+                            href="#">Dashboard</a>
+                        <a class="text-slate-700 hover:text-blue-600 text-sm font-medium leading-normal"
+                            href="#">Patients</a>
+                        <a class="text-slate-700 hover:text-blue-600 text-sm font-medium leading-normal"
+                            href="#">Encounters</a>
+                        <a class="text-slate-700 hover:text-blue-600 text-sm font-medium leading-normal"
+                            href="#">Tasks</a>
+                        <a class="text-slate-700 hover:text-blue-600 text-sm font-medium leading-normal"
+                            href="#">Reports</a>
+                    </nav>
+                    <div class="flex items-center gap-3">
+                        <button aria-label="Notifications"
+                            class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold leading-normal tracking-[0.015em] min-w-0">
+                            <span class="material-icons text-slate-600">notifications</span>
+                        </button>
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-slate-200"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDwbOHwjF1XcW974mkJZOfAZx47NWEq33TGAi5LLjb4mix0y4kE2_EO2XoJX1Vg42b-eo7SlAON1KuxwYispqkzisnAA6TwhPusi1FqHqeyXfjYtwb7xw1ZTcxcZLE0Z7bB5f8dIsCM5_5JkDYDUvZvb7p-1_dWz1_fSG7njAObs8XauRNYaYl4f3hEaRx2uQ0xK8ldDwm87Ny_-F6hliGXXtoWWTA5B0jBzRBpyDX9rsOsJADWXUk-v_4nU937dz7Oxci4DrsmDj0");'>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <main class="flex flex-1 justify-center py-8 px-4">
+                <div class="layout-content-container flex flex-col w-full max-w-4xl gap-6">
+                    <div class="flex flex-wrap justify-between items-center gap-4">
+                        <h1 class="text-slate-900 text-3xl font-bold leading-tight">New Practitioner</h1>
+                        <button
+                            class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium leading-normal shadow-sm transition-colors">
+                            <span class="material-icons mr-2 text-sm">save</span>
+                            Save
+                        </button>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h2
+                            class="text-slate-800 text-xl font-semibold leading-tight tracking-[-0.015em] mb-6 pb-3 border-b border-slate-200">
+                            General Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex flex-col md:col-span-1">
+                                <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Photo</p>
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center border border-slate-300 overflow-hidden">
+                                        <span class="material-icons text-3xl text-slate-400">person</span>
+                                    </div>
+                                    <button
+                                        class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md h-9 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium leading-normal transition-colors">
+                                        <span class="material-icons mr-2 text-sm">upload_file</span>
+                                        Upload Photo
+                                    </button>
+                                </div>
+                            </div>
+                            <label class="flex flex-col md:col-span-1">
+                                <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Identifier (NINA)
+                                    <span class="text-red-500">*</span>
+                                </p>
+                                <input
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                    placeholder="Enter NINA identifier" required="" value="" />
+                            </label>
+                            <label class="flex flex-col">
+                                <p class="text-slate-700 text-sm font-medium leading-normal pb-2">First Name <span
+                                        class="text-red-500">*</span></p>
+                                <input
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                    placeholder="Enter first name" required="" value="" />
+                            </label>
+                            <label class="flex flex-col">
+                                <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Last Name <span
+                                        class="text-red-500">*</span></p>
+                                <input
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                    placeholder="Enter last name" required="" value="" />
+                            </label>
+                            <label class="flex flex-col">
+                                <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Gender <span
+                                        class="text-red-500">*</span></p>
+                                <select
+                                    class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 bg-[image:--select-button-svg] placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                    required="">
+                                    <option disabled="" selected="" value="">Select gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                    <option value="unknown">Unknown</option>
+                                </select>
+                            </label>
+                            <label class="flex flex-col">
+                                <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Date of Birth <span
+                                        class="text-red-500">*</span></p>
+                                <input
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                    placeholder="MM/DD/YYYY" required="" type="date" value="" />
+                            </label>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h2
+                            class="text-slate-800 text-xl font-semibold leading-tight tracking-[-0.015em] mb-6 pb-3 border-b border-slate-200">
+                            Contact Details</h2>
+                        <div class="space-y-6">
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-slate-700 text-base font-medium leading-normal">Email Addresses</h3>
+                                    <button
+                                        class="flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                        <span class="material-icons mr-1 text-sm">add</span>
+                                        Add Email
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                                    <label class="flex flex-col">
+                                        <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Email <span
+                                                class="text-red-500">*</span></p>
+                                        <input
+                                            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                            placeholder="Enter email" required="" type="email" value="" />
+                                    </label>
+                                    <div class="flex items-center gap-2">
+                                        <select
+                                            class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 bg-[image:--select-button-svg] placeholder:text-slate-400 p-3 text-sm font-normal leading-normal">
+                                            <option value="work">Work</option>
+                                            <option value="personal">Personal</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <button
+                                            class="text-slate-500 hover:text-red-500 p-2 rounded-md hover:bg-red-50">
+                                            <span class="material-icons text-lg">delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-slate-700 text-base font-medium leading-normal">Phone Numbers</h3>
+                                    <button
+                                        class="flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                        <span class="material-icons mr-1 text-sm">add</span>
+                                        Add Phone
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                                    <label class="flex flex-col">
+                                        <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Phone <span
+                                                class="text-red-500">*</span></p>
+                                        <input
+                                            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                            placeholder="Enter phone number" required="" type="tel" value="" />
+                                    </label>
+                                    <div class="flex items-center gap-2">
+                                        <select
+                                            class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 bg-[image:--select-button-svg] placeholder:text-slate-400 p-3 text-sm font-normal leading-normal">
+                                            <option value="mobile">Mobile</option>
+                                            <option value="work">Work</option>
+                                            <option value="home">Home</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <button
+                                            class="text-slate-500 hover:text-red-500 p-2 rounded-md hover:bg-red-50">
+                                            <span class="material-icons text-lg">delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <label class="flex flex-col md:col-span-2">
+                                <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Address <span
+                                        class="text-red-500">*</span></p>
+                                <input
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                    placeholder="Enter address" required="" value="" />
+                            </label>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <label class="flex flex-col">
+                                    <p class="text-slate-700 text-sm font-medium leading-normal pb-2">City <span
+                                            class="text-red-500">*</span></p>
+                                    <input
+                                        class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                        placeholder="Enter city" required="" value="" />
+                                </label>
+                                <label class="flex flex-col">
+                                    <p class="text-slate-700 text-sm font-medium leading-normal pb-2">State <span
+                                            class="text-red-500">*</span></p>
+                                    <input
+                                        class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                        placeholder="Enter state" required="" value="" />
+                                </label>
+                                <label class="flex flex-col">
+                                    <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Zip Code <span
+                                            class="text-red-500">*</span></p>
+                                    <input
+                                        class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                        placeholder="Enter zip code" required="" value="" />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h2
+                            class="text-slate-800 text-xl font-semibold leading-tight tracking-[-0.015em] mb-6 pb-3 border-b border-slate-200">
+                            Professional Details</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <label class="flex flex-col">
+                                <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Specialty <span
+                                        class="text-red-500">*</span></p>
+                                <input
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                    placeholder="Enter specialty" required="" value="" />
+                            </label>
+                            <label class="flex flex-col">
+                                <p class="text-slate-700 text-sm font-medium leading-normal pb-2">License Number <span
+                                        class="text-red-500">*</span></p>
+                                <input
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                    placeholder="Enter license number" required="" value="" />
+                            </label>
+                            <label class="flex flex-col">
+                                <p class="text-slate-700 text-sm font-medium leading-normal pb-2">NPI Number <span
+                                        class="text-red-500">*</span></p>
+                                <input
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                    placeholder="Enter NPI number" required="" value="" />
+                            </label>
+                            <label class="flex flex-col">
+                                <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Status <span
+                                        class="text-red-500">*</span></p>
+                                <select
+                                    class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 h-11 bg-[image:--select-button-svg] placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                    required="">
+                                    <option disabled="" selected="" value="">Select status</option>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                    <option value="retired">Retired</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h2
+                            class="text-slate-800 text-xl font-semibold leading-tight tracking-[-0.015em] mb-6 pb-3 border-b border-slate-200">
+                            Credentials</h2>
+                        <div
+                            class="flex flex-col items-center gap-4 rounded-lg border-2 border-dashed border-slate-300 px-6 py-10 bg-slate-50">
+                            <span class="material-icons text-6xl text-slate-400">cloud_upload</span>
+                            <div class="flex flex-col items-center gap-1 text-center">
+                                <p class="text-slate-800 text-lg font-semibold leading-tight">Upload Credentials</p>
+                                <p class="text-slate-600 text-sm font-normal leading-normal">Drag and drop files here,
+                                    or click to browse</p>
+                            </div>
+                            <button
+                                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium leading-normal tracking-[0.015em] transition-colors">
+                                <span class="truncate">Upload Files</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h2
+                            class="text-slate-800 text-xl font-semibold leading-tight tracking-[-0.015em] mb-6 pb-3 border-b border-slate-200">
+                            Notes</h2>
+                        <label class="flex flex-col w-full">
+                            <p class="text-slate-700 text-sm font-medium leading-normal pb-2">Notes</p>
+                            <textarea
+                                class="form-textarea flex w-full min-w-0 flex-1 resize-y overflow-hidden rounded-md text-slate-800 focus:outline-0 focus:ring-2 focus:ring-blue-500 border border-slate-300 bg-white focus:border-blue-500 min-h-32 placeholder:text-slate-400 p-3 text-sm font-normal leading-normal"
+                                placeholder="Add any notes about the practitioner"></textarea>
+                        </label>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+    <link as="style"
+        href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B600%3B700&amp;family=Noto+Sans%3Awght%40400%3B500%3B600%3B700"
+        onload="this.rel='stylesheet'" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet" />
+    <title>Stitch Design</title>
+    <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+      .active-nav-link {
+        @apply bg-sky-100 text-sky-600;
+      }
+      .active-nav-link svg,
+      .active-nav-link .material-icons-outlined {
+        @apply text-sky-600;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-100">
+    <div class="relative flex size-full min-h-screen flex-col group/design-root"
+        style='font-family: Inter, "Noto Sans", sans-serif;'>
+        <div class="flex h-full grow">
+            <aside class="flex flex-col w-64 bg-white p-4 border-r border-slate-200 fixed top-0 left-0 h-full">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDz71yluGxNSc6XES-U-ZMpBcLLqm8P6EPk2lN-sPWmzqOKPYso3uWYFkOPiAPG8ius5l7UIuTWpvj7aSTIO4nX2gQJqb5DD4ZaSTMNgUEEDln5fstFaYRRLUDNTG13mPpddA6oc3i-RT3FY0QVX3yB0nFsOZ2E7Su0KRxBrfmlR-LxWhQNlACqxbUtsRsS-VmCmPE5IrZdop3SADBRLhrRHk-uyOgGJQu-U_FMpZSh7t7si3PJA9TSsdqjTX-0dQTFOoqtyLHBGoEp");'>
+                    </div>
+                    <h1 class="text-slate-800 text-lg font-semibold">Acme Health</h1>
+                </div>
+                <nav class="flex flex-col gap-1 flex-grow">
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors"
+                        href="#">
+                        <span class="material-icons-outlined text-slate-500" style="font-size: 24px;">dashboard</span>
+                        <p class="text-sm font-medium">Dashboard</p>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg active-nav-link" href="#">
+                        <span class="material-icons-outlined" style="font-size: 24px;">group</span>
+                        <p class="text-sm font-medium">Patients</p>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors"
+                        href="#">
+                        <span class="material-icons-outlined text-slate-500" style="font-size: 24px;">medication</span>
+                        <p class="text-sm font-medium">Practitioners</p>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors"
+                        href="#">
+                        <span class="material-icons-outlined text-slate-500" style="font-size: 24px;">assessment</span>
+                        <p class="text-sm font-medium">Report</p>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors"
+                        href="#">
+                        <span class="material-icons-outlined text-slate-500" style="font-size: 24px;">settings</span>
+                        <p class="text-sm font-medium">Settings</p>
+                    </a>
+                </nav>
+                <div class="mt-auto pt-4 border-t border-slate-200">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBP2JVtGkQFhYiKD7B0gRUM4mnk2QMH7Pa4f4kQ8VuDoXXKacdrbJxlpY52Z5ogoDqsjHpLPXpgYI6TQqtcKpP3_HDs-B23oIO1CGftFzbMgOIWxRirncSUEaNLHVrdf85P4iWPVX5s5yuC_igDJbJ5KpDysJLEg0EfJzn4phXj6plYai5P3sZr0V8sxspcptwN-0AFT4x3CVH1t3dp6ZlZGJxoB7kiy_hlmCJOvXYLwA-iF1y1l0VuUT1wm0OVJj7H3hvYagYqTbXG");'>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-slate-700">Dr. John Doe</p>
+                            <a class="text-xs text-sky-600 hover:underline" href="#">View Profile</a>
+                        </div>
+                    </div>
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors"
+                        href="#">
+                        <span class="material-icons-outlined text-slate-500" style="font-size: 24px;">logout</span>
+                        <p class="text-sm font-medium">Logout</p>
+                    </a>
+                </div>
+            </aside>
+            <main class="flex-1 ml-64 bg-slate-50 min-h-screen">
+                <header class="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200 px-6 py-4">
+                    <div class="flex items-center justify-between">
+                        <h1 class="text-slate-900 text-2xl font-semibold">Patient Profile</h1>
+                        <div class="flex items-center gap-3">
+                            <button
+                                class="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center overflow-hidden rounded-md h-10 px-4 bg-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-300 transition-colors">
+                                <span class="material-icons-outlined" style="font-size: 20px;">arrow_back</span>
+                                <span class="truncate">Back</span>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+                <div class="p-6">
+                    <div class="bg-white shadow-sm rounded-xl p-6 mb-6">
+                        <div class="flex flex-col @container sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-24 shadow"
+                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDb5Bt0pVgUq7sAqL4BxxPWVhORXNpdWIDN6IzLQ-qrJ_c_rwl8vSPME_0m7rPigw7xFPxRICSkCKZGvEVKjeD_4oAUBabEYCag4jl_hntKKpnRa64J009VsOadwYq1ikM_WhiTRWY1qSPep7pupO6HZzkTy-Cv3-tlF5FEfbD1XnT5jEB_7kxuzs28e-uQAV1MTSgj45huupwpno9uyIwYl6LcGpduhna1BQrCCggaGQAsmSUcSSwdlk50abL_fc-rcNid1ve-nrbL");'>
+                                </div>
+                                <div>
+                                    <p class="text-slate-900 text-2xl font-semibold">Sophia Clark</p>
+                                    <p class="text-slate-500 text-sm">Patient ID: <span
+                                            class="font-medium text-slate-600">123456</span></p>
+                                </div>
+                            </div>
+                            <button
+                                class="flex items-center gap-2 min-w-[84px] cursor-pointer justify-center overflow-hidden rounded-md h-10 px-4 bg-sky-500 text-white text-sm font-medium hover:bg-sky-600 transition-colors w-full sm:w-auto">
+                                <span class="material-icons-outlined" style="font-size: 20px;">edit</span>
+                                <span class="truncate">Edit Profile</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <div class="bg-white shadow-sm rounded-xl p-4">
+                            <div class="flex items-center gap-2 text-slate-500 mb-1">
+                                <span class="material-icons-outlined text-base">bloodtype</span>
+                                <h3 class="text-sm font-medium">Blood Pressure</h3>
+                            </div>
+                            <p class="text-slate-800 text-2xl font-semibold">120/80 <span
+                                    class="text-sm font-normal text-slate-500">mmHg</span></p>
+                            <p class="text-xs text-slate-400 mt-1">Normal</p>
+                        </div>
+                        <div class="bg-white shadow-sm rounded-xl p-4">
+                            <div class="flex items-center gap-2 text-slate-500 mb-1">
+                                <span class="material-icons-outlined text-base">favorite_border</span>
+                                <h3 class="text-sm font-medium">Heart Rate</h3>
+                            </div>
+                            <p class="text-slate-800 text-2xl font-semibold">72 <span
+                                    class="text-sm font-normal text-slate-500">bpm</span></p>
+                            <p class="text-xs text-slate-400 mt-1">Normal</p>
+                        </div>
+                        <div class="bg-white shadow-sm rounded-xl p-4">
+                            <div class="flex items-center gap-2 text-slate-500 mb-1">
+                                <span class="material-icons-outlined text-base">opacity</span>
+                                <h3 class="text-sm font-medium">Glucose</h3>
+                            </div>
+                            <p class="text-slate-800 text-2xl font-semibold">90 <span
+                                    class="text-sm font-normal text-slate-500">mg/dL</span></p>
+                            <p class="text-xs text-slate-400 mt-1">Normal</p>
+                        </div>
+                        <div class="bg-white shadow-sm rounded-xl p-4">
+                            <div class="flex items-center gap-2 text-slate-500 mb-1">
+                                <span class="material-icons-outlined text-base">water_drop</span>
+                                <h3 class="text-sm font-medium">Cholesterol</h3>
+                            </div>
+                            <p class="text-slate-800 text-2xl font-semibold">180 <span
+                                    class="text-sm font-normal text-slate-500">mg/dL</span></p>
+                            <p class="text-xs text-slate-400 mt-1">Desirable</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 flex flex-col gap-6">
+                            <div class="bg-white shadow-sm rounded-xl">
+                                <h2 class="text-slate-800 text-lg font-semibold px-6 py-4 border-b border-slate-200">
+                                    Demographics</h2>
+                                <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Date of
+                                            Birth</p>
+                                        <p class="text-slate-700 text-sm">1993-08-24</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Gender
+                                        </p>
+                                        <p class="text-slate-700 text-sm">Female</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Preferred
+                                            Language</p>
+                                        <p class="text-slate-700 text-sm">English</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Marital
+                                            Status</p>
+                                        <p class="text-slate-700 text-sm">Single</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Status
+                                        </p>
+                                        <p class="text-slate-700 text-sm">Active</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Deceased
+                                        </p>
+                                        <p class="text-slate-700 text-sm">N/A</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white shadow-sm rounded-xl">
+                                <h2 class="text-slate-800 text-lg font-semibold px-6 py-4 border-b border-slate-200">
+                                    Contact &amp; Address</h2>
+                                <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Phone</p>
+                                        <p class="text-slate-700 text-sm">(555) 123-4567</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Email</p>
+                                        <p class="text-slate-700 text-sm">sophia.clark@email.com</p>
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Address
+                                        </p>
+                                        <p class="text-slate-700 text-sm">123 Elm Street, Anytown, CA 91234</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white shadow-sm rounded-xl">
+                                <h2 class="text-slate-800 text-lg font-semibold px-6 py-4 border-b border-slate-200">
+                                    Organization</h2>
+                                <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider mb-1">
+                                            Managing Organization</p>
+                                        <a class="text-sky-600 text-sm hover:underline flex items-center gap-1"
+                                            href="#">
+                                            Acme General Hospital
+                                            <span class="material-icons-outlined text-sm">open_in_new</span>
+                                        </a>
+                                    </div>
+                                    <div class="sm:border-t-0 border-t border-slate-200 sm:pt-0 pt-4">
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider mb-1">Care
+                                            Provider Organization</p>
+                                        <a class="text-sky-600 text-sm hover:underline flex items-center gap-1"
+                                            href="#">
+                                            Acme Clinic Network
+                                            <span class="material-icons-outlined text-sm">open_in_new</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white shadow-sm rounded-xl">
+                                <h2 class="text-slate-800 text-lg font-semibold px-6 py-4 border-b border-slate-200">
+                                    Emergency Contacts &amp; Related Persons</h2>
+                                <div class="p-6 space-y-4">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Name
+                                            </p>
+                                            <a class="text-sky-600 text-sm hover:underline" href="#">Ethan Carter</a>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">
+                                                Relationship</p>
+                                            <p class="text-slate-700 text-sm">Brother</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Phone
+                                            </p>
+                                            <p class="text-slate-700 text-sm">(555) 987-6543</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Email
+                                            </p>
+                                            <p class="text-slate-700 text-sm">ethan.carter@email.com</p>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 pt-4 border-t border-slate-200">
+                                        <div>
+                                            <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Name
+                                            </p>
+                                            <a class="text-sky-600 text-sm hover:underline" href="#">Olivia Miller</a>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">
+                                                Relationship</p>
+                                            <p class="text-slate-700 text-sm">Friend</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Phone
+                                            </p>
+                                            <p class="text-slate-700 text-sm">(555) 234-5678</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white shadow-sm rounded-xl">
+                                <h2 class="text-slate-800 text-lg font-semibold px-6 py-4 border-b border-slate-200">
+                                    Insurance &amp; Coverage</h2>
+                                <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Primary
+                                            Insurance</p>
+                                        <p class="text-slate-700 text-sm">Acme Health Insurance</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Policy
+                                            Number</p>
+                                        <p class="text-slate-700 text-sm">123456789</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Group
+                                            Number</p>
+                                        <p class="text-slate-700 text-sm">ABC12345</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Secondary
+                                            Insurance</p>
+                                        <p class="text-slate-700 text-sm">None</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Policy
+                                            Number</p>
+                                        <p class="text-slate-700 text-sm">N/A</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Group
+                                            Number</p>
+                                        <p class="text-slate-700 text-sm">N/A</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-1 flex flex-col gap-6">
+                            <div class="bg-white shadow-sm rounded-xl">
+                                <h2 class="text-slate-800 text-lg font-semibold px-6 py-4 border-b border-slate-200">
+                                    Primary Healthcare Practitioner</h2>
+                                <div class="p-6">
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-16 shadow"
+                                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA4YVLsDOXcig2vdKrMCHFSV5cBOTy6qWldhnAMpoHhYqq_VyjH2mV4USh-Nqe36Ryz5hIfkSqNzLAz-65oBG2hMEoYqH1dDTZgtJ_00Q8M9AUGJDuXPi-xGepaVWH70xFJgaD3F6N1a4FnYSoxMkui_ArVaHLDOIrhaqlPu_paOZwtfojRG4JA_MMOoAO7sE_oCh-ZS4J6hVVphOWc9tLPLDYSWjBGXTQNMQnz0OIEe6wYw0Tq6PmxlJsIroGmZ4BPQEmr2MeRGjHx");'>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-800 text-base font-semibold">Dr. Olivia Bennett</p>
+                                            <p class="text-slate-500 text-sm">Cardiologist</p>
+                                        </div>
+                                    </div>
+                                    <a class="inline-flex items-center gap-2 text-sm text-sky-600 hover:text-sky-700 hover:underline"
+                                        href="#">
+                                        View Practitioner Details <span
+                                            class="material-icons-outlined text-sm">arrow_forward</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="bg-white shadow-sm rounded-xl">
+                                <h2 class="text-slate-800 text-lg font-semibold px-6 py-4 border-b border-slate-200">
+                                    Primary Complaint</h2>
+                                <div class="p-6">
+                                    <div class="grid grid-cols-[auto_1fr] gap-x-4">
+                                        <p class="text-slate-500 text-sm font-medium">Complaint:</p>
+                                        <p class="text-slate-700 text-sm">Headaches</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white shadow-sm rounded-xl">
+                                <h2 class="text-slate-800 text-lg font-semibold px-6 py-4 border-b border-slate-200">
+                                    Known Allergies</h2>
+                                <div class="p-6">
+                                    <ul class="space-y-2">
+                                        <li class="text-sm text-slate-700">Pollen</li>
+                                        <li class="text-sm text-slate-700">Dust Mites</li>
+                                        <li class="text-sm text-slate-700">Peanuts</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="bg-white shadow-sm rounded-xl">
+                                <h2 class="text-slate-800 text-lg font-semibold px-6 py-4 border-b border-slate-200">
+                                    Medications</h2>
+                                <div class="p-6">
+                                    <ul class="space-y-2">
+                                        <li class="text-sm text-slate-700">Lisinopril 10mg - Once daily</li>
+                                        <li class="text-sm text-slate-700">Metformin 500mg - Twice daily</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="bg-white shadow-sm rounded-xl">
+                                <h2 class="text-slate-800 text-lg font-semibold px-6 py-4 border-b border-slate-200">
+                                    Conditions</h2>
+                                <div class="p-6">
+                                    <ul class="space-y-2">
+                                        <li class="text-sm text-slate-700">Hypertension</li>
+                                        <li class="text-sm text-slate-700">Type 2 Diabetes</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white shadow-sm rounded-xl mt-6">
+                        <h2 class="text-slate-800 text-lg font-semibold px-6 py-4 border-b border-slate-200">Visits
+                            &amp; Encounters</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                            Date</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                            Type</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                            Provider</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                            Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">2024-07-15</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">Check-up</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">Dr. Olivia
+                                            Bennett</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
+                                            <span
+                                                class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">2024-06-15</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">Follow-up</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">Dr. Olivia
+                                            Bennett</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
+                                            <span
+                                                class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">2024-05-15</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">Initial
+                                            Consultation</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">Dr. Olivia
+                                            Bennett</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
+                                            <span
+                                                class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="fixed bottom-6 right-6 z-20 group">
+                    <button aria-expanded="false" aria-haspopup="true"
+                        class="flex items-center justify-center rounded-full h-14 w-14 bg-sky-500 text-white shadow-lg hover:bg-sky-600 transition-all duration-300 ease-in-out group-hover:w-auto group-hover:px-5">
+                        <span class="material-icons-outlined flex items-center justify-center">add</span>
+                        <span
+                            class="truncate text-sm font-medium ml-0 opacity-0 group-hover:ml-2 group-hover:opacity-100 transition-all duration-300 ease-in-out delay-100">Add
+                            Record</span>
+                    </button>
+                    <div
+                        class="absolute bottom-16 right-0 mb-2 w-48 bg-white rounded-md shadow-xl py-1 z-30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out">
+                        <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100" href="#">Add
+                            Appointment</a>
+                        <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100" href="#">Add Medication</a>
+                        <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100" href="#">Add Encounter</a>
+                        <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100" href="#">Add Allergy</a>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+</body>
+
+</html>

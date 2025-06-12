@@ -1,0 +1,24 @@
+{
+  "status": {
+    "synced": "Connected and synced",
+    "pending": "Syncing ({{count}} changes)",
+    "offline": "Working offline",
+    "error": "Sync error",
+    "unknown": "Unknown status"
+  },
+  "lastSync": {
+    "label": "Last synced",
+    "never": "Never",
+    "justNow": "Just now",
+    "minutesAgo": "{{minutes}} min ago",
+    "hoursAgo": "{{hours}} h ago",
+    "daysAgo": "{{days}} d ago"
+  },
+  "sync": {
+    "manual": "Sync now",
+    "inProgress": "Syncing...",
+    "success": "Sync complete",
+    "error": "Sync failed"
+  },
+  "offline": "You are offline. Data will be saved locally and synced when connection is restored."
+}

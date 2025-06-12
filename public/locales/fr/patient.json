@@ -1,0 +1,432 @@
+{
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "patient": "Patient",
+    "schedule": "Calendrier",
+    "statistics": "Statistiques",
+    "settings": "Paramètres"
+  },
+  "language": {
+    "selector": {
+      "title": "Sélectionner la langue",
+      "current": "Langue actuelle",
+      "available": {
+        "en": "Anglais",
+        "fr": "Français"
+      }
+    }
+  },
+  "patient": {
+    "common": {
+      "noRecords": "Aucun patient trouvé",
+      "noResults": "Aucun patient disponible. Essayez d'ajouter un nouveau patient.",
+      "offlineUnavailable": "Impossible de charger les patients hors ligne",
+      "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce patient ?",
+      "age": "Âge",
+      "unknownAge": "Inconnu",
+      "notFound": "Patient non trouvé",
+      "showing": "Affichage de {{count}} sur {{total}} patients",
+      "rowsPerPage": "Lignes par page"
+    },
+    "details": {
+      "title": "Détails du patient",
+      "personalInfo": "Informations personnelles",
+      "contactInfo": "Coordonnées",
+      "vitals": {
+        "current": "Signes vitaux actuels du patient",
+        "bloodPressure": "Tension artérielle",
+        "inTheNorm": "Dans la plage normale"
+      },
+      "history": {
+        "title": "Historique du patient",
+        "totalVisits": "Total {{count}} visites",
+        "dateOfVisit": "Date de la visite",
+        "diagnosis": "Diagnostic",
+        "severity": "Gravité"
+      },
+      "documents": {
+        "title": "Documents",
+        "download": "Télécharger le document"
+      }
+    },
+    "titles": {
+      "list": "Liste des patients",
+      "create": "Créer un nouveau patient",
+      "details": "Détails du patient",
+      "edit": "Modifier le profil du patient"
+    },
+    "filters": {
+      "title": "Filtrer les patients",
+      "active": "Actifs",
+      "inactive": "Inactifs",
+      "name": "Nom du patient",
+      "gender": "Genre",
+      "ageRange": "Tranche d'âge",
+      "clearAll": "Tout effacer"
+    },
+    "gender": {
+      "male": "Masculin",
+      "female": "Féminin",
+      "other": "Autre",
+      "unknown": "Non spécifié"
+    },
+    "fields": {
+      "name": "Nom",
+      "gender": "Genre",
+      "birthDate": "Date de naissance",
+      "status": "Statut",
+      "personal": {
+        "prefix": "Préfixe",
+        "givenName": "Prénom",
+        "middleName": "Deuxième prénom",
+        "familyName": "Nom de famille",
+        "suffix": "Suffixe",
+        "gender": "Genre",
+        "birthDate": "Date de naissance"
+      },
+      "contact": {
+        "title": "Contact",
+        "phone": "Numéro de téléphone",
+        "email": "Adresse e-mail"
+      },
+      "address": {
+        "title": "Adresse",
+        "home": "Adresse personnelle",
+        "work": "Adresse professionnelle",
+        "line1": "Ligne d'adresse 1",
+        "line2": "Ligne d'adresse 2",
+        "city": "Ville",
+        "state": "État/Région",
+        "postalCode": "Code postal",
+        "country": "Pays",
+        "use": "Utilisation de l'adresse",
+        "type": "Type d'adresse"
+      },
+      "work": {
+        "line1": "Ligne d'adresse professionnelle 1",
+        "line2": "Ligne d'adresse professionnelle 2",
+        "city": "Ville professionnelle",
+        "state": "État/Région professionnelle",
+        "postalCode": "Code postal professionnel",
+        "country": "Pays professionnel"
+      },
+      "insurance": {
+        "title": "Informations d'assurance",
+        "number": "Numéro d'assurance"
+      }
+    },
+    "addressUses": {
+      "home": "Personnelle",
+      "work": "Professionnelle",
+      "temp": "Temporaire"
+    },
+    "actions": {
+      "title": "Actions",
+      "create": "Créer un patient",
+      "edit": "Modifier le patient",
+      "view": "Voir le patient",
+      "delete": "Supprimer le patient",
+      "save": "Enregistrer",
+      "cancel": "Annuler"
+    },
+    "stats": {
+      "total": "Total des patients",
+      "active": "Patients actifs",
+      "inactive": "Patients inactifs",
+      "new": "Nouveaux patients"
+    },
+    "search": {
+      "placeholder": "Rechercher par nom de patient..."
+    },
+    "filter": {
+      "title": "Filtrer"
+    },
+    "detail": {
+      "title": "Détails du Patient",
+      "subtitle": "Voir et gérer les informations du patient",
+      "personalInfo": {
+        "title": "Informations Personnelles",
+        "fullName": "Nom Complet",
+        "gender": "Genre",
+        "dateOfBirth": "Date de Naissance",
+        "age": "Âge",
+        "phone": "Téléphone",
+        "email": "Courriel",
+        "address": "Adresse"
+      },
+      "medicalInfo": {
+        "title": "Informations Médicales",
+        "bloodType": "Groupe Sanguin",
+        "insurance": "Assurance",
+        "insuranceId": "Numéro d'Assurance",
+        "primaryDoctor": "Médecin Traitant",
+        "allergies": "Allergies",
+        "noAllergies": "Aucune allergie connue"
+      },
+      "vitals": {
+        "title": "Signes Vitaux",
+        "bloodPressure": "Tension Artérielle",
+        "heartRate": "Fréquence Cardiaque",
+        "temperature": "Température",
+        "respiratoryRate": "Fréquence Respiratoire",
+        "height": "Taille",
+        "weight": "Poids",
+        "bmi": "IMC"
+      },
+      "medications": {
+        "title": "Médicaments",
+        "current": "Médicaments Actuels",
+        "noMedications": "Aucun médicament actuel",
+        "dosage": "Posologie",
+        "frequency": "Fréquence",
+        "status": "Statut"
+      },
+      "conditions": {
+        "title": "Conditions Médicales",
+        "current": "Conditions Actuelles",
+        "noConditions": "Aucune condition actuelle",
+        "status": "Statut",
+        "onsetDate": "Date d'Apparition"
+      },
+      "immunizations": {
+        "title": "Vaccinations",
+        "noImmunizations": "Aucun dossier de vaccination",
+        "date": "Date",
+        "status": "Statut"
+      }
+    }
+  },
+  "status": {
+    "active": "Actif",
+    "inactive": "Inactif",
+    "completed": "Terminé",
+    "inProgress": "En Cours",
+    "notStarted": "Non Commencé"
+  },
+  "gender": {
+    "male": "Masculin",
+    "female": "Féminin",
+    "other": "Autre",
+    "unknown": "Inconnu"
+  },
+  "actions": {
+    "edit": "Modifier le Patient",
+    "back": "Retour à la Liste",
+    "save": "Enregistrer les Modifications",
+    "cancel": "Annuler"
+  },
+  "messages": {
+    "loading": "Chargement des données du patient...",
+    "error": "Erreur lors du chargement des données du patient",
+    "noData": "Aucune donnée patient disponible",
+    "saved": "Données du patient enregistrées avec succès",
+    "saveFailed": "Échec de l'enregistrement des données du patient"
+  }
+}  },
+  "labels": {
+    "enhancedForm": {
+      "notice": "Ce formulaire prend en charge des informations complètes sur les patients conformes FHIR, incluant les coordonnées, les prestataires de soins et les contacts d'urgence.",
+      "complete": "✅ Implémentation de la ressource Patient FHIR complète - Tous les 9 champs supplémentaires sont maintenant pris en charge !"
+    },
+    "personalInfo": {
+      "title": "Informations Personnelles",
+      "prefix": "Préfixe",
+      "givenName": "Prénom",
+      "middleName": "Deuxième prénom",
+      "familyName": "Nom de famille",
+      "suffix": "Suffixe",
+      "gender": "Genre",
+      "birthDate": "Date de naissance"
+    },
+    "deceased": {
+      "title": "Statut de Décès",
+      "status": "Décédé(e)",
+      "dateTime": "Date et heure du décès",
+      "dateTimeHelper": "Entrez la date et l'heure du décès du patient",
+      "note": "Veuillez préciser la date et l'heure du décès si connues."
+    },
+    "maritalStatus": {
+      "title": "État Civil",
+      "label": "État Civil",
+      "selectOption": "Sélectionner l'état civil",
+      "helper": "Sélectionnez l'état civil actuel du patient",
+      "options": {
+        "A": "Annulé",
+        "D": "Divorcé(e)",
+        "I": "Intérimaire",
+        "L": "Séparé(e) légalement",
+        "M": "Marié(e)",
+        "P": "Polygame",
+        "S": "Jamais marié(e)",
+        "T": "Partenaire domestique",
+        "U": "Célibataire",
+        "W": "Veuf/Veuve",
+        "UNK": "Inconnu"
+      }
+    },
+    "telecom": {
+      "title": "Informations de Contact",
+      "entryTitle": "Entrée de Contact",
+      "system": "Type de Contact",
+      "value": "Valeur de Contact",
+      "use": "Utilisation du Contact",
+      "rank": "Rang de Priorité",
+      "addEntry": "Ajouter une Entrée de Contact",
+      "emptyState": "Aucune entrée de contact ajoutée. Cliquez sur 'Ajouter une Entrée de Contact' pour commencer.",
+      "systems": {
+        "phone": "Téléphone",
+        "fax": "Télécopie",
+        "email": "Courriel",
+        "pager": "Téléavertisseur",
+        "url": "Site Web",
+        "sms": "SMS",
+        "other": "Autre"
+      },
+      "uses": {
+        "home": "Domicile",
+        "work": "Travail",
+        "temp": "Temporaire",
+        "old": "Ancien",
+        "mobile": "Mobile"
+      }
+    },
+    "photo": {
+      "title": "Photo du Patient",
+      "uploadPrompt": "Télécharger une Photo du Patient",
+      "uploadHint": "Glissez-déposez une image ici ou cliquez pour sélectionner",
+      "selectPhoto": "Sélectionner une Photo",
+      "changePhoto": "Changer la Photo",
+      "previewAlt": "Aperçu de la photo du patient",
+      "uploadedPhoto": "Photo Téléchargée",
+      "helpText": "Formats supportés: JPEG, PNG, GIF. Taille maximale: 5MB."
+    },
+    "communication": {
+      "title": "Préférences de Communication",
+      "entryTitle": "Langue",
+      "language": "Langue",
+      "preferred": "Langue Préférée",
+      "addLanguage": "Ajouter une Langue",
+      "emptyState": "Aucune préférence de communication définie. Ajoutez les langues que le patient parle.",
+      "helpText": "Sélectionnez les langues dans lesquelles le patient peut communiquer. Marquez la langue préférée pour la communication principale."
+    },
+    "contact": {
+      "title": "Contacts d'Urgence et Personnes Liées",
+      "entryTitle": "Contact",
+      "relationship": "Relation",
+      "givenName": "Prénom",
+      "familyName": "Nom de famille",
+      "gender": "Genre",
+      "selectGender": "Sélectionner le genre",
+      "organization": "Organisation",
+      "telecomTitle": "Informations de Contact",
+      "addressTitle": "Informations d'Adresse",
+      "addContact": "Ajouter un Contact d'Urgence",
+      "addTelecom": "Ajouter une Méthode de Contact",
+      "emptyState": "Aucun contact d'urgence ajouté. Ajoutez des contacts importants pour ce patient.",
+      "relationships": {
+        "BP": "Contact de Facturation",
+        "CP": "Personne de Contact",
+        "EP": "Contact d'Urgence",
+        "PR": "Préparateur de Référence",
+        "E": "Employeur",
+        "C": "Contact d'Urgence",
+        "F": "Agence Fédérale",
+        "I": "Compagnie d'Assurance",
+        "N": "Proche Parent",
+        "S": "Agence d'État",
+        "O": "Autre"
+      }
+    },
+    "generalPractitioner": {
+      "title": "Prestataires de Soins de Santé",
+      "search": "Rechercher des Prestataires de Soins",
+      "searchPlaceholder": "Tapez le nom du prestataire pour rechercher...",
+      "selected": "Prestataires Sélectionnés",
+      "minSearchLength": "Tapez au moins 2 caractères pour rechercher",
+      "noResults": "Aucun prestataire trouvé correspondant à votre recherche",
+      "emptyState": "Aucun prestataire de soins assigné. Recherchez et sélectionnez les prestataires responsables des soins de ce patient.",
+      "helpText": "Sélectionnez les prestataires de soins de santé responsables des soins continus de ce patient."
+    },
+    "managingOrganization": {
+      "title": "Organisation Gestionnaire",
+      "search": "Rechercher des Organisations",
+      "searchPlaceholder": "Tapez le nom de l'organisation pour rechercher...",
+      "selected": "Organisation Sélectionnée",
+      "minSearchLength": "Tapez au moins 2 caractères pour rechercher",
+      "noResults": "Aucune organisation trouvée correspondant à votre recherche",
+      "emptyState": "Aucune organisation gestionnaire sélectionnée. Choisissez l'organisation responsable des soins de ce patient.",
+      "helpText": "Sélectionnez l'organisation principale responsable de la gestion des soins de ce patient."
+    },
+    "patientLink": {
+      "title": "Relations entre Patients",
+      "entryTitle": "Lien Patient",
+      "searchPatient": "Rechercher un Patient",
+      "searchPlaceholder": "Tapez le nom du patient pour rechercher...",
+      "type": "Type de Relation",
+      "linkedTo": "Lié à",
+      "minSearchLength": "Tapez au moins 2 caractères pour rechercher",
+      "noResults": "Aucun patient trouvé correspondant à votre recherche",
+      "addLink": "Ajouter un Lien Patient",
+      "emptyState": "Aucune relation patient établie. Liez ce patient à d'autres dossiers patients connexes.",
+      "helpText": "Établissez des relations entre ce patient et d'autres dossiers patients dans le système.",
+      "types": {
+        "replaced-by": "Remplacé Par",
+        "replaces": "Remplace",
+        "refer": "Référer À",
+        "seealso": "Voir Aussi"
+      }
+    },
+    "legacyContact": {
+      "title": "Champs de Contact Hérités",
+      "deprecationNotice": "⚠️ Ces champs de contact uniques sont obsolètes. Veuillez utiliser la section Informations de Contact améliorée ci-dessus pour une meilleure conformité FHIR."
+    },
+    "contactInfo": {
+      "title": "Informations de Contact",
+      "phone": "Numéro de Téléphone",
+      "email": "Adresse Courriel",
+      "noPhone": "Aucun numéro de téléphone",
+      "noEmail": "Aucune adresse courriel"
+    },
+    "address": {
+      "title": "Informations d'Adresse",
+      "homeTitle": "Adresse Principale",
+      "workTitle": "Adresse de Travail",
+      "addressLine1": "Ligne d'Adresse 1",
+      "addressLine2": "Ligne d'Adresse 2",
+      "addressCity": "Ville",
+      "addressState": "État/Région",
+      "addressPostalCode": "Code Postal",
+      "addressCountry": "Pays",
+      "addressUse": "Utilisation de l'Adresse",
+      "addressType": "Type d'Adresse",
+      "workAddressLine1": "Ligne d'Adresse de Travail 1",
+      "workAddressLine2": "Ligne d'Adresse de Travail 2",
+      "workAddressCity": "Ville de Travail",
+      "workAddressState": "État/Région de Travail",
+      "workAddressPostalCode": "Code Postal de Travail",
+      "workAddressCountry": "Pays de Travail",
+      "addressUses": {
+        "home": "Domicile",
+        "work": "Travail",
+        "temp": "Temporaire",
+        "old": "Ancien",
+        "billing": "Facturation"
+      },
+      "addressTypes": {
+        "postal": "Postal",
+        "physical": "Physique",
+        "both": "Les Deux"
+      }
+    },
+    "insurance": {
+      "title": "Informations d'Assurance",
+      "insurance": "Numéro d'Assurance"
+    }
+  },
+  "errors": {
+    "noPractitionersFound": "Aucun professionnel de santé trouvé correspondant à votre recherche. Essayez avec des mots-clés différents.",
+    "searchError": "Impossible de rechercher des professionnels de santé. Veuillez vérifier votre connexion et réessayer.",
+    "loadingError": "Erreur lors du chargement des données. Veuillez réessayer.",
+    "networkError": "Erreur réseau survenue. Veuillez vérifier votre connexion internet."
+  }
+}

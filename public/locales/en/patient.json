@@ -1,0 +1,313 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "patient": "Patient",
+    "schedule": "Schedule",
+    "statistics": "Statistics",
+    "settings": "Settings"
+  },
+  "titles": {
+    "list": "Patients List",
+    "create": "Create New Patient",
+    "details": "Patient Details",
+    "edit": "Edit Patient Profile"
+  },
+  "filters": {
+    "title": "Filter Patients",
+    "categories": {
+      "status": "Status",
+      "gender": "Gender",
+      "birthday": "Birthday",
+      "age": "Age"
+    },
+    "active": "Active",
+    "inactive": "Inactive",
+    "name": "Patient Name",
+    "gender": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "unknown": "Not Specified"
+    },
+    "birthday_start": "Birthday Start",
+    "birthday_end": "Birthday End",
+    "ageRange": "Age Range",
+    "child": "Child",
+    "adult": "Adult",
+    "elderly": "Elderly",
+    "clearAll": "Clear All"
+  },
+  "fields": {
+    "name": "Name",
+    "gender": {
+      "title": "Gender",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "unknown": "Not Specified"
+    },
+    "birthDate": "Birth Date",
+    "status": "Status"
+  },
+  "labels": {
+    "enhancedForm": {
+      "notice": "This form supports comprehensive FHIR-compliant patient information including contact details, healthcare providers, and emergency contacts.",
+      "complete": "✅ FHIR Patient Resource Implementation Complete - All 9 additional fields now supported!"
+    },
+    "personalInfo": {
+      "title": "Personal Information",
+      "prefix": "Prefix",
+      "givenName": "First Name",
+      "middleName": "Middle Name",
+      "familyName": "Last Name",
+      "suffix": "Suffix",
+      "gender": "Gender",
+      "birthDate": "Date of Birth"
+    },
+    "deceased": {
+      "title": "Deceased Status",
+      "status": "Deceased",
+      "dateTime": "Date and Time of Death",
+      "dateTimeHelper": "Enter the date and time when the patient passed away",
+      "note": "Please specify the date and time of death if known."
+    },
+    "maritalStatus": {
+      "title": "Marital Status",
+      "label": "Marital Status",
+      "selectOption": "Select marital status",
+      "helper": "Select the patient's current marital status",
+      "options": {
+        "A": "Annulled",
+        "D": "Divorced",
+        "I": "Interlocutory",
+        "L": "Legally Separated",
+        "M": "Married",
+        "P": "Polygamous",
+        "S": "Never Married",
+        "T": "Domestic Partner",
+        "U": "Unmarried",
+        "W": "Widowed",
+        "UNK": "Unknown"
+      }
+    },
+    "telecom": {
+      "title": "Contact Information",
+      "entryTitle": "Contact Entry",
+      "system": "Contact Type",
+      "value": "Contact Value",
+      "use": "Contact Use",
+      "rank": "Priority Rank",
+      "addEntry": "Add Contact Entry",
+      "emptyState": "No contact entries added yet. Click 'Add Contact Entry' to get started.",
+      "systems": {
+        "phone": "Phone",
+        "fax": "Fax",
+        "email": "Email",
+        "pager": "Pager",
+        "url": "Website",
+        "sms": "SMS",
+        "other": "Other"
+      },
+      "uses": {
+        "home": "Home",
+        "work": "Work",
+        "temp": "Temporary",
+        "old": "Old",
+        "mobile": "Mobile"
+      }
+    },
+    "photo": {
+      "title": "Patient Photo",
+      "uploadPrompt": "Upload Patient Photo",
+      "uploadHint": "Drag and drop an image here, or click to select",
+      "selectPhoto": "Select Photo",
+      "changePhoto": "Change Photo",
+      "previewAlt": "Patient photo preview",
+      "uploadedPhoto": "Uploaded Photo",
+      "helpText": "Supported formats: JPEG, PNG, GIF. Maximum size: 5MB."
+    },
+    "communication": {
+      "title": "Communication Preferences",
+      "entryTitle": "Language",
+      "language": "Language",
+      "preferred": "Preferred Language",
+      "addLanguage": "Add Language",
+      "emptyState": "No communication preferences set. Add languages that the patient speaks.",
+      "helpText": "Select languages the patient can communicate in. Mark preferred language for primary communication."
+    },
+    "contact": {
+      "title": "Emergency Contacts & Related Persons",
+      "entryTitle": "Contact",
+      "relationship": "Relationship",
+      "givenName": "First Name",
+      "familyName": "Last Name",
+      "gender": "Gender",
+      "selectGender": "Select gender",
+      "organization": "Organization",
+      "telecomTitle": "Contact Information",
+      "addressTitle": "Address Information",
+      "addContact": "Add Emergency Contact",
+      "addTelecom": "Add Contact Method",
+      "emptyState": "No emergency contacts added. Add important contacts for this patient.",
+      "relationships": {
+        "BP": "Billing Contact",
+        "CP": "Contact Person",
+        "EP": "Emergency Contact",
+        "PR": "Referral Preparer",
+        "E": "Employer",
+        "C": "Emergency Contact",
+        "F": "Federal Agency",
+        "I": "Insurance Company",
+        "N": "Next-of-Kin",
+        "S": "State Agency",
+        "O": "Other"
+      }
+    },
+    "generalPractitioner": {
+      "title": "Healthcare Practitioners",
+      "search": "Search Healthcare Practitioners",
+      "searchPlaceholder": "Type practitioner name to search...",
+      "selected": "Selected Practitioner",
+      "minSearchLength": "Type at least 2 characters to search",
+      "noResults": "No practitioners found matching your search",
+      "emptyState": "No healthcare practitioner assigned. Search and select practitioner responsible for this patient's care.",
+      "helpText": "Select healthcare practitioner who is responsible for this patient's ongoing care."
+    },
+    "managingOrganization": {
+      "title": "Managing Organizations",
+      "search": "Search Organizations",
+      "searchPlaceholder": "Type organization name to search...",
+      "selected": "Selected Organization",
+      "minSearchLength": "Type at least 2 characters to search",
+      "noResults": "No organizations found matching your search",
+      "emptyState": "No managing organization selected. Choose the organization responsible for this patient's care.",
+      "helpText": "Select the primary organization responsible for managing this patient's care."
+    },
+    "patientLink": {
+      "title": "Patient Relationships",
+      "entryTitle": "Patient Link",
+      "searchPatient": "Search Patient",
+      "searchPlaceholder": "Type patient name to search...",
+      "type": "Relationship Type",
+      "linkedTo": "Linked to",
+      "minSearchLength": "Type at least 2 characters to search",
+      "noResults": "No patients found matching your search",
+      "addLink": "Add Patient Link",
+      "emptyState": "No patient relationships established. Link this patient to related patient records.",
+      "helpText": "Establish relationships between this patient and other patient records in the system.",
+      "types": {
+        "replaced-by": "Replaced By",
+        "replaces": "Replaces",
+        "refer": "Refer To",
+        "seealso": "See Also"
+      }
+    },
+    "legacyContact": {
+      "title": "Legacy Contact Fields",
+      "deprecationNotice": "⚠️ These single contact fields are deprecated. Please use the enhanced Contact Information section above for better FHIR compliance."
+    },
+    "contactInfo": {
+      "title": "Contact Information",
+      "phone": "Phone Number",
+      "email": "Email Address",
+      "noPhone": "No phone number",
+      "noEmail": "No email address"
+    },
+    "address": {
+      "title": "Address Information",
+      "homeTitle": "Primary Address",
+      "workTitle": "Work Address",
+      "addressLine1": "Address Line 1",
+      "addressLine2": "Address Line 2",
+      "addressCity": "City",
+      "addressState": "State/Region",
+      "addressPostalCode": "Postal Code",
+      "addressCountry": "Country",
+      "addressUse": "Address Use",
+      "addressType": "Address Type",
+      "workAddressLine1": "Work Address Line 1",
+      "workAddressLine2": "Work Address Line 2",
+      "workAddressCity": "Work City",
+      "workAddressState": "Work State/Region",
+      "workAddressPostalCode": "Work Postal Code",
+      "workAddressCountry": "Work Country",
+      "addressUses": {
+        "home": "Home",
+        "work": "Work",
+        "temp": "Temporary",
+        "old": "Old",
+        "billing": "Billing"
+      },
+      "addressTypes": {
+        "postal": "Postal",
+        "physical": "Physical",
+        "both": "Both"
+      }
+    },
+    "insurance": {
+      "title": "Insurance Information",
+      "insurance": "Insurance Number"
+    }
+  },
+  "actions": {
+    "title": "Actions",
+    "create": "Create Patient",
+    "edit": "Edit Patient",
+    "view": "View Patient",
+    "back": "Back to List",
+    "delete": "Delete Patient",
+    "save": "Save Changes",
+    "cancel": "Cancel"
+  },
+  "stats": {
+    "total": "Total Patients",
+    "active": "Active Patients",
+    "inactive": "Inactive Patients",
+    "new": "New Patients"
+  },
+  "search": {
+    "placeholder": "Search by patient name..."
+  },
+  "filter": {
+    "title": "Filter"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "notStarted": "Not Started"
+  },
+  "gender": {
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "unknown": "Unknown"
+  },
+  "messages": {
+    "loading": "Loading patient data...",
+    "error": "Error loading patient data",
+    "noData": "No patient data available",
+    "saved": "Patient data saved successfully",
+    "saveFailed": "Failed to save patient data",
+    "patientNotFound": "The requested patient record could not be found. It may have been deleted or you may not have permission to view it.",
+    "patientDetailsNotFound": "The requested patient details could not be found. It may have been deleted or you may not have permission to view it.",
+    "patientDataMissing": "Patient data is missing",
+    "patientDetailsDataMissing": "Patient details data is missing",
+    "noRecords": "No Patients Found",
+    "noResults": "No patients available. Try adding a new patient.",
+    "offlineUnavailable": "Unable to load patients while offline",
+    "confirmDelete": "Are you sure you want to delete this patient?",
+    "age": "Age",
+    "unknownAge": "Unknown age",
+    "notFound": "Patient not found",
+    "showing": "Showing {{count}} of {{total}} patients",
+    "rowsPerPage": "Rows per page"
+  },
+  "errors": {
+    "noPractitionersFound": "No healthcare providers found matching your search. Try using different keywords.",
+    "searchError": "Unable to search for healthcare providers. Please check your connection and try again.",
+    "loadingError": "Error loading data. Please try again.",
+    "networkError": "Network error occurred. Please check your internet connection."
+  }
+}

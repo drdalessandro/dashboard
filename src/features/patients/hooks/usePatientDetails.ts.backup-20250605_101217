@@ -1,0 +1,172 @@
+import { useMemo, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { usePatient } from '@/hooks/usePatient';
+import { usePatientAllergies } from '@/hooks/useAllergyIntolerance';
+import { usePatientConditions } from '@/hooks/useCondition';
+import { usePatientImmunizations } from '@/hooks/useImmunization';
+import { usePatientMedicationRequests } from '@/hooks/useMedicationRequest';
+import { getPatientIdDiagnostics } from '@/utils/medplumUtils';
+import {
+  processClinicalDataFromResponses,
+  transformPatientForDisplay,
+  getDefaultVitals
+} from '../utils/patientDataUtils';
+
+/**
+ * Hook for fetching and managing patient details with related clinical data
+ * Optimized to prevent infinite loops and unnecessary re-renders
+ */
+export const usePatientDetails = (patientId: string) => {
+  const { t } = useTranslation(['patient']);
+
+  // Get diagnostics and validation
+  const diagnostics = useMemo(() => getPatientIdDiagnostics(patientId), [patientId]);
+  const isValidPatientId = diagnostics.isValid;
+
+  // Use the patient hook directly
+  const {
+    data: patientData,
+    isLoading: patientLoading,
+    error: patientError,
+    fetchOne: fetchPatient
+  } = usePatient();
+
+  // Fetch patient data when ID is valid
+  useEffect(() => {
+    if (isValidPatientId && diagnostics.normalizedId) {
+      const fetchData = async () => {
+        try {
+          await fetchPatient(diagnostics.normalizedId);
+        } catch (err) {
+          console.error('Error fetching patient:', err);
+        }
+      };
+
+      const timeoutId = setTimeout(fetchData, 10);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isValidPatientId, diagnostics.normalizedId, fetchPatient]);
+
+  // Get single patient from response (handle both array and single object responses)
+  const patient = useMemo(() => {
+    if (!patientData) return null;
+    return Array.isArray(patientData) ? patientData[0] : patientData;
+  }, [patientData]);
+
+  // Memoize the patient ID to prevent unnecessary re-renders
+  const patientIdForDeps = diagnostics.normalizedId;
+
+  // Fetch related clinical data using patient-specific hooks
+  const allergiesResponse = usePatientAllergies(patientIdForDeps, {
+    enabled: isValidPatientId && !!patientIdForDeps
+  });
+  const conditionsResponse = usePatientConditions(patientIdForDeps, {
+    enabled: isValidPatientId && !!patientIdForDeps
+  });
+  const immunizationsResponse = usePatientImmunizations(patientIdForDeps, {
+    enabled: isValidPatientId && !!patientIdForDeps
+  });
+  const medicationsResponse = usePatientMedicationRequests(patientIdForDeps, {
+    status: 'active',
+    enabled: isValidPatientId && !!patientIdForDeps
+  });
+
+  // Normalize clinical data responses to always have array or undefined for data
+  const normalizedAllergies = useMemo(() => {
+    if (allergiesResponse.data == null) return undefined;
+    return Array.isArray(allergiesResponse.data)
+      ? allergiesResponse.data
+      : [allergiesResponse.data];
+  }, [allergiesResponse.data]);
+
+  const normalizedConditions = useMemo(() => {
+    if (conditionsResponse.data == null) return undefined;
+    return Array.isArray(conditionsResponse.data)
+      ? conditionsResponse.data
+      : [conditionsResponse.data];
+  }, [conditionsResponse.data]);
+
+  const normalizedImmunizations = useMemo(() => {
+    if (immunizationsResponse.data == null) return undefined;
+    return Array.isArray(immunizationsResponse.data)
+      ? immunizationsResponse.data
+      : [immunizationsResponse.data];
+  }, [immunizationsResponse.data]);
+
+  const normalizedMedications = useMemo(() => {
+    if (medicationsResponse.data == null) return undefined;
+    return Array.isArray(medicationsResponse.data)
+      ? medicationsResponse.data
+      : [medicationsResponse.data];
+  }, [medicationsResponse.data]);
+
+  // Process clinical data with normalized responses
+  const processedClinicalData = useMemo(() => processClinicalDataFromResponses(
+    { ...allergiesResponse, data: normalizedAllergies },
+    { ...conditionsResponse, data: normalizedConditions },
+    { ...immunizationsResponse, data: normalizedImmunizations },
+    { ...medicationsResponse, data: normalizedMedications }
+  ), [
+    normalizedAllergies, allergiesResponse.isLoading,
+    normalizedConditions, conditionsResponse.isLoading,
+    normalizedImmunizations, immunizationsResponse.isLoading,
+    normalizedMedications, medicationsResponse.isLoading
+  ]);
+
+  // Transform patient data for display
+  const patientDisplayData = useMemo(() => {
+    if (!patient) return null;
+    return transformPatientForDisplay(
+      patient,
+      getDefaultVitals(),
+      processedClinicalData,
+      t
+    );
+  }, [patient, processedClinicalData, t]);
+
+  // Optimized loading state calculation
+  const isLoading = useMemo(() => (
+    !isValidPatientId ||
+    patientLoading ||
+    allergiesResponse.isLoading ||
+    conditionsResponse.isLoading ||
+    immunizationsResponse.isLoading ||
+    medicationsResponse.isLoading
+  ), [
+    isValidPatientId,
+    patientLoading,
+    allergiesResponse.isLoading,
+    conditionsResponse.isLoading,
+    immunizationsResponse.isLoading,
+    medicationsResponse.isLoading
+  ]);
+
+  // Enhanced error handling that combines all potential errors
+  const combinedError = useMemo(() => {
+    return patientError ||
+      allergiesResponse.error ||
+      conditionsResponse.error ||
+      immunizationsResponse.error ||
+      medicationsResponse.error ||
+      null;
+  }, [
+    patientError,
+    allergiesResponse.error,
+    conditionsResponse.error,
+    immunizationsResponse.error,
+    medicationsResponse.error
+  ]);
+
+  return {
+    diagnostics,
+    isValidPatientId,
+    patient,
+    patientDisplayData,
+    allergies: allergiesResponse.data,
+    conditions: conditionsResponse.data,
+    immunizations: immunizationsResponse.data,
+    medications: medicationsResponse.data,
+    isLoading,
+    error: combinedError
+  };
+};

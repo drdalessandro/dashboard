@@ -1,0 +1,50 @@
+{
+    "sections": {
+        "patientInfo": "Patient Information",
+        "medicationInfo": "Medication Information",
+        "prescriptionDetails": "Prescription Details"
+    },
+    "fields": {
+        "patient": "Patient",
+        "patientId": "Patient ID",
+        "medication": {
+            "search": "Search for medication",
+            "selected": "Selected Medication",
+            "manualEntryNote": "Use search for RxNorm lookup or enter name manually",
+            "offlineNote": "Limited medication search available while offline"
+        },
+        "medicationName": "Medication Name",
+        "dosage": "Dosage",
+        "frequency": "Frequency",
+        "duration": "Duration",
+        "quantity": "Quantity",
+        "refills": "Refills",
+        "instructions": "Special Instructions",
+        "dateWritten": "Date Written",
+        "status": "Status"
+    },
+    "status": {
+        "active": "Active",
+        "draft": "Draft"
+    },
+    "frequencies": {
+        "once_daily": "Once daily",
+        "twice_daily": "Twice daily",
+        "three_times_daily": "Three times daily",
+        "four_times_daily": "Four times daily",
+        "every_morning": "Every morning",
+        "every_evening": "Every evening",
+        "every_4_hours": "Every 4 hours",
+        "every_6_hours": "Every 6 hours",
+        "every_8_hours": "Every 8 hours",
+        "every_12_hours": "Every 12 hours",
+        "as_needed": "As needed",
+        "with_meals": "With meals",
+        "after_meals": "After meals",
+        "before_meals": "Before meals",
+        "at_bedtime": "At bedtime"
+    },
+    "offlineMode": {
+        "saved": "This prescription will be saved locally and synchronized when connection is restored."
+    }
+}

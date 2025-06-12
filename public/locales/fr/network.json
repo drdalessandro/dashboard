@@ -1,0 +1,23 @@
+{
+  "status": {
+    "synced": "Connecté et synchronisé",
+    "pending": "Synchronisation ({{count}} changements)",
+    "offline": "Mode hors connexion",
+    "error": "Erreur de synchronisation",
+    "unknown": "Statut inconnu"
+  },
+  "lastSync": {
+    "label": "Dernière synchronisation",
+    "never": "Jamais",
+    "justNow": "À l'instant",
+    "minutesAgo": "Il y a {{minutes}} min",
+    "hoursAgo": "Il y a {{hours}} h",
+    "daysAgo": "Il y a {{days}} j"
+  },
+  "sync": {
+    "manual": "Synchroniser maintenant",
+    "inProgress": "Synchronisation...",
+    "success": "Synchronisation terminée",
+    "error": "Échec de la synchronisation"
+  }
+}
