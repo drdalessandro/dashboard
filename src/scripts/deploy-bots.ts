@@ -35,7 +35,6 @@ const Bots: BotDescription[] = [
     src: 'src/bots/ckm/ckm-recalculate.ts',
     dist: 'dist/bots/ckm/ckm-recalculate.js',
     criteria: `Observation?code=${CKM_OBSERVATION_CODES.join(',')}`,
-    runtimeVersion: 'vmcontext',
   },
 ];
 
