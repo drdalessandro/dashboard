@@ -1,0 +1,201 @@
+{
+  "resourceType": "Questionnaire",
+  "url": "https://seguimiento.medplum.com.ar/fhir/Questionnaire/ckm-sdoh-screening-v1",
+  "name": "CKMSDOHScreening",
+  "title": "Screening de Determinantes Sociales de la Salud (SDOH)",
+  "status": "active",
+  "subjectType": ["Patient"],
+  "description": "Screening breve de determinantes sociales de la salud para el programa CKM. Los pesos (ordinalValue) de cada opción alimentan el resumen de deprivación social usado como insumo de las ecuaciones PREVENT.",
+  "item": [
+    {
+      "linkId": "vivienda",
+      "type": "choice",
+      "text": "¿Tiene problemas con su vivienda (riesgo de perderla, condiciones inadecuadas, hacinamiento)?",
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "si",
+            "display": "Sí",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 3 }]
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "no",
+            "display": "No",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 }]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "alimentacion",
+      "type": "choice",
+      "text": "En los últimos 12 meses, ¿le preocupó que la comida se le acabara antes de tener dinero para comprar más?",
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "frecuentemente",
+            "display": "Frecuentemente",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2 }]
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "a-veces",
+            "display": "A veces",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 1 }]
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "nunca",
+            "display": "Nunca",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 }]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "transporte",
+      "type": "choice",
+      "text": "¿La falta de transporte le impidió asistir a consultas médicas o conseguir medicamentos?",
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "si",
+            "display": "Sí",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2 }]
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "no",
+            "display": "No",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 }]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "servicios",
+      "type": "choice",
+      "text": "¿Tiene dificultades para pagar los servicios básicos (luz, gas, agua)?",
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "si",
+            "display": "Sí",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 1 }]
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "no",
+            "display": "No",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 }]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "seguridad",
+      "type": "choice",
+      "text": "¿Se siente inseguro/a en su barrio o en su hogar?",
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "si",
+            "display": "Sí",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2 }]
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "no",
+            "display": "No",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 }]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "soledad",
+      "type": "choice",
+      "text": "¿Con qué frecuencia se siente solo/a o aislado/a de las personas que lo rodean?",
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "siempre",
+            "display": "Siempre o casi siempre",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2 }]
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "a-veces",
+            "display": "A veces",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 1 }]
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "nunca",
+            "display": "Nunca",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 }]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "ingresos",
+      "type": "choice",
+      "text": "¿Tiene dificultades para llegar a fin de mes con sus ingresos?",
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "si",
+            "display": "Sí",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2 }]
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "no",
+            "display": "No",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 }]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "medicamentos",
+      "type": "choice",
+      "text": "En el último año, ¿dejó de comprar medicamentos recetados por su costo?",
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "si",
+            "display": "Sí",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 3 }]
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "no",
+            "display": "No",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 }]
+          }
+        }
+      ]
+    }
+  ]
+}

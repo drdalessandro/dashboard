@@ -2,6 +2,7 @@ import { indexSearchParameterBundle, indexStructureDefinitionBundle } from '@med
 import { readJson, SEARCH_PARAMETER_BUNDLE_FILES } from '@medplum/definitions';
 import type { Bundle, Patient, Questionnaire, QuestionnaireResponse, SearchParameter } from '@medplum/fhirtypes';
 import { MockClient } from '@medplum/mock';
+import fs from 'fs';
 import { PREVENT_INPUTS_URL, SDOH_QUESTIONNAIRE_URL } from '../../ckm/constants';
 import type { PREVENTInputsData } from '../../ckm/types';
 import { handler } from './sdoh-response';
@@ -92,6 +93,29 @@ describe('Bot SDOH response', () => {
     const sdoh = getInputs(result as Patient).sdoh;
     expect(sdoh?.score).toBeUndefined();
     expect(sdoh?.answered).toBe(1);
+  });
+
+  test('contrato: el cuestionario real del repo produce score con el bot', async () => {
+    const medplum = new MockClient();
+    const real = JSON.parse(fs.readFileSync('data/ckm/sdoh-questionnaire.json', 'utf8')) as Questionnaire;
+    await medplum.createResource(real);
+    const patient = await medplum.createResource<Patient>({ resourceType: 'Patient' });
+    // Peor respuesta en todos los ítems: 3+2+2+1+2+2+2+3 = 17
+    const worst: Record<string, string> = {
+      vivienda: 'si',
+      alimentacion: 'frecuentemente',
+      transporte: 'si',
+      servicios: 'si',
+      seguridad: 'si',
+      soledad: 'siempre',
+      ingresos: 'si',
+      medicamentos: 'si',
+    };
+    const response = await medplum.createResource(sdohResponse(patient.id as string, worst));
+
+    const result = await handler(medplum, { bot, contentType, input: response, secrets: {} });
+
+    expect(getInputs(result as Patient).sdoh).toMatchObject({ score: 17, answered: 8 });
   });
 
   test('ignora respuestas de otros cuestionarios', async () => {
