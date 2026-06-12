@@ -9,6 +9,7 @@ import { Loading, SearchControl, useMedplum } from '@medplum/react';
 import { useEffect, useState } from 'react';
 import type { JSX } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import { CKMPatientList } from '../ckm/components/CKMPatientList';
 import { CreateEncounter } from '../components/actions/CreateEncounter';
 import classes from './SearchPage.module.css';
 
@@ -50,18 +51,22 @@ export function SearchPage(): JSX.Element {
   return (
     <Paper shadow="xs" m="md" p="xs" className={classes.paper}>
       <CreateEncounter opened={opened} handlers={handlers} />
-      <SearchControl
-        checkboxesEnabled={false}
-        search={search}
-        onClick={(e) => navigate(`/${e.resource.resourceType}/${e.resource.id}`)?.catch(console.error)}
-        onAuxClick={(e) => window.open(`/${e.resource.resourceType}/${e.resource.id}`, '_blank')}
-        onChange={(e) => {
-          navigate(`/${search.resourceType}${formatSearchQuery(e.definition)}`)?.catch(console.error);
-        }}
-        hideFilters={true}
-        hideToolbar={search.resourceType !== 'Encounter'}
-        onNew={handlers.open}
-      />
+      {search.resourceType === 'Patient' ? (
+        <CKMPatientList />
+      ) : (
+        <SearchControl
+          checkboxesEnabled={false}
+          search={search}
+          onClick={(e) => navigate(`/${e.resource.resourceType}/${e.resource.id}`)?.catch(console.error)}
+          onAuxClick={(e) => window.open(`/${e.resource.resourceType}/${e.resource.id}`, '_blank')}
+          onChange={(e) => {
+            navigate(`/${search.resourceType}${formatSearchQuery(e.definition)}`)?.catch(console.error);
+          }}
+          hideFilters={true}
+          hideToolbar={search.resourceType !== 'Encounter'}
+          onNew={handlers.open}
+        />
+      )}
     </Paper>
   );
 }
