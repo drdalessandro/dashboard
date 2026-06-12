@@ -192,6 +192,38 @@ describe('Bot CKM recalculate', () => {
     expect(sendEmail).not.toHaveBeenCalled();
   });
 
+  test('PA cruzada (87/160): alerta de carga inconsistente, sin falsos críticos, estadío preservado', async () => {
+    const medplum = new MockClient();
+    const sendEmail = vi.spyOn(medplum, 'sendEmail').mockResolvedValue({} as never);
+    const patient = await medplum.createResource<Patient>({
+      resourceType: 'Patient',
+      gender: 'male',
+      extension: [{ url: CKM_STAGE_URL, valueInteger: 1 }],
+    });
+    // Campos cruzados al cargar en Control: sistólica 87, diastólica 160
+    const observation = await medplum.createResource(bpPanel(patient.id as string, 87, 160, '2026-06-12'));
+
+    const result = await handler(medplum, {
+      bot,
+      contentType,
+      input: observation,
+      secrets: { CKM_ALERT_EMAIL: { name: 'CKM_ALERT_EMAIL', valueString: 'cardio@example.com' } },
+    });
+
+    // La lectura no debe usarse: ni métricas de PA ni cambio de estadío
+    const { stage, metrics } = getExtensions(result as Patient);
+    expect(stage).toBe(1);
+    expect(metrics?.find((m) => m.id === 'dbp')).toBeUndefined();
+
+    const alerts = await medplum.searchResources('Communication', `subject=Patient/${patient.id}`);
+    expect(alerts).toHaveLength(1);
+    const payloads = (alerts[0] as Communication).payload?.map((p) => p.contentString ?? '') ?? [];
+    expect(payloads.join(' ')).toContain('inconsistente');
+    // Sin falso "valor crítico" por la diastólica 160
+    expect(payloads.join(' ')).not.toContain('Valor crítico');
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+  });
+
   test('preserva los scores PREVENT ya guardados en la extensión', async () => {
     const medplum = new MockClient();
     const prevent = { ascvd10y: 10.8, hf10y: 6.9, cvdTotal30y: 27.6 };
