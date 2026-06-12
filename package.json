@@ -25,7 +25,7 @@
     "@mantine/notifications": "8.3.6",
     "@medplum/bot-layer": "5.0.0",
     "@medplum/core": "5.0.0",
-    "@medplum/definitions": "5.0.0",
+    "@medplum/definitions": "^5.1.17",
     "@medplum/eslint-config": "5.0.0",
     "@medplum/fhirtypes": "5.0.0",
     "@medplum/mock": "5.0.0",
