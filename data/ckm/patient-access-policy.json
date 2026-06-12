@@ -1,0 +1,103 @@
+{
+  "resourceType": "AccessPolicy",
+  "name": "HeartInnovations — Patient Self Access v1.2",
+  "resource": [
+    {
+      "resourceType": "Patient",
+      "criteria": "Patient?_compartment=%patient",
+      "interaction": ["read", "search", "update"],
+      "readonlyFields": ["extension", "identifier", "generalPractitioner", "link"]
+    },
+    {
+      "resourceType": "Observation",
+      "criteria": "Observation?_compartment=%patient",
+      "interaction": ["create", "read", "search", "update"]
+    },
+    {
+      "resourceType": "DiagnosticReport",
+      "criteria": "DiagnosticReport?_compartment=%patient",
+      "readonly": true
+    },
+    {
+      "resourceType": "Condition",
+      "criteria": "Condition?_compartment=%patient",
+      "readonly": true
+    },
+    {
+      "resourceType": "MedicationRequest",
+      "criteria": "MedicationRequest?_compartment=%patient",
+      "readonly": true
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "criteria": "MedicationStatement?_compartment=%patient",
+      "interaction": ["create", "read", "search", "update"]
+    },
+    {
+      "resourceType": "Immunization",
+      "criteria": "Immunization?_compartment=%patient",
+      "readonly": true
+    },
+    {
+      "resourceType": "CarePlan",
+      "criteria": "CarePlan?_compartment=%patient",
+      "readonly": true
+    },
+    {
+      "resourceType": "RiskAssessment",
+      "criteria": "RiskAssessment?_compartment=%patient",
+      "readonly": true
+    },
+    {
+      "resourceType": "Communication",
+      "criteria": "Communication?_compartment=%patient",
+      "interaction": ["create", "read", "search"]
+    },
+    {
+      "resourceType": "QuestionnaireResponse",
+      "criteria": "QuestionnaireResponse?_compartment=%patient",
+      "interaction": ["create", "read", "search", "update"]
+    },
+    {
+      "resourceType": "Questionnaire",
+      "readonly": true
+    },
+    {
+      "resourceType": "DocumentReference",
+      "criteria": "DocumentReference?_compartment=%patient",
+      "interaction": ["create", "read", "search"]
+    },
+    {
+      "resourceType": "Binary"
+    },
+    {
+      "resourceType": "Appointment",
+      "criteria": "Appointment?_compartment=%patient",
+      "interaction": ["create", "read", "search"]
+    },
+    {
+      "resourceType": "Schedule",
+      "readonly": true
+    },
+    {
+      "resourceType": "Slot",
+      "readonly": true
+    },
+    {
+      "resourceType": "Practitioner",
+      "readonly": true
+    },
+    {
+      "resourceType": "Organization",
+      "readonly": true
+    },
+    {
+      "resourceType": "HealthcareService",
+      "readonly": true
+    },
+    {
+      "resourceType": "Subscription",
+      "criteria": "Subscription?type=websocket&author=%profile"
+    }
+  ]
+}
