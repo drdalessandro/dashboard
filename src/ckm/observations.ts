@@ -89,9 +89,8 @@ export async function getLatestCKMObservations(medplum: MedplumClient, patientId
   const observations = await medplum.searchResources('Observation', {
     subject: `Patient/${patientId}`,
     code: CKM_OBSERVATION_CODES.join(','),
-    'status:not': 'entered-in-error',
     _sort: '-date',
     _count: '500',
   });
-  return latestCKMValues(observations);
+  return latestCKMValues(observations.filter((o) => o.status !== 'entered-in-error'));
 }

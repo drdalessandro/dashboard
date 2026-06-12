@@ -5,11 +5,14 @@ import type { Bundle, BundleEntry } from '@medplum/fhirtypes';
 import { randomUUID } from 'crypto';
 import fs from 'fs';
 import path from 'path';
+import { CKM_OBSERVATION_CODES } from '../ckm/observations';
 
 interface BotDescription {
   src: string;
   dist: string;
   criteria?: string;
+  /** 'vmcontext' para servidores self-hosted sin AWS Lambda. */
+  runtimeVersion?: 'awslambda' | 'vmcontext';
 }
 
 const Bots: BotDescription[] = [
@@ -27,6 +30,12 @@ const Bots: BotDescription[] = [
     src: 'src/bots/core/gynecology-encounter-note.ts',
     dist: 'dist/bots/core/gynecology-encounter-note.js',
     criteria: 'QuestionnaireResponse?questionnaire=$gynecology-visit',
+  },
+  {
+    src: 'src/bots/ckm/ckm-recalculate.ts',
+    dist: 'dist/bots/ckm/ckm-recalculate.js',
+    criteria: `Observation?code=${CKM_OBSERVATION_CODES.join(',')}`,
+    runtimeVersion: 'vmcontext',
   },
 ];
 
@@ -48,7 +57,7 @@ async function main(): Promise<void> {
           resourceType: 'Bot',
           id: botIdPlaceholder,
           name: botName,
-          runtimeVersion: 'awslambda',
+          runtimeVersion: botDescription.runtimeVersion ?? 'awslambda',
           sourceCode: {
             contentType: ContentType.TYPESCRIPT,
             url: srcEntry.fullUrl,
