@@ -34,6 +34,30 @@ export const LOINC = {
 /** Clave de un parámetro CKM (ej. 'sbp', 'egfr'). */
 export type CKMParameterId = keyof typeof LOINC;
 
+/**
+ * Panel de presión arterial (forma canónica de registro, igual en rol paciente
+ * y rol médico): una sola Observation 85354-9 con componentes 8480-6
+ * (sistólica) y 8462-4 (diastólica). El lector de observations.ts también
+ * acepta la forma legacy de dos Observations separadas.
+ */
+export const LOINC_BP_PANEL = '85354-9';
+
+/**
+ * Parámetros con código LOINC que alimentan las ecuaciones PREVENT (AHA).
+ * Los demás insumos de PREVENT no son Observations: edad y sexo (Patient),
+ * tabaquismo, diabetes (Condition), antihipertensivos y estatinas
+ * (MedicationRequest).
+ */
+export const PREVENT_INPUT_PARAMS: CKMParameterId[] = [
+  'sbp',
+  'cholesterolTotal',
+  'hdlc',
+  'bmi',
+  'egfr',
+  'hba1c',
+  'uacr',
+];
+
 // URLs de las extensiones FHIR propias del proyecto
 export const CKM_STAGE_URL = 'https://seguimiento.medplum.com.ar/fhir/StructureDefinition/CKMStage';
 export const HGRAPH_DATA_URL = 'https://seguimiento.medplum.com.ar/fhir/StructureDefinition/hGraphData';
