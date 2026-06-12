@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: Copyright Orangebot, Inc. and Medplum contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Grid, Loader } from '@mantine/core';
+import { Grid, Loader, Stack } from '@mantine/core';
 import type { Patient } from '@medplum/fhirtypes';
 import { PatientSummary, useMedplum } from '@medplum/react';
 import { useEffect, useState } from 'react';
 import type { JSX } from 'react';
 import { useParams } from 'react-router';
+import { PREVENTPanel } from '../ckm/components/PREVENTPanel';
 import { PatientDetails } from '../components/PatientDetails';
 
 export function PatientPage(): JSX.Element {
@@ -30,7 +31,10 @@ export function PatientPage(): JSX.Element {
   return (
     <Grid>
       <Grid.Col span={4}>
-        <PatientSummary patient={patient} />
+        <Stack gap="md">
+          <PREVENTPanel patient={patient} />
+          <PatientSummary patient={patient} />
+        </Stack>
       </Grid.Col>
       <Grid.Col span={8}>
         <PatientDetails patient={patient} onChange={onPatientChange} />
