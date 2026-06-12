@@ -6,8 +6,12 @@
 import type { Patient, Reference } from '@medplum/fhirtypes';
 import { useResource } from '@medplum/react';
 import { useMemo } from 'react';
-import { CKM_STAGE_URL, HGRAPH_DATA_URL } from '../constants';
+import { getCKMStage, getHGraphData } from '../extensions';
 import type { CKMStage, HGraphMetric, PREVENTScores } from '../types';
+
+// Re-export para los consumidores existentes; la implementación pura vive en
+// extensions.ts para que también puedan usarla los bots (sin dependencias UI).
+export { getCKMStage, getHGraphData };
 
 export interface CKMData {
   patient?: Patient;
@@ -15,45 +19,6 @@ export interface CKMData {
   hGraphMetrics?: HGraphMetric[];
   preventScores?: PREVENTScores;
   loading: boolean;
-}
-
-/** Lee el estadío CKM desde la extensión del recurso Patient. */
-export function getCKMStage(patient: Patient | undefined): CKMStage | undefined {
-  const extension = patient?.extension?.find((e) => e.url === CKM_STAGE_URL);
-  if (!extension) {
-    return undefined;
-  }
-  const value =
-    extension.valueInteger ??
-    (extension.valueCode !== undefined ? Number(extension.valueCode) : undefined) ??
-    (extension.valueString !== undefined ? Number(extension.valueString) : undefined);
-  if (value === undefined || !Number.isInteger(value) || value < 0 || value > 4) {
-    return undefined;
-  }
-  return value as CKMStage;
-}
-
-interface HGraphData {
-  metrics?: HGraphMetric[];
-  prevent?: PREVENTScores;
-}
-
-/** Lee y parsea la extensión hGraphData del recurso Patient. */
-export function getHGraphData(patient: Patient | undefined): HGraphData {
-  const extension = patient?.extension?.find((e) => e.url === HGRAPH_DATA_URL);
-  if (!extension?.valueString) {
-    return {};
-  }
-  try {
-    const parsed = JSON.parse(extension.valueString) as HGraphMetric[] | HGraphData;
-    if (Array.isArray(parsed)) {
-      return { metrics: parsed };
-    }
-    return { metrics: parsed.metrics, prevent: parsed.prevent };
-  } catch (err) {
-    console.error('hGraphData inválido en Patient/' + patient?.id, err);
-    return {};
-  }
 }
 
 /**

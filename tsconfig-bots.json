@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "rootDir": "src/bots",
+    "rootDir": "src",
     "outDir": "dist",
     "lib": ["esnext"],
     "types": ["node", "vitest/globals"],
@@ -29,5 +29,5 @@
     "noEmit": true,
     "isolatedModules": true
   },
-  "include": ["src/bots/**/*.ts"]
+  "include": ["src/bots/**/*.ts", "src/ckm/**/*.ts"]
 }
