@@ -27,7 +27,8 @@ export const LOINC = {
   potassium: '6298-4',
   // Cardíaco
   ntProBNP: '33762-6',
-  hsCtnT: '89579-7',
+  // Troponina I cardíaca de alta sensibilidad (ultra sensible)
+  hsCtnI: '89579-7',
   cac: '41970-0',
 } as const;
 
