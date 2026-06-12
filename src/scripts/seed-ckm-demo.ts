@@ -115,7 +115,7 @@ async function main(): Promise<void> {
     const otherExtensions = (patient.extension ?? []).filter(
       (e) => e.url !== CKM_STAGE_URL && e.url !== HGRAPH_DATA_URL
     );
-    await medplum.updateResource({ ...patient, extension: [...otherExtensions, ...extensions] });
+    await write('Patient', medplum.updateResource({ ...patient, extension: [...otherExtensions, ...extensions] }));
 
     const riskAssessment: RiskAssessment = {
       resourceType: 'RiskAssessment',
@@ -130,9 +130,12 @@ async function main(): Promise<void> {
         { outcome: { text: 'ECV total 30 años' }, probabilityDecimal: prevent.cvdTotal30y },
       ],
     };
-    await medplum.upsertResource(
-      riskAssessment,
-      `RiskAssessment?identifier=${SEED_IDENTIFIER_SYSTEM}|ckm-seed-risk-${patient.id}`
+    await write(
+      'RiskAssessment',
+      medplum.upsertResource(
+        riskAssessment,
+        `RiskAssessment?identifier=${SEED_IDENTIFIER_SYSTEM}|ckm-seed-risk-${patient.id}`
+      )
     );
 
     if (stage >= 3) {
@@ -151,15 +154,31 @@ async function main(): Promise<void> {
           { contentString: `Riesgo PREVENT-CVD elevado (${prevent.ascvd10y}% a 10 años). Revisar plan terapéutico.` },
         ],
       };
-      await medplum.upsertResource(
-        alert,
-        `Communication?identifier=${SEED_IDENTIFIER_SYSTEM}|ckm-seed-alert-${patient.id}`
+      await write(
+        'Communication',
+        medplum.upsertResource(alert, `Communication?identifier=${SEED_IDENTIFIER_SYSTEM}|ckm-seed-alert-${patient.id}`)
       );
     }
 
     console.log(`✓ ${name}: estadío ${stage}, hGraph + PREVENT + RiskAssessment${stage >= 3 ? ' + alerta' : ''}`);
   }
   console.log('Seed CKM completo.');
+}
+
+// Traduce el Forbidden de Medplum a un mensaje accionable sobre el AccessPolicy
+async function write<T>(resourceType: string, action: Promise<T>): Promise<T> {
+  try {
+    return await action;
+  } catch (err) {
+    if (err instanceof Error && err.message.includes('Forbidden')) {
+      throw new Error(
+        `Acceso denegado al escribir ${resourceType}. El AccessPolicy del ClientApplication tiene que incluir ` +
+          'Patient, RiskAssessment y Communication (app de admin → Project → Clients → membership → Access Policy), ' +
+          'o bien usar un client sin Access Policy.'
+      );
+    }
+    throw err;
+  }
 }
 
 main().catch((err) => {
