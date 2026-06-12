@@ -64,6 +64,9 @@ export const CKM_STAGE_URL = 'https://seguimiento.medplum.com.ar/fhir/StructureD
 export const HGRAPH_DATA_URL = 'https://seguimiento.medplum.com.ar/fhir/StructureDefinition/hGraphData';
 export const PREVENT_INPUTS_URL = 'https://seguimiento.medplum.com.ar/fhir/StructureDefinition/PREVENTInputs';
 
+// Canónico del cuestionario SDOH (el Questionnaire vive en el BackEnd)
+export const SDOH_QUESTIONNAIRE_URL = 'https://seguimiento.medplum.com.ar/fhir/Questionnaire/ckm-sdoh-screening-v1';
+
 export interface CKMStageInfo {
   label: string;
   description: string;
