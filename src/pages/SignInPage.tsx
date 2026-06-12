@@ -16,7 +16,7 @@ export function SignInPage(): JSX.Element {
       clientId={getConfig().clientId}
     >
       <Logo size={32} />
-      <Title>Sign in to Medplum</Title>
+      <Title>Ingresar a Favaloro</Title>
     </SignInForm>
   );
 }
