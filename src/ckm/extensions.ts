@@ -1,8 +1,8 @@
 // Helpers puros para leer/escribir las extensiones CKM del recurso Patient.
 // Sin dependencias de UI: usable tanto por el FrontEnd como por los bots.
 import type { Extension, Patient } from '@medplum/fhirtypes';
-import { CKM_STAGE_URL, HGRAPH_DATA_URL } from './constants';
-import type { CKMStage, HGraphMetric, PREVENTScores } from './types';
+import { CKM_STAGE_URL, HGRAPH_DATA_URL, PREVENT_INPUTS_URL } from './constants';
+import type { CKMStage, HGraphMetric, PREVENTInputsData, PREVENTScores } from './types';
 
 export interface HGraphData {
   metrics?: HGraphMetric[];
@@ -41,6 +41,25 @@ export function getHGraphData(patient: Patient | undefined): HGraphData {
     console.error('hGraphData inválido en Patient/' + patient?.id, err);
     return {};
   }
+}
+
+/** Lee y parsea la extensión PREVENTInputs del recurso Patient. */
+export function getPREVENTInputs(patient: Patient | undefined): PREVENTInputsData {
+  const extension = patient?.extension?.find((e) => e.url === PREVENT_INPUTS_URL);
+  if (!extension?.valueString) {
+    return {};
+  }
+  try {
+    return JSON.parse(extension.valueString) as PREVENTInputsData;
+  } catch (err) {
+    console.error('PREVENTInputs inválido en Patient/' + patient?.id, err);
+    return {};
+  }
+}
+
+/** Reemplaza (o agrega) una extensión por URL, preservando las demás. */
+export function replaceExtension(extensions: Extension[] | undefined, extension: Extension): Extension[] {
+  return [...(extensions ?? []).filter((e) => e.url !== extension.url), extension];
 }
 
 /**

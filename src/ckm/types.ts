@@ -22,6 +22,21 @@ export interface HGraphMetric {
   status: HGraphMetricStatus;
 }
 
+/** Resumen del screening SDOH del paciente (cuestionario ckm-sdoh-screening-v1). */
+export interface SDOHSummary {
+  /** Suma de los pesos (ordinalValue/itemWeight) de las respuestas; mayor = más deprivación. */
+  score?: number;
+  /** Cantidad de ítems respondidos. */
+  answered: number;
+  responseId?: string;
+  authored?: string;
+}
+
+/** Insumos acumulados para las ecuaciones PREVENT (extensión PREVENTInputs). */
+export interface PREVENTInputsData {
+  sdoh?: SDOHSummary;
+}
+
 /** Scores de riesgo de las ecuaciones PREVENT (AHA), en porcentaje. */
 export interface PREVENTScores {
   /** Riesgo de ASCVD a 10 años. */
