@@ -27,10 +27,7 @@ async function main(): Promise<void> {
   const medplum = new MedplumClient({ baseUrl, fetch });
   await medplum.startClientLogin(clientId, clientSecret);
 
-  const result = await medplum.upsertResource(
-    questionnaire,
-    `Questionnaire?url=${encodeURIComponent(questionnaire.url)}`
-  );
+  const result = await medplum.upsertResource(questionnaire, `url=${encodeURIComponent(questionnaire.url)}`);
   console.log(`OK: Questionnaire/${result.id} ("${questionnaire.title}")`);
   console.log(`Formulario disponible en /ckm/sdoh/<patientId> de la app.`);
 }

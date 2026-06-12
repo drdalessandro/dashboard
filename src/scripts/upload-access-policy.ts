@@ -30,7 +30,7 @@ async function main(): Promise<void> {
   const medplum = new MedplumClient({ baseUrl, fetch });
   await medplum.startClientLogin(clientId, clientSecret);
 
-  const result = await medplum.upsertResource(policy, `AccessPolicy?name=${encodeURIComponent(policy.name)}`);
+  const result = await medplum.upsertResource(policy, `name=${encodeURIComponent(policy.name)}`);
   console.log(`OK: AccessPolicy/${result.id} ("${policy.name}")`);
   console.log(
     'Recordá asignarla: app de admin → Project → defaultPatientAccessPolicy, ' +

@@ -118,10 +118,7 @@ async function main(): Promise<void> {
     const sizeMb = (JSON.stringify(valueSet).length / 1024 / 1024).toFixed(1);
     console.log(`Subiendo ${valueSet.url} (${data.concepts.length} conceptos, ~${sizeMb} MB) a ${baseUrl}...`);
     try {
-      const result = await medplum.upsertResource(
-        valueSet,
-        `ValueSet?url=${encodeURIComponent(valueSet.url as string)}`
-      );
+      const result = await medplum.upsertResource(valueSet, `url=${encodeURIComponent(valueSet.url as string)}`);
       console.log(`  OK: ValueSet/${result.id}`);
     } catch (err) {
       if (err instanceof Error && err.message.includes('413')) {

@@ -132,10 +132,7 @@ async function main(): Promise<void> {
     };
     await write(
       'RiskAssessment',
-      medplum.upsertResource(
-        riskAssessment,
-        `RiskAssessment?identifier=${SEED_IDENTIFIER_SYSTEM}|ckm-seed-risk-${patient.id}`
-      )
+      medplum.upsertResource(riskAssessment, `identifier=${SEED_IDENTIFIER_SYSTEM}|ckm-seed-risk-${patient.id}`)
     );
 
     if (stage >= 3) {
@@ -156,7 +153,7 @@ async function main(): Promise<void> {
       };
       await write(
         'Communication',
-        medplum.upsertResource(alert, `Communication?identifier=${SEED_IDENTIFIER_SYSTEM}|ckm-seed-alert-${patient.id}`)
+        medplum.upsertResource(alert, `identifier=${SEED_IDENTIFIER_SYSTEM}|ckm-seed-alert-${patient.id}`)
       );
     }
 
