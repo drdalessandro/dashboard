@@ -64,6 +64,53 @@ export function statusForScore(score: number): HGraphMetricStatus {
   return score >= 0.4 ? 'moderate' : 'high';
 }
 
+/**
+ * Límites de valor crítico: riesgo inmediato que amerita notificación al
+ * profesional aunque el estadío no cambie. Revisar con el equipo médico.
+ * Crítico si value >= max o value < min.
+ */
+export const CRITICAL_LIMITS: Partial<Record<CKMParameterId, { min?: number; max?: number }>> = {
+  sbp: { max: 180 },
+  dbp: { max: 110 },
+  potassium: { min: 2.8, max: 6.0 },
+  egfr: { min: 30 },
+  glucoseFasting: { min: 60, max: 300 },
+  hsCtnI: { max: 100 },
+  ntProBNP: { max: 2000 },
+};
+
+export interface CriticalValue {
+  param: CKMParameterId;
+  value: number;
+  unit?: string;
+  message: string;
+}
+
+/** Detecta valores críticos entre los valores observados que se pasen. */
+export function detectCriticalValues(values: CKMObservationMap): CriticalValue[] {
+  const result: CriticalValue[] = [];
+  for (const [param, limits] of Object.entries(CRITICAL_LIMITS) as [CKMParameterId, { min?: number; max?: number }][]) {
+    const observed = values[param];
+    if (!observed) {
+      continue;
+    }
+    const critical =
+      (limits.max !== undefined && observed.value >= limits.max) ||
+      (limits.min !== undefined && observed.value < limits.min);
+    if (critical) {
+      const label = METRIC_DEFINITIONS[param]?.label ?? param;
+      const unit = observed.unit ?? METRIC_DEFINITIONS[param]?.defaultUnit ?? '';
+      result.push({
+        param,
+        value: observed.value,
+        unit: observed.unit,
+        message: `Valor crítico: ${label} ${observed.value} ${unit}`.trim(),
+      });
+    }
+  }
+  return result;
+}
+
 /** Convierte los últimos valores observados en métricas del hGraph. */
 export function computeMetrics(values: CKMObservationMap): HGraphMetric[] {
   const metrics: HGraphMetric[] = [];

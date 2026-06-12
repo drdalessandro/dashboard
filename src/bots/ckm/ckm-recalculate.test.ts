@@ -1,7 +1,8 @@
 import { indexSearchParameterBundle, indexStructureDefinitionBundle } from '@medplum/core';
 import { readJson, SEARCH_PARAMETER_BUNDLE_FILES } from '@medplum/definitions';
-import type { Bundle, Observation, Patient, SearchParameter } from '@medplum/fhirtypes';
+import type { Bundle, Communication, Observation, Patient, SearchParameter } from '@medplum/fhirtypes';
 import { MockClient } from '@medplum/mock';
+import { vi } from 'vitest';
 import { CKM_STAGE_URL, HGRAPH_DATA_URL, LOINC, LOINC_BP_PANEL, LOINC_SYSTEM } from '../../ckm/constants';
 import type { HGraphMetric } from '../../ckm/types';
 import { handler } from './ckm-recalculate';
@@ -110,6 +111,85 @@ describe('Bot CKM recalculate', () => {
     const result = await handler(medplum, { bot, contentType, input: observation, secrets: {} });
 
     expect(result).toBeUndefined();
+  });
+
+  test('empeoramiento de estadío: crea Communication alert y manda email', async () => {
+    const medplum = new MockClient();
+    const sendEmail = vi.spyOn(medplum, 'sendEmail').mockResolvedValue({} as never);
+    const patient = await medplum.createResource<Patient>({
+      resourceType: 'Patient',
+      gender: 'male',
+      extension: [{ url: CKM_STAGE_URL, valueInteger: 1 }],
+    });
+    // TFGe 48 -> ERC -> estadío 2 (antes 1)
+    const observation = await medplum.createResource(
+      labObservation(patient.id as string, LOINC.egfr, 48, 'mL/min/1.73m²', '2026-06-01')
+    );
+
+    const result = await handler(medplum, {
+      bot,
+      contentType,
+      input: observation,
+      secrets: { CKM_ALERT_EMAIL: { name: 'CKM_ALERT_EMAIL', valueString: 'cardio@example.com' } },
+    });
+
+    expect(getExtensions(result as Patient).stage).toBe(2);
+    const alerts = await medplum.searchResources('Communication', `subject=Patient/${patient.id}`);
+    expect(alerts).toHaveLength(1);
+    expect((alerts[0] as Communication).payload?.[0]?.contentString).toContain('pasó de 1 a 2');
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+    expect(sendEmail.mock.calls[0][0]).toMatchObject({ to: 'cardio@example.com' });
+    // Por privacidad el email solo lleva el link, sin datos clínicos
+    const emailBody = JSON.stringify(sendEmail.mock.calls[0][0]);
+    expect(emailBody).not.toContain('TFGe');
+    expect(emailBody).not.toContain('estadío');
+  });
+
+  test('valor crítico sin cambio de estadío: alerta al generalPractitioner', async () => {
+    const medplum = new MockClient();
+    const sendEmail = vi.spyOn(medplum, 'sendEmail').mockResolvedValue({} as never);
+    const gp = await medplum.createResource({
+      resourceType: 'Practitioner',
+      telecom: [{ system: 'email', value: 'dra.lopez@example.com' }],
+    });
+    const patient = await medplum.createResource<Patient>({
+      resourceType: 'Patient',
+      gender: 'female',
+      generalPractitioner: [{ reference: `Practitioner/${gp.id}` }],
+      extension: [{ url: CKM_STAGE_URL, valueInteger: 2 }],
+    });
+    // PA 186/92: crítico (>=180) pero sigue siendo estadío 2
+    const observation = await medplum.createResource(bpPanel(patient.id as string, 186, 92, '2026-06-01'));
+
+    await handler(medplum, { bot, contentType, input: observation, secrets: {} });
+
+    const alerts = await medplum.searchResources('Communication', `subject=Patient/${patient.id}`);
+    expect(alerts).toHaveLength(1);
+    expect((alerts[0] as Communication).payload?.[0]?.contentString).toContain('PA sistólica 186');
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+    expect(sendEmail.mock.calls[0][0]).toMatchObject({ to: 'dra.lopez@example.com' });
+  });
+
+  test('valores normales sin empeoramiento: no alerta ni manda email', async () => {
+    const medplum = new MockClient();
+    const sendEmail = vi.spyOn(medplum, 'sendEmail').mockResolvedValue({} as never);
+    const patient = await medplum.createResource<Patient>({
+      resourceType: 'Patient',
+      gender: 'female',
+      extension: [{ url: CKM_STAGE_URL, valueInteger: 2 }],
+    });
+    const observation = await medplum.createResource(bpPanel(patient.id as string, 118, 76, '2026-06-01'));
+
+    await handler(medplum, {
+      bot,
+      contentType,
+      input: observation,
+      secrets: { CKM_ALERT_EMAIL: { name: 'CKM_ALERT_EMAIL', valueString: 'cardio@example.com' } },
+    });
+
+    const alerts = await medplum.searchResources('Communication', `subject=Patient/${patient.id}`);
+    expect(alerts).toHaveLength(0);
+    expect(sendEmail).not.toHaveBeenCalled();
   });
 
   test('preserva los scores PREVENT ya guardados en la extensión', async () => {
