@@ -5,6 +5,7 @@ import {
   IconClipboardHeart,
   IconClipboardList,
   IconDatabaseImport,
+  IconHeartRateMonitor,
   IconHealthRecognition,
   IconQuestionMark,
   IconRobot,
@@ -13,6 +14,7 @@ import {
 import { Suspense } from 'react';
 import type { JSX } from 'react';
 import { Route, Routes } from 'react-router';
+import { CKMDashboard } from './pages/CKMDashboard';
 import { EncounterPage } from './pages/EncounterPage';
 import { LandingPage } from './pages/LandingPage';
 import { PatientPage } from './pages/PatientPage';
@@ -33,6 +35,10 @@ export function App(): JSX.Element | null {
     <AppShell
       logo={<Logo size={24} />}
       menus={[
+        {
+          title: 'CKM',
+          links: [{ icon: <IconHeartRateMonitor />, label: 'Panel CKM', href: '/ckm' }],
+        },
         {
           title: 'Charts',
           links: [{ icon: <IconUser />, label: 'Patients', href: '/Patient' }],
@@ -64,6 +70,7 @@ export function App(): JSX.Element | null {
           <Routes>
             <Route path="/" element={profile ? <SearchPage /> : <LandingPage />} />
             <Route path="/signin" element={<SignInPage />} />
+            <Route path="/ckm" element={<CKMDashboard />} />
             <Route path="/Patient/:id">
               <Route index element={<PatientPage />} />
               <Route path="*" element={<PatientPage />} />
