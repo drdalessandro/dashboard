@@ -11,6 +11,7 @@
     "import-vsac": "tsx src/scripts/import-vsac-valuesets.ts",
     "seed-ckm-demo": "tsx src/scripts/seed-ckm-demo.ts",
     "upload-access-policy": "tsx src/scripts/upload-access-policy.ts",
+    "upload-sdoh": "tsx src/scripts/upload-sdoh-questionnaire.ts",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "preview": "vite preview",
