@@ -115,9 +115,25 @@ async function main(): Promise<void> {
     console.log(`Descargando ValueSet ${oid} desde VSAC...`);
     const data = await fetchVsacExpansion(oid, umlsApiKey);
     const valueSet = buildValueSet(oid, data);
-    console.log(`Subiendo ${valueSet.url} (${data.concepts.length} conceptos) a ${baseUrl}...`);
-    const result = await medplum.upsertResource(valueSet, `ValueSet?url=${encodeURIComponent(valueSet.url as string)}`);
-    console.log(`  OK: ValueSet/${result.id}`);
+    const sizeMb = (JSON.stringify(valueSet).length / 1024 / 1024).toFixed(1);
+    console.log(`Subiendo ${valueSet.url} (${data.concepts.length} conceptos, ~${sizeMb} MB) a ${baseUrl}...`);
+    try {
+      const result = await medplum.upsertResource(
+        valueSet,
+        `ValueSet?url=${encodeURIComponent(valueSet.url as string)}`
+      );
+      console.log(`  OK: ValueSet/${result.id}`);
+    } catch (err) {
+      if (err instanceof Error && err.message.includes('413')) {
+        throw new Error(
+          `El servidor rechazó el ValueSet ${oid} por tamaño (~${sizeMb} MB). ` +
+            'Subí el límite de body en los dos niveles y reintentá:\n' +
+            '  - nginx: client_max_body_size 64m; (y sudo nginx -t && sudo systemctl reload nginx)\n' +
+            '  - Medplum server: "maxJsonSize": "64mb" en medplum.config.json (o MEDPLUM_MAX_JSON_SIZE=64mb)'
+        );
+      }
+      throw err;
+    }
   }
   console.log('Importación completa.');
 }
