@@ -77,4 +77,12 @@ describe('PREVENT — validación contra vector oficial (mujer 50a del paper)', 
     expect(result?.hf10y).toBeCloseTo(8.1, 1);
     expect(Math.abs((result?.cvdTotal30y ?? 0) - 53)).toBeLessThan(1);
   });
+
+  test('non-HDL directo (Control) da el mismo resultado que total - HDL', () => {
+    // total 200, HDL 45 -> non-HDL 155. Enviar 155 directo debe coincidir.
+    const conTotal = computePrevent(REFERENCE_INPUT);
+    const { totalCholesterol: _omit, ...sinTotal } = REFERENCE_INPUT;
+    const conNonHdl = computePrevent({ ...sinTotal, nonHdlCholesterol: 155 });
+    expect(conNonHdl).toEqual(conTotal);
+  });
 });
