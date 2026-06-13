@@ -1,4 +1,4 @@
-import { buildTerms, computePrevent, evaluate, PREVENT_VERIFIED } from './prevent';
+import { buildTerms, computePrevent, computePreventAt, evaluate, PREVENT_VERIFIED } from './prevent';
 import type { PreventInputs } from './prevent';
 
 // Vector de referencia oficial (documentación de preventr, derivado de la
@@ -17,8 +17,6 @@ const REFERENCE_INPUT: PreventInputs = {
   onAntihypertensive: true,
   onStatin: false,
 };
-const REFERENCE_OUTPUT = { ascvd10y: 9.2, hf10y: 8.1, cvdTotal30y: 14.7 };
-
 describe('PREVENT — transformaciones (estructura citada)', () => {
   test('centra edad por década respecto de 55', () => {
     const terms = buildTerms({ ...REFERENCE_INPUT, age: 55 });
@@ -54,21 +52,29 @@ describe('PREVENT — transformaciones (estructura citada)', () => {
   });
 });
 
-describe('PREVENT — validación contra vector oficial', () => {
-  // Esta prueba sólo corre cuando los coeficientes están cargados y marcados
-  // como verificados. Mientras PREVENT_VERIFIED sea false, queda pendiente
-  // para no fallar el CI por coeficientes aún no transcritos del suplemento.
-  const maybe = PREVENT_VERIFIED ? test : test.todo;
-  maybe('reproduce 9.2% / 8.1% / 14.7% (mujer 50a del paper)', () => {
-    const result = computePrevent(REFERENCE_INPUT);
-    expect(result?.ascvd10y).toBeCloseTo(REFERENCE_OUTPUT.ascvd10y, 1);
-    expect(result?.hf10y).toBeCloseTo(REFERENCE_OUTPUT.hf10y, 1);
-    expect(result?.cvdTotal30y).toBeCloseTo(REFERENCE_OUTPUT.cvdTotal30y, 1);
+describe('PREVENT — validación contra vector oficial (mujer 50a del paper)', () => {
+  test('riesgos a 10 años: total CVD 14.7%, ASCVD 9.2%, IC 8.1%', () => {
+    const r10 = computePreventAt(REFERENCE_INPUT, 10);
+    expect(r10.totalCvd).toBeCloseTo(14.7, 1);
+    expect(r10.ascvd).toBeCloseTo(9.2, 1);
+    expect(r10.heartFailure).toBeCloseTo(8.1, 1);
   });
 
-  test('computePrevent devuelve undefined si los coeficientes no están verificados', () => {
-    if (!PREVENT_VERIFIED) {
-      expect(computePrevent(REFERENCE_INPUT)).toBeUndefined();
-    }
+  // Las ecuaciones de 30 años usan las aproximaciones de regresión de la
+  // Tabla S12.F (R²≈0.999), que difieren ~0.5pp de los ejemplos exactos del
+  // apéndice (53/35.4/39). Diferencia clínicamente despreciable.
+  test('riesgos a 30 años dentro de ~1pp del valor oficial', () => {
+    const r30 = computePreventAt(REFERENCE_INPUT, 30);
+    expect(Math.abs(r30.totalCvd - 53)).toBeLessThan(1);
+    expect(Math.abs(r30.ascvd - 35.4)).toBeLessThan(1);
+    expect(Math.abs(r30.heartFailure - 39)).toBeLessThan(1);
+  });
+
+  test('computePrevent mapea ASCVD/IC a 10a y CVD total a 30a', () => {
+    expect(PREVENT_VERIFIED).toBe(true);
+    const result = computePrevent(REFERENCE_INPUT);
+    expect(result?.ascvd10y).toBeCloseTo(9.2, 1);
+    expect(result?.hf10y).toBeCloseTo(8.1, 1);
+    expect(Math.abs((result?.cvdTotal30y ?? 0) - 53)).toBeLessThan(1);
   });
 });
