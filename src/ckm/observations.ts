@@ -68,15 +68,29 @@ export function extractCKMValues(observation: Observation): CKMObservationMap {
 }
 
 /**
+ * Una lectura de PA con sistólica <= diastólica es fisiológicamente imposible:
+ * casi siempre es una carga con los campos cruzados (ej. 87/160 en Control).
+ */
+export function isImplausibleBloodPressure(values: CKMObservationMap): boolean {
+  return values.sbp !== undefined && values.dbp !== undefined && values.sbp.value <= values.dbp.value;
+}
+
+/**
  * Reduce una lista de Observations al último valor de cada parámetro CKM.
  * Las Observations se procesan de más vieja a más nueva, así la más reciente
- * (por fecha clínica) pisa a las anteriores.
+ * (por fecha clínica) pisa a las anteriores. Las lecturas de PA implausibles
+ * (sistólica <= diastólica) se descartan para no pisar valores válidos.
  */
 export function latestCKMValues(observations: Observation[]): CKMObservationMap {
   const sorted = [...observations].sort((a, b) => observationDate(a).localeCompare(observationDate(b)));
   const result: CKMObservationMap = {};
   for (const observation of sorted) {
-    Object.assign(result, extractCKMValues(observation));
+    const values = extractCKMValues(observation);
+    if (isImplausibleBloodPressure(values)) {
+      delete values.sbp;
+      delete values.dbp;
+    }
+    Object.assign(result, values);
   }
   return result;
 }

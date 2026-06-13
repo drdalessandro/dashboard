@@ -1,8 +1,7 @@
 // Panel de trabajo del especialista CKM: pacientes filtrables por estadío y
 // nombre, ordenables por estadío y por riesgo PREVENT, con alertas sin leer.
 import { Group, MultiSelect, Paper, Table, Text, TextInput, Tooltip, UnstyledButton } from '@mantine/core';
-import { formatDate, formatHumanName } from '@medplum/core';
-import type { HumanName, Patient } from '@medplum/fhirtypes';
+import { formatDate } from '@medplum/core';
 import { Loading, useMedplum } from '@medplum/react';
 import { IconAlertCircle, IconChevronDown, IconChevronUp, IconSearch, IconSelector } from '@tabler/icons-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -10,17 +9,9 @@ import type { JSX } from 'react';
 import { Link } from 'react-router';
 import { CKMStageBadge } from '../ckm/components/CKMStageBadge';
 import { CKM_STAGES } from '../ckm/constants';
-import { getCKMStage, getHGraphData } from '../ckm/hooks/useCKMData';
+import { loadDashboardRows } from '../ckm/dashboard';
+import type { DashboardRow } from '../ckm/dashboard';
 import type { CKMStage } from '../ckm/types';
-
-interface DashboardRow {
-  patient: Patient;
-  name: string;
-  stage?: CKMStage;
-  ascvd10y?: number;
-  riskUpdated?: string;
-  hasAlert: boolean;
-}
 
 type SortField = 'stage' | 'risk';
 
@@ -42,46 +33,7 @@ export function CKMDashboard(): JSX.Element {
   const [sort, setSort] = useState<SortState>();
 
   useEffect(() => {
-    loadRows().then(setRows).catch(console.error);
-
-    async function loadRows(): Promise<DashboardRow[]> {
-      // TODO: optimizar con una query GraphQL que traiga Patient +
-      // RiskAssessment + Communication en una sola llamada y pagine de verdad.
-      const patients = await medplum.searchResources('Patient', { _count: '50', _sort: '-_lastUpdated' });
-      if (patients.length === 0) {
-        return [];
-      }
-      const subjects = patients.map((p) => `Patient/${p.id}`).join(',');
-
-      const [riskAssessments, alerts] = await Promise.all([
-        medplum.searchResources('RiskAssessment', { subject: subjects, _sort: '-_lastUpdated', _count: '500' }),
-        medplum.searchResources('Communication', {
-          subject: subjects,
-          category: 'alert',
-          'status:not': 'completed',
-          _count: '500',
-        }),
-      ]);
-
-      // El primer RiskAssessment por paciente es el más reciente (_sort desc)
-      const riskUpdatedByPatient = new Map<string, string>();
-      for (const risk of riskAssessments) {
-        const subject = risk.subject?.reference;
-        if (subject && risk.meta?.lastUpdated && !riskUpdatedByPatient.has(subject)) {
-          riskUpdatedByPatient.set(subject, risk.meta.lastUpdated);
-        }
-      }
-      const alertedPatients = new Set(alerts.map((a) => a.subject?.reference));
-
-      return patients.map((patient) => ({
-        patient,
-        name: patient.name ? formatHumanName(patient.name[0] as HumanName) : '',
-        stage: getCKMStage(patient),
-        ascvd10y: getHGraphData(patient).prevent?.ascvd10y,
-        riskUpdated: riskUpdatedByPatient.get(`Patient/${patient.id}`),
-        hasAlert: alertedPatients.has(`Patient/${patient.id}`),
-      }));
-    }
+    loadDashboardRows(medplum).then(setRows).catch(console.error);
   }, [medplum]);
 
   const visibleRows = useMemo(() => {

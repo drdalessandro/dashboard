@@ -29,7 +29,7 @@
 import type { BotEvent, MedplumClient } from '@medplum/core';
 import type { Communication, Condition, Observation, Patient, Practitioner, Reference } from '@medplum/fhirtypes';
 import { getCKMStage, getHGraphData, withCKMExtensions } from '../../ckm/extensions';
-import { extractCKMValues, getLatestCKMObservations } from '../../ckm/observations';
+import { extractCKMValues, getLatestCKMObservations, isImplausibleBloodPressure } from '../../ckm/observations';
 import { computeMetrics, deriveStage, detectCriticalValues } from '../../ckm/scoring';
 
 const DEFAULT_APP_URL = 'https://seguimiento.medplum.com.ar';
@@ -68,7 +68,9 @@ export async function handler(medplum: MedplumClient, event: BotEvent<Observatio
 
   const previousStage = getCKMStage(patient);
   const metrics = computeMetrics(values);
-  const stage = deriveStage(values, { hasClinicalCVD, gender: patient.gender });
+  // Si no quedan datos evaluables (ej. única lectura descartada), conservar
+  // el estadío previo en lugar de borrarlo
+  const stage = deriveStage(values, { hasClinicalCVD, gender: patient.gender }) ?? previousStage;
   const previous = getHGraphData(patient);
 
   const updated = await medplum.updateResource({
@@ -76,11 +78,21 @@ export async function handler(medplum: MedplumClient, event: BotEvent<Observatio
     extension: withCKMExtensions(patient, stage, { metrics, prevent: previous.prevent }),
   });
 
-  // Alertas: empeoramiento de estadío, o valor crítico en la Observation que
-  // disparó el bot (solo lo recién llegado, para no re-alertar valores viejos)
+  // Alertas: empeoramiento de estadío, valor crítico en la Observation que
+  // disparó el bot (solo lo recién llegado, para no re-alertar valores
+  // viejos), o lectura de PA implausible (campos cruzados al cargar)
   const messages: string[] = [];
   if (previousStage !== undefined && stage !== undefined && stage > previousStage) {
     messages.push(`El estadío CKM pasó de ${previousStage} a ${stage}.`);
+  }
+  if (isImplausibleBloodPressure(triggeredValues)) {
+    messages.push(
+      `Registro de presión arterial inconsistente (sistólica ${triggeredValues.sbp?.value} menor o igual que ` +
+        `diastólica ${triggeredValues.dbp?.value}). Verificar la carga; el valor no se usó para el cálculo.`
+    );
+    // No evaluar valores críticos sobre una lectura cruzada
+    delete triggeredValues.sbp;
+    delete triggeredValues.dbp;
   }
   messages.push(...detectCriticalValues(triggeredValues).map((c) => c.message));
 

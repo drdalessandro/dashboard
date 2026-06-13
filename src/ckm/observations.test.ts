@@ -69,6 +69,18 @@ describe('Observations CKM unificadas', () => {
     expect(values.cholesterolTotal?.value).toBe(210);
   });
 
+  test('PA implausible (sistólica <= diastólica): se descarta y no pisa la lectura válida anterior', () => {
+    const values = latestCKMValues([
+      bpPanel(128, 82, '2026-06-01'),
+      // Carga cruzada: 87/160
+      bpPanel(87, 160, '2026-06-12'),
+      singleObservation(LOINC.hba1c, 6.1, '%', '2026-06-12'),
+    ]);
+    expect(values.sbp?.value).toBe(128);
+    expect(values.dbp?.value).toBe(82);
+    expect(values.hba1c?.value).toBe(6.1);
+  });
+
   test('ignora códigos que no son CKM', () => {
     const values = extractCKMValues(singleObservation('8302-2', 170, 'cm', '2026-06-01'));
     expect(Object.keys(values)).toHaveLength(0);
