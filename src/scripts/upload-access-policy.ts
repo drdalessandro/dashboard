@@ -1,16 +1,20 @@
-// Sube (upsert por nombre) el AccessPolicy de pacientes al servidor Medplum.
+// Sube (upsert por nombre) un AccessPolicy versionado al servidor Medplum.
 //
-// La política vive versionada en data/ckm/patient-access-policy.json.
-// Después de subirla, asignarla como Project.defaultPatientAccessPolicy para
-// que el registro de pacientes desde Control la aplique automáticamente.
+// Las políticas viven en data/ckm/:
+// - patient-access-policy.json (default): rol paciente (Control). Asignarla
+//   como Project.defaultPatientAccessPolicy para el registro automático.
+// - clinician-access-policy.json: rol profesional (seguimiento). Asignarla en
+//   la ProjectMembership de cada Practitioner.
 //
 // Uso:
 //   MEDPLUM_CLIENT_ID=xxx MEDPLUM_CLIENT_SECRET=xxx npm run upload-access-policy
+//   MEDPLUM_CLIENT_ID=xxx MEDPLUM_CLIENT_SECRET=xxx \
+//     npm run upload-access-policy -- data/ckm/clinician-access-policy.json
 import { MedplumClient } from '@medplum/core';
 import type { AccessPolicy } from '@medplum/fhirtypes';
 import fs from 'fs';
 
-const POLICY_FILE = 'data/ckm/patient-access-policy.json';
+const DEFAULT_POLICY_FILE = 'data/ckm/patient-access-policy.json';
 
 async function main(): Promise<void> {
   const baseUrl = process.env.MEDPLUM_BASE_URL ?? 'https://api.medplum.com.ar';
@@ -22,9 +26,10 @@ async function main(): Promise<void> {
     );
   }
 
-  const policy = JSON.parse(fs.readFileSync(POLICY_FILE, 'utf8')) as AccessPolicy;
+  const policyFile = process.argv[2] ?? DEFAULT_POLICY_FILE;
+  const policy = JSON.parse(fs.readFileSync(policyFile, 'utf8')) as AccessPolicy;
   if (!policy.name) {
-    throw new Error(`${POLICY_FILE} no tiene name; se necesita para el upsert`);
+    throw new Error(`${policyFile} no tiene name; se necesita para el upsert`);
   }
 
   const medplum = new MedplumClient({ baseUrl, fetch });
@@ -33,8 +38,8 @@ async function main(): Promise<void> {
   const result = await medplum.upsertResource(policy, `name=${encodeURIComponent(policy.name)}`);
   console.log(`OK: AccessPolicy/${result.id} ("${policy.name}")`);
   console.log(
-    'Recordá asignarla: app de admin → Project → defaultPatientAccessPolicy, ' +
-      'o en la ProjectMembership de cada paciente existente.'
+    'Recordá asignarla: pacientes → Project.defaultPatientAccessPolicy; ' +
+      'profesionales → ProjectMembership de cada Practitioner.'
   );
 }
 

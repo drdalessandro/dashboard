@@ -1,0 +1,30 @@
+{
+  "resourceType": "AccessPolicy",
+  "name": "HeartInnovations — Clinician Full Access v1.2",
+  "resource": [
+    { "resourceType": "Patient" },
+    { "resourceType": "Encounter" },
+    { "resourceType": "ClinicalImpression" },
+    { "resourceType": "Condition" },
+    { "resourceType": "Observation" },
+    { "resourceType": "MedicationRequest" },
+    { "resourceType": "MedicationStatement" },
+    { "resourceType": "AllergyIntolerance" },
+    { "resourceType": "Appointment" },
+    { "resourceType": "Schedule" },
+    { "resourceType": "Slot" },
+    { "resourceType": "Task" },
+    { "resourceType": "QuestionnaireResponse" },
+    { "resourceType": "DiagnosticReport" },
+    { "resourceType": "CarePlan" },
+    { "resourceType": "Communication" },
+    { "resourceType": "DocumentReference" },
+    { "resourceType": "RiskAssessment" },
+    { "resourceType": "Binary" },
+    { "resourceType": "Questionnaire", "readonly": true },
+    { "resourceType": "Practitioner", "readonly": true },
+    { "resourceType": "Organization", "readonly": true },
+    { "resourceType": "HealthcareService", "readonly": true },
+    { "resourceType": "ValueSet", "readonly": true }
+  ]
+}
