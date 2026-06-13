@@ -228,16 +228,13 @@ function checkQuestionnairesUploaded(medplum: MedplumClient): boolean {
 
 function checkBotsUploaded(medplum: MedplumClient): boolean {
   const bots = medplum.searchResources('Bot').read();
+  const existingNames = new Set(bots.map((bot) => bot.name));
 
-  const exampleBots = bots.filter(
-    (bot) =>
-      bot.name === 'general-encounter-note' ||
-      bot.name === 'gynecology-encounter-note' ||
-      bot.name === 'obstetric-encounter-note'
-  );
+  // Todos los bots del bundle deben existir; mientras falte alguno (ej. los
+  // bots CKM nuevos) el botón sigue habilitado para poder subirlos/redeployar.
+  const expectedNames = ((exampleBotData as Bundle).entry ?? [])
+    .filter((e) => e.resource?.resourceType === 'Bot')
+    .map((e) => (e.resource as Bot).name ?? '');
 
-  if (exampleBots.length === 3) {
-    return true;
-  }
-  return false;
+  return expectedNames.length > 0 && expectedNames.every((name) => existingNames.has(name));
 }
