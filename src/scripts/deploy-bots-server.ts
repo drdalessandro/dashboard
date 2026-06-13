@@ -72,21 +72,52 @@ async function main(): Promise<void> {
   await medplum.executeBatch(JSON.parse(transactionString) as Bundle);
   console.log('  Transacción ejecutada (código fuente + suscripciones).');
 
-  // 4. Desplegar el código ejecutable de cada bot a Lambda
+  // 4. Desplegar el código ejecutable de cada bot a Lambda. Se continúa ante
+  //    un fallo para no dejar a medias el resto y poder reportar el detalle.
+  const failures: string[] = [];
   for (const entry of botEntries) {
     const botName = (entry.resource as Bot).name as string;
-    const distUrl = (entry.resource as Bot).executableCode?.url;
-    const distEntry = (bundle.entry ?? []).find((e) => e.fullUrl === distUrl);
-    const data = (distEntry?.resource as { data?: string })?.data;
-    if (!data) {
-      console.log(`  ! ${botName}: sin código ejecutable en el bundle, salteado`);
-      continue;
+    const botId = botIds[botName];
+    const wanted = (entry.resource as Bot).runtimeVersion ?? 'awslambda';
+    try {
+      // Forzar el runtimeVersion del bundle: un bot creado antes como
+      // 'vmcontext' falla con "Bots not enabled" si el servidor no los habilita.
+      const serverBot = await medplum.readResource('Bot', botId);
+      if (serverBot.runtimeVersion !== wanted) {
+        await medplum.updateResource({ ...serverBot, runtimeVersion: wanted });
+        console.log(`  · ${botName}: runtimeVersion ${serverBot.runtimeVersion ?? '(sin)'} -> ${wanted}`);
+      }
+
+      const distUrl = (entry.resource as Bot).executableCode?.url;
+      const distEntry = (bundle.entry ?? []).find((e) => e.fullUrl === distUrl);
+      const data = (distEntry?.resource as { data?: string })?.data;
+      if (!data) {
+        console.log(`  ! ${botName}: sin código ejecutable en el bundle, salteado`);
+        continue;
+      }
+      const code = Buffer.from(data, 'base64').toString('utf8');
+      await medplum.post(medplum.fhirUrl('Bot', botId, '$deploy'), { code });
+      console.log(`  ✓ ${botName} desplegado (${wanted})`);
+    } catch (err) {
+      const msg = (err as Error).message ?? String(err);
+      console.log(`  ✗ ${botName}: ${msg}`);
+      failures.push(`${botName}: ${msg}`);
     }
-    const code = Buffer.from(data, 'base64').toString('utf8');
-    await medplum.post(medplum.fhirUrl('Bot', botIds[botName], '$deploy'), { code });
-    console.log(`  ✓ ${botName} desplegado`);
   }
 
+  if (failures.length > 0) {
+    console.log('\n✗ Bots que no se desplegaron:');
+    failures.forEach((f) => console.log('  - ' + f));
+    if (failures.some((f) => /not enabled/i.test(f))) {
+      console.log(
+        '\n"Bots not enabled" suele ser config del servidor Medplum: faltan habilitar\n' +
+          '  los bots de ese runtime. Para awslambda, verificá en medplum.config.json:\n' +
+          '  botLambdaRoleArn y botLambdaLayerName configurados; para vmcontext,\n' +
+          '  vmContextBotsEnabled: true.'
+      );
+    }
+    process.exit(1);
+  }
   console.log('\nListo. Verificá con: npm run verify-prevent');
 }
 
