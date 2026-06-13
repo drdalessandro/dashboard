@@ -16,6 +16,11 @@ interface BotDescription {
   runtimeVersion?: 'awslambda' | 'vmcontext';
 }
 
+// Runtime de los bots CKM. Por defecto awslambda; con CKM_BOT_RUNTIME=vmcontext
+// se ejecutan dentro del proceso Medplum (requiere vmContextBotsEnabled:true en
+// el servidor), útil cuando crear Lambdas nuevos da "Bots not enabled".
+const CKM_RUNTIME = (process.env.CKM_BOT_RUNTIME as 'awslambda' | 'vmcontext') || 'awslambda';
+
 const Bots: BotDescription[] = [
   {
     src: 'src/bots/core/general-encounter-note.ts',
@@ -36,11 +41,13 @@ const Bots: BotDescription[] = [
     src: 'src/bots/ckm/ckm-recalculate.ts',
     dist: 'dist/bots/ckm/ckm-recalculate.js',
     criteria: `Observation?code=${CKM_OBSERVATION_CODES.join(',')}`,
+    runtimeVersion: CKM_RUNTIME,
   },
   {
     src: 'src/bots/ckm/sdoh-response.ts',
     dist: 'dist/bots/ckm/sdoh-response.js',
     criteria: `QuestionnaireResponse?questionnaire=${SDOH_QUESTIONNAIRE_URL}`,
+    runtimeVersion: CKM_RUNTIME,
   },
 ];
 
