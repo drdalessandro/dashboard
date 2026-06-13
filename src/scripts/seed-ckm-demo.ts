@@ -84,6 +84,15 @@ function detectStage(patient: Patient): CKMStage | undefined {
   return raw !== undefined ? (Number(raw) as CKMStage) : undefined;
 }
 
+/** Estadío demo determinístico (0-4) para pacientes sin marcador (modo --all). */
+function deterministicStage(id: string | undefined): CKMStage {
+  let hash = 0;
+  for (const char of id ?? '') {
+    hash = (hash * 31 + char.charCodeAt(0)) % 997;
+  }
+  return (hash % 5) as CKMStage;
+}
+
 async function main(): Promise<void> {
   const baseUrl = process.env.MEDPLUM_BASE_URL ?? 'https://api.medplum.com.ar';
   const clientId = process.env.MEDPLUM_CLIENT_ID;
@@ -97,10 +106,18 @@ async function main(): Promise<void> {
   const medplum = new MedplumClient({ baseUrl, fetch });
   await medplum.startClientLogin(clientId, clientSecret);
 
+  // Con --all, los pacientes sin marcador reciben un estadío demo
+  // determinístico en lugar de saltearse
+  const seedAll = process.argv.includes('--all');
+
   const patients = await medplum.searchResources('Patient', { _count: '100' });
   for (const patient of patients) {
-    const stage = detectStage(patient);
+    let stage = detectStage(patient);
     const name = patient.name?.[0] ? `${patient.name[0].given?.join(' ')} ${patient.name[0].family ?? ''}` : patient.id;
+    if (stage === undefined && seedAll) {
+      stage = deterministicStage(patient.id);
+      console.log(`  (${name}: sin marcador, --all le asigna estadío demo ${stage})`);
+    }
     if (stage === undefined) {
       console.log(`- ${name}: sin marcador de estadío (identifier ckm-seed-stageN o nombre "Estadío N"), salteado`);
       continue;
