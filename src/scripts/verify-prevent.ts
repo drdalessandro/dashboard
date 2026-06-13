@@ -57,8 +57,24 @@ async function main(): Promise<void> {
   const medplum = new MedplumClient({ baseUrl, fetch });
   await medplum.startClientLogin(clientId, clientSecret);
 
-  // Paciente de referencia (upsert por identifier)
-  const birthYear = new Date().getFullYear() - REFERENCE.age - 1;
+  // Chequeo previo: ¿está desplegado el bot y su Subscription?
+  const bot = await medplum.searchOne('Bot', 'name=ckm-recalculate');
+  const subs = await medplum.searchResources('Subscription', { _count: '50' });
+  const ckmSub = subs.find((s) => s.criteria?.startsWith('Observation?code=') && s.reason === 'ckm-recalculate');
+  console.log(`Bot ckm-recalculate: ${bot ? `Bot/${bot.id}` : 'NO ENCONTRADO'}`);
+  console.log(`Subscription del bot: ${ckmSub ? `${ckmSub.id} (status=${ckmSub.status})` : 'NO ENCONTRADA'}`);
+  if (!bot || !ckmSub || ckmSub.status !== 'active') {
+    console.log(
+      '\n✗ El bot o su Subscription no están desplegados/activos. Subí el bundle desde Upload Example Bots\n' +
+        '  (npm run build:bots y luego /upload/bots) y verificá que la Subscription quede en status=active.'
+    );
+    if (!process.argv.includes('--cleanup')) {
+      process.exit(1);
+    }
+  }
+
+  // Paciente de referencia (upsert por identifier). Edad exactamente 50.
+  const birthYear = new Date().getFullYear() - REFERENCE.age;
   const patient = await medplum.upsertResource<Patient>(
     {
       resourceType: 'Patient',
@@ -119,31 +135,51 @@ async function main(): Promise<void> {
   });
 
   const expected = computePrevent(REFERENCE);
-  console.log('Motor local (validado):', expected);
+  console.log('\nMotor local (validado):', expected);
   console.log('Esperando a que el bot desplegado recalcule...');
 
-  // Poll hasta ver los scores PREVENT en la extensión del Patient
-  let serverPrevent;
+  // Poll: detectar si el bot escribió ALGO (metrics) y si calculó PREVENT
+  let fresh = await medplum.readResource('Patient', pid);
   for (let i = 0; i < 20; i++) {
     await sleep(3000);
-    const fresh = await medplum.readResource('Patient', pid);
-    serverPrevent = getHGraphData(fresh).prevent;
-    if (serverPrevent && serverPrevent.ascvd10y === expected?.ascvd10y) {
+    fresh = await medplum.readResource('Patient', pid);
+    const data = getHGraphData(fresh);
+    if (data.prevent?.ascvd10y === expected?.ascvd10y) {
       break;
     }
-    console.log(`  intento ${i + 1}/20: ${serverPrevent ? JSON.stringify(serverPrevent) : 'sin datos aún'}`);
+    const ran = (data.metrics?.length ?? 0) > 0 ? `metrics=${data.metrics?.length}` : 'sin métricas';
+    console.log(`  intento ${i + 1}/20: ${ran}, prevent=${data.prevent ? JSON.stringify(data.prevent) : 'undefined'}`);
   }
 
-  console.log('\nServidor (bot desplegado):', serverPrevent);
+  const finalData = getHGraphData(fresh);
+  const serverPrevent = finalData.prevent;
+  const obsCount = (await medplum.searchResources('Observation', { subject: `Patient/${pid}`, _count: '50' })).length;
+
+  console.log('\n── Diagnóstico ──');
+  console.log(`Observations del paciente: ${obsCount}`);
+  console.log(`hGraph metrics escritas por el bot: ${finalData.metrics?.length ?? 0}`);
+  console.log(`Scores PREVENT del servidor: ${serverPrevent ? JSON.stringify(serverPrevent) : 'undefined'}`);
+
   const ok =
     serverPrevent?.ascvd10y === expected?.ascvd10y &&
     serverPrevent?.hf10y === expected?.hf10y &&
     serverPrevent?.cvdTotal30y === expected?.cvdTotal30y;
   if (ok) {
     console.log('\n✓ OK: el bot en producción coincide con el motor validado.');
+  } else if ((finalData.metrics?.length ?? 0) === 0) {
+    console.log('\n✗ El bot NO se ejecutó (no escribió métricas). Causas probables:');
+    console.log('  - El bot/Subscription no están desplegados o la Subscription no está activa.');
+    console.log('  - El AccessPolicy del bot no le permite leer/escribir Patient u Observation.');
+  } else if (!serverPrevent) {
+    console.log('\n✗ El bot corrió (escribió métricas) pero NO calculó PREVENT. Causas probables:');
+    console.log('  - El AccessPolicy del bot no permite leer Condition o MedicationRequest.');
+    console.log('  - Falta algún parámetro requerido (col total, HDL, SBP, eGFR, IMC) o la edad quedó fuera de 30-79.');
+    console.log('  - El bundle desplegado es una versión anterior al cálculo PREVENT (re-subir build:bots).');
   } else {
-    console.log('\n✗ Diferencia. Verificá que el bot ckm-recalculate esté desplegado y al día,');
-    console.log('  y que su AccessPolicy permita leer Observation/Condition/MedicationRequest.');
+    console.log('\n✗ El bot calculó PREVENT pero con valores distintos al motor validado.');
+    console.log('  Probablemente el bundle desplegado tiene coeficientes/versión distintos (re-subir build:bots).');
+  }
+  if (!ok) {
     process.exit(1);
   }
 }
