@@ -64,7 +64,10 @@ async function main(): Promise<void> {
           name: botName,
           runtimeVersion: botDescription.runtimeVersion ?? 'awslambda',
           sourceCode: {
-            contentType: ContentType.TYPESCRIPT,
+            // text/typescript no está en la ValueSet IANA de mimetypes que
+            // valida el servidor self-hosted; el fuente se guarda como
+            // text/plain (es solo para visualización; ejecuta el JavaScript).
+            contentType: ContentType.TEXT,
             url: srcEntry.fullUrl,
           },
           executableCode: {
@@ -107,7 +110,9 @@ function readBotFiles(description: BotDescription): Record<string, BundleEntry> 
     request: { method: 'POST', url: 'Binary' },
     resource: {
       resourceType: 'Binary',
-      contentType: ContentType.TYPESCRIPT,
+      // text/plain en vez de text/typescript: este último no pasa la
+      // validación de mimetypes del servidor self-hosted.
+      contentType: ContentType.TEXT,
       data: sourceFile.toString('base64'),
     },
   };
