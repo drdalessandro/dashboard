@@ -27,6 +27,7 @@ export const METRIC_DEFINITIONS: Partial<Record<CKMParameterId, MetricDefinition
   glucoseFasting: { label: 'Glucemia ayunas', defaultUnit: 'mg/dL', goodAt: 100, badAt: 200 },
   hba1c: { label: 'HbA1c', defaultUnit: '%', goodAt: 5.7, badAt: 10 },
   cholesterolTotal: { label: 'Colesterol total', defaultUnit: 'mg/dL', goodAt: 200, badAt: 300 },
+  nonHdlc: { label: 'Colesterol no-HDL', defaultUnit: 'mg/dL', goodAt: 130, badAt: 220 },
   ldlc: { label: 'LDL-C', defaultUnit: 'mg/dL', goodAt: 100, badAt: 190 },
   hdlc: { label: 'HDL-C', defaultUnit: 'mg/dL', goodAt: 50, badAt: 25 },
   triglycerides: { label: 'Triglicéridos', defaultUnit: 'mg/dL', goodAt: 150, badAt: 500 },

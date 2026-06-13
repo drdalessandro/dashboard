@@ -19,6 +19,7 @@ export const LOINC = {
   cholesterolTotal: '2093-3',
   ldlc: '13457-7',
   hdlc: '2085-9',
+  nonHdlc: '43396-1',
   triglycerides: '2571-8',
   // Renal
   creatinine: '38483-4',

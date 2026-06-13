@@ -22,7 +22,11 @@ import type { PREVENTScores } from './types';
 export interface PreventInputs {
   age: number; // años (30-79)
   sex: 'female' | 'male';
-  totalCholesterol: number; // mg/dL
+  /** Colesterol total mg/dL. Opcional si se provee nonHdlCholesterol. */
+  totalCholesterol?: number; // mg/dL
+  /** Colesterol no-HDL mg/dL (predictor directo de PREVENT). Si falta se
+   *  calcula como total - HDL. */
+  nonHdlCholesterol?: number; // mg/dL
   hdl: number; // mg/dL
   systolicBP: number; // mmHg
   egfr: number; // mL/min/1.73m²
@@ -79,12 +83,16 @@ export interface PreventClinicalFlags {
  */
 export function buildPreventInputs(values: CKMObservationMap, flags: PreventClinicalFlags): PreventInputs | undefined {
   const totalCholesterol = values.cholesterolTotal?.value;
+  const nonHdlCholesterol = values.nonHdlc?.value;
   const hdl = values.hdlc?.value;
   const systolicBP = values.sbp?.value;
   const egfr = values.egfr?.value;
   const bmi = values.bmi?.value;
+  // PREVENT necesita HDL y el colesterol no-HDL: éste puede venir directo
+  // (Control envía No-HDL) o derivarse del total.
+  const hasCholesterol = nonHdlCholesterol !== undefined || totalCholesterol !== undefined;
   if (
-    totalCholesterol === undefined ||
+    !hasCholesterol ||
     hdl === undefined ||
     systolicBP === undefined ||
     egfr === undefined ||
@@ -98,6 +106,7 @@ export function buildPreventInputs(values: CKMObservationMap, flags: PreventClin
     age: flags.ageYears,
     sex: flags.sex,
     totalCholesterol,
+    nonHdlCholesterol,
     hdl,
     systolicBP,
     egfr,
@@ -115,7 +124,9 @@ export function buildPreventInputs(values: CKMObservationMap, flags: PreventClin
 /** Términos transformados disponibles para las ecuaciones (claves = nombres de coeficiente). */
 export function buildTerms(input: PreventInputs): Record<string, number> {
   const age = (input.age - CENTER.age) / CENTER.ageScale;
-  const nonHdlMmol = (input.totalCholesterol - input.hdl) * CHOL_MG_DL_TO_MMOL_L;
+  // No-HDL directo si está disponible; si no, total - HDL.
+  const nonHdlMgDl = input.nonHdlCholesterol ?? (input.totalCholesterol ?? 0) - input.hdl;
+  const nonHdlMmol = nonHdlMgDl * CHOL_MG_DL_TO_MMOL_L;
   const hdlMmol = input.hdl * CHOL_MG_DL_TO_MMOL_L;
   const nonHdl = nonHdlMmol - CENTER.nonHdl;
   const hdl = (hdlMmol - CENTER.hdl) / CENTER.hdlScale;
