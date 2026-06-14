@@ -1,0 +1,151 @@
+// Diagnóstico y reparación de los bots/subscriptions CKM en el servidor.
+//
+// El código del repo está correcto (criteria limpias, lógica de los bots OK).
+// Los síntomas ("SDOH sin responder", labs que no impactan) suelen venir del
+// ESTADO del servidor: un bot sin lambda desplegado, o una Subscription vieja
+// que el redeploy no actualiza por el ifNoneExist (url=channel.endpoint).
+//
+// Subcomandos (no destructivos por defecto):
+//   npm run ckm-bots-doctor              -> status (bots, subscriptions, audit)
+//   npm run ckm-bots-doctor -- --reset-subs   -> borra las subs CKM (para
+//                                                 recrearlas limpias con deploy)
+//   npm run ckm-bots-doctor -- --reprocess <PatientId>  -> re-ejecuta los bots
+//                                                 sobre los recursos existentes
+//
+// Requiere MEDPLUM_CLIENT_ID / MEDPLUM_CLIENT_SECRET (admin de proyecto).
+import { MedplumClient } from '@medplum/core';
+import type { Observation, QuestionnaireResponse } from '@medplum/fhirtypes';
+import { SDOH_QUESTIONNAIRE_URL } from '../ckm/constants';
+import { CKM_OBSERVATION_CODES } from '../ckm/observations';
+
+const CKM_BOT_NAMES = ['ckm-recalculate', 'sdoh-response'];
+
+async function main(): Promise<void> {
+  const baseUrl = process.env.MEDPLUM_BASE_URL ?? 'https://api.medplum.com.ar';
+  const clientId = process.env.MEDPLUM_CLIENT_ID;
+  const clientSecret = process.env.MEDPLUM_CLIENT_SECRET;
+  if (!clientId || !clientSecret) {
+    throw new Error('Faltan MEDPLUM_CLIENT_ID y MEDPLUM_CLIENT_SECRET');
+  }
+  const medplum = new MedplumClient({ baseUrl, fetch });
+  await medplum.startClientLogin(clientId, clientSecret);
+  console.log(`Conectado a ${baseUrl}\n`);
+
+  const resetIdx = process.argv.indexOf('--reprocess');
+  if (process.argv.includes('--reset-subs')) {
+    await resetSubscriptions(medplum);
+    return;
+  }
+  if (resetIdx !== -1) {
+    const patientId = process.argv[resetIdx + 1];
+    if (!patientId) {
+      throw new Error('Uso: --reprocess <PatientId>');
+    }
+    await reprocess(medplum, patientId);
+    return;
+  }
+  await status(medplum);
+}
+
+async function status(medplum: MedplumClient): Promise<void> {
+  console.log('── BOTS ──');
+  for (const name of CKM_BOT_NAMES) {
+    const bot = await medplum.searchOne('Bot', `name=${name}`);
+    if (!bot) {
+      console.log(`  ✗ ${name}: NO existe`);
+      continue;
+    }
+    const deployed = Boolean(bot.executableCode?.url);
+    console.log(
+      `  ${deployed ? '✓' : '✗'} ${name}: Bot/${bot.id} — runtime=${bot.runtimeVersion} — código ejecutable ${deployed ? 'presente' : 'AUSENTE (no desplegado)'}`
+    );
+  }
+
+  console.log('\n── SUBSCRIPTIONS ──');
+  const subs = await medplum.searchResources('Subscription', { _count: '50' });
+  for (const s of subs) {
+    if (!CKM_BOT_NAMES.includes(s.reason ?? '')) {
+      continue;
+    }
+    console.log(`  ${s.status === 'active' ? '✓' : '✗'} ${s.reason}: ${s.id} status=${s.status}`);
+    console.log(`     endpoint=${s.channel?.endpoint}`);
+    console.log(`     criteria=${JSON.stringify(s.criteria)}`);
+  }
+  console.log('\n  Esperadas (criteria limpia):');
+  console.log(`   ckm-recalculate: Observation?code=${CKM_OBSERVATION_CODES.join(',')}`);
+  console.log(`   sdoh-response:   QuestionnaireResponse?questionnaire=${SDOH_QUESTIONNAIRE_URL}`);
+
+  console.log('\n── AUDITEVENTS recientes de los bots (¿corrió?, ¿error?) ──');
+  for (const name of CKM_BOT_NAMES) {
+    const bot = await medplum.searchOne('Bot', `name=${name}`);
+    if (!bot) {
+      continue;
+    }
+    const audits = await medplum.searchResources('AuditEvent', {
+      entity: `Bot/${bot.id}`,
+      _count: '5',
+      _sort: '-_lastUpdated',
+    });
+    console.log(`  ${name}: ${audits.length} AuditEvents`);
+    for (const a of audits) {
+      console.log(
+        `     ${a.recorded} outcome=${a.outcome ?? '?'} ${a.outcomeDesc ? '— ' + a.outcomeDesc.slice(0, 160) : ''}`
+      );
+    }
+  }
+}
+
+async function resetSubscriptions(medplum: MedplumClient): Promise<void> {
+  console.log('Borrando Subscriptions CKM (se recrean limpias al re-desplegar)...');
+  const subs = await medplum.searchResources('Subscription', { _count: '50' });
+  for (const s of subs) {
+    if (CKM_BOT_NAMES.includes(s.reason ?? '') && s.id) {
+      await medplum.deleteResource('Subscription', s.id);
+      console.log(`  ✓ borrada ${s.reason} (${s.id})`);
+    }
+  }
+  console.log('\nAhora re-desplegá: npm run build:bots && npm run deploy-bots-server');
+}
+
+async function reprocess(medplum: MedplumClient, patientId: string): Promise<void> {
+  console.log(`Re-procesando recursos existentes de Patient/${patientId}...\n`);
+
+  // SDOH: última respuesta del cuestionario canónico
+  const sdohBot = await medplum.searchOne('Bot', 'name=sdoh-response');
+  const responses = await medplum.searchResources('QuestionnaireResponse', {
+    subject: `Patient/${patientId}`,
+    questionnaire: SDOH_QUESTIONNAIRE_URL,
+    _sort: '-_lastUpdated',
+    _count: '1',
+  });
+  if (sdohBot && responses.length > 0) {
+    await medplum.post(medplum.fhirUrl('Bot', sdohBot.id as string, '$execute'), responses[0] as QuestionnaireResponse);
+    console.log(`  ✓ sdoh-response ejecutado sobre QuestionnaireResponse/${responses[0].id}`);
+  } else {
+    console.log(
+      `  · SDOH: ${sdohBot ? 'sin QuestionnaireResponse del canónico para este paciente' : 'bot no encontrado'}`
+    );
+  }
+
+  // CKM: última Observation CKM (dispara el recálculo de hGraph/estadío/PREVENT)
+  const ckmBot = await medplum.searchOne('Bot', 'name=ckm-recalculate');
+  const obs = await medplum.searchResources('Observation', {
+    subject: `Patient/${patientId}`,
+    code: CKM_OBSERVATION_CODES.join(','),
+    _sort: '-_lastUpdated',
+    _count: '1',
+  });
+  if (ckmBot && obs.length > 0) {
+    await medplum.post(medplum.fhirUrl('Bot', ckmBot.id as string, '$execute'), obs[0] as Observation);
+    console.log(`  ✓ ckm-recalculate ejecutado sobre Observation/${obs[0].id}`);
+  } else {
+    console.log(`  · CKM: ${ckmBot ? 'sin Observation CKM para este paciente' : 'bot no encontrado'}`);
+  }
+
+  console.log('\nVerificá el Patient: las extensiones hGraph/CKM/PREVENTInputs deben tener lastUpdated nuevo.');
+}
+
+main().catch((err) => {
+  console.error('\n✗ Error:', err.message ?? err);
+  process.exit(1);
+});

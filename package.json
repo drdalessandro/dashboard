@@ -8,6 +8,7 @@
     "build:bots": "npm run clean && tsc --project tsconfig-bots.json && node --no-warnings esbuild-script.mjs && tsx src/scripts/deploy-bots.ts",
     "clean": "rimraf dist",
     "ckm-doctor": "tsx src/scripts/ckm-doctor.ts",
+    "ckm-bots-doctor": "tsx src/scripts/ckm-bots-doctor.ts",
     "dev": "vite",
     "import-vsac": "tsx src/scripts/import-vsac-valuesets.ts",
     "seed-ckm-demo": "tsx src/scripts/seed-ckm-demo.ts",
