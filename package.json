@@ -11,6 +11,7 @@
     "ckm-bots-doctor": "tsx src/scripts/ckm-bots-doctor.ts",
     "dev": "vite",
     "import-vsac": "tsx src/scripts/import-vsac-valuesets.ts",
+    "upload-med-valueset": "tsx src/scripts/upload-medication-valueset.ts",
     "seed-ckm-demo": "tsx src/scripts/seed-ckm-demo.ts",
     "verify-prevent": "tsx src/scripts/verify-prevent.ts",
     "deploy-bots-server": "tsx src/scripts/deploy-bots-server.ts",
