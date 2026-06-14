@@ -55,6 +55,10 @@ async function main(): Promise<void> {
     await reprocessAll(medplum);
     return;
   }
+  if (process.argv.includes('--fix-bot-membership')) {
+    await fixBotMembership(medplum);
+    return;
+  }
   if (resetIdx !== -1) {
     const patientId = process.argv[resetIdx + 1];
     if (!patientId) {
@@ -291,6 +295,41 @@ async function reprocessAll(medplum: MedplumClient): Promise<void> {
     }
   }
   console.log(`Listo. Pacientes con bots ejecutados: ${updated}/${patients.length}.`);
+}
+
+/**
+ * Crea una ProjectMembership para cada bot CKM en el proyecto ACTUAL si no la
+ * tiene. Sin ella, el disparo por Subscription falla con "Could not find
+ * project membership for bot" (el bot se creó en otro proyecto que la sub).
+ */
+async function fixBotMembership(medplum: MedplumClient): Promise<void> {
+  const projectId = medplum.getProject()?.id;
+  console.log(`Asegurando membership de los bots CKM en el proyecto ${projectId}...`);
+  for (const name of CKM_BOT_NAMES) {
+    const bot = await medplum.searchOne('Bot', `name=${name}`);
+    if (!bot) {
+      console.log(`  ✗ ${name}: bot no encontrado`);
+      continue;
+    }
+    const memberships = await medplum.searchResources('ProjectMembership', `profile=Bot/${bot.id}`);
+    const inThisProject = memberships.find((m) => m.project?.reference === `Project/${projectId}`);
+    if (inThisProject) {
+      console.log(`  · ${name}: ya tiene membership en este proyecto (${inThisProject.id})`);
+      continue;
+    }
+    try {
+      const created = await medplum.createResource({
+        resourceType: 'ProjectMembership',
+        project: { reference: `Project/${projectId}` },
+        user: { reference: `Bot/${bot.id}` },
+        profile: { reference: `Bot/${bot.id}` },
+      });
+      console.log(`  ✓ ${name}: membership creada en ${projectId} (${created.id})`);
+    } catch (err) {
+      console.log(`  ✗ ${name}: no se pudo crear la membership — ${(err as Error).message}`);
+    }
+  }
+  console.log('\nVerificá con: npm run verify-prevent (la subscription debería disparar el bot).');
 }
 
 main().catch((err) => {
