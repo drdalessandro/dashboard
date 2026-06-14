@@ -39,6 +39,10 @@ async function main(): Promise<void> {
     await resetSubscriptions(medplum);
     return;
   }
+  if (process.argv.includes('--recreate-subs')) {
+    await recreateSubscriptions(medplum);
+    return;
+  }
   if (resetIdx !== -1) {
     const patientId = process.argv[resetIdx + 1];
     if (!patientId) {
@@ -122,6 +126,42 @@ async function resetSubscriptions(medplum: MedplumClient): Promise<void> {
     }
   }
   console.log('\nAhora re-desplegá: npm run build:bots && npm run deploy-bots-server');
+}
+
+/**
+ * Recrea las Subscriptions CKM creándolas de a una (no en una transacción
+ * gigante, que el proyecto rechaza por "strict isolation ... too many entries").
+ * Las crea con el client actual como autor, nativo del proyecto, que es lo que
+ * permite que disparen. Borra las viejas primero.
+ */
+async function recreateSubscriptions(medplum: MedplumClient): Promise<void> {
+  const existing = await medplum.searchResources('Subscription', { _count: '50' });
+  for (const s of existing) {
+    if (CKM_BOT_NAMES.includes(s.reason ?? '') && s.id) {
+      await medplum.deleteResource('Subscription', s.id);
+      console.log(`  borrada vieja ${s.reason} (${s.id})`);
+    }
+  }
+  const specs = [
+    { name: 'ckm-recalculate', criteria: `Observation?code=${CKM_OBSERVATION_CODES.join(',')}` },
+    { name: 'sdoh-response', criteria: `QuestionnaireResponse?questionnaire=${SDOH_QUESTIONNAIRE_URL}` },
+  ];
+  for (const spec of specs) {
+    const bot = await medplum.searchOne('Bot', `name=${spec.name}`);
+    if (!bot) {
+      console.log(`  ✗ bot ${spec.name} no encontrado, salteado`);
+      continue;
+    }
+    const sub = await medplum.createResource({
+      resourceType: 'Subscription',
+      status: 'active',
+      reason: spec.name,
+      criteria: spec.criteria,
+      channel: { type: 'rest-hook', endpoint: `Bot/${bot.id}` },
+    });
+    console.log(`  ✓ creada ${spec.name}: ${sub.id} -> Bot/${bot.id}`);
+  }
+  console.log('\nVerificá con: npm run verify-prevent (debe disparar el bot solo).');
 }
 
 async function reprocess(medplum: MedplumClient, patientId: string): Promise<void> {
