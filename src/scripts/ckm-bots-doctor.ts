@@ -62,6 +62,20 @@ async function status(medplum: MedplumClient): Promise<void> {
     console.log(
       `  ${deployed ? '✓' : '✗'} ${name}: Bot/${bot.id} — runtime=${bot.runtimeVersion} — código ejecutable ${deployed ? 'presente' : 'AUSENTE (no desplegado)'}`
     );
+    // Permisos del bot: corre con SU membership. Una AccessPolicy restrictiva
+    // (o sin permiso de escritura sobre Patient) hace que dispare pero falle.
+    const membership = await medplum.searchOne('ProjectMembership', `profile=Bot/${bot.id}`);
+    if (!membership) {
+      console.log('     membership: NO encontrada');
+    } else {
+      const policy = membership.accessPolicy?.display ?? membership.accessPolicy?.reference;
+      console.log(
+        `     membership ${membership.id}: admin=${membership.admin ?? false} accessPolicy=${policy ?? '(ninguna)'}`
+      );
+      if (policy) {
+        console.log('     ⚠ Una AccessPolicy en el bot puede impedirle ESCRIBIR el Patient al dispararse.');
+      }
+    }
   }
 
   console.log('\n── SUBSCRIPTIONS ──');
