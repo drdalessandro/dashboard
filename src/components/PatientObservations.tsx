@@ -1,61 +1,44 @@
 // SPDX-FileCopyrightText: Copyright Orangebot, Inc. and Medplum contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Button, Menu, Tabs } from '@mantine/core';
+import { Button, Loader, Menu } from '@mantine/core';
 import { formatSearchQuery, Operator } from '@medplum/core';
 import type { SearchRequest } from '@medplum/core';
 import type { Coding, Patient } from '@medplum/fhirtypes';
 import { SearchControl } from '@medplum/react';
 import { IconMenu2 } from '@tabler/icons-react';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
 import { ObservationGraph } from './graphs/ObservationGraph';
+import { measurementStyles } from './graphs/measurement-constants';
 
 interface PatientObservationsProps {
   patient: Patient;
 }
 
-const weightCoding: Coding = {
-  system: 'http://loinc.org',
-  code: '29463-7',
-  display: 'weight',
-};
+const LOINC_SYSTEM = 'http://loinc.org';
 
-const heightCoding: Coding = {
-  system: 'http://loinc.org',
-  code: '8302-2',
-  display: 'height',
-};
-
-const bloodPressureCoding: Coding = {
-  system: 'http://loinc.org',
-  code: '85354-9',
-  display: 'blood-pressure',
-};
-
-const bmiCoding: Coding = {
-  system: 'http://loinc.org',
-  code: '39156-5',
-  display: 'bmi',
-};
+// Menú: "Todas" + todas las mediciones definidas en measurementStyles (CKM).
+const MEASUREMENTS = Object.values(measurementStyles);
+const TABS: [string, string][] = [
+  ['all', 'Todas las observaciones'],
+  ...MEASUREMENTS.map((m) => [m.id, m.title] as [string, string]),
+];
 
 export function PatientObservations(props: PatientObservationsProps): JSX.Element {
   const navigate = useNavigate();
-
-  const tabs = [
-    ['all', 'All Observations'],
-    ['height', 'Height'],
-    ['weight', 'Weight'],
-    ['blood-pressure', 'Blood Pressure'],
-    ['bmi', 'BMI'],
-  ];
-  const [currentTab, setCurrentTab] = useState<string[]>(tabs[0]);
+  const [currentTab, setCurrentTab] = useState<[string, string]>(TABS[0]);
 
   const search: SearchRequest = {
     resourceType: 'Observation',
     filters: [{ code: 'patient', operator: Operator.EQUALS, value: `Patient/${props.patient.id}` }],
     fields: ['status', 'code', 'focus'],
   };
+
+  const measurement = measurementStyles[currentTab[0]];
+  const coding: Coding | undefined = measurement
+    ? { system: LOINC_SYSTEM, code: measurement.code, display: measurement.id }
+    : undefined;
 
   return (
     <div>
@@ -65,16 +48,16 @@ export function PatientObservations(props: PatientObservationsProps): JSX.Elemen
             {currentTab[1]}
           </Button>
         </Menu.Target>
-        <Menu.Dropdown>
-          {tabs.map((tab) => (
+        <Menu.Dropdown mah={400} style={{ overflowY: 'auto' }}>
+          {TABS.map((tab) => (
             <Menu.Item key={tab[0]} onClick={() => setCurrentTab(tab)}>
               {tab[1]}
             </Menu.Item>
           ))}
         </Menu.Dropdown>
       </Menu>
-      <Tabs value={currentTab[0]} mt="md">
-        <Tabs.Panel value="all">
+      <div style={{ marginTop: 16 }}>
+        {currentTab[0] === 'all' || !coding ? (
           <SearchControl
             search={search}
             hideFilters={true}
@@ -84,20 +67,12 @@ export function PatientObservations(props: PatientObservationsProps): JSX.Elemen
               navigate(`/${search.resourceType}${formatSearchQuery(e.definition)}`)?.catch(console.error);
             }}
           />
-        </Tabs.Panel>
-        <Tabs.Panel value="height">
-          <ObservationGraph code={heightCoding} patient={props.patient} />
-        </Tabs.Panel>
-        <Tabs.Panel value="weight">
-          <ObservationGraph code={weightCoding} patient={props.patient} />
-        </Tabs.Panel>
-        <Tabs.Panel value="blood-pressure">
-          <ObservationGraph code={bloodPressureCoding} patient={props.patient} />
-        </Tabs.Panel>
-        <Tabs.Panel value="bmi">
-          <ObservationGraph code={bmiCoding} patient={props.patient} />
-        </Tabs.Panel>
-      </Tabs>
+        ) : (
+          <Suspense fallback={<Loader m="md" />}>
+            <ObservationGraph code={coding} patient={props.patient} />
+          </Suspense>
+        )}
+      </div>
     </div>
   );
 }

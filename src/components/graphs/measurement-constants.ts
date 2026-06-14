@@ -1,5 +1,7 @@
 // SPDX-FileCopyrightText: Copyright Orangebot, Inc. and Medplum contributors
 // SPDX-License-Identifier: Apache-2.0
+import { LOINC, LOINC_BP_PANEL } from '../../ckm/constants';
+
 export interface ObservationType {
   id: string;
   code: string;
@@ -19,70 +21,54 @@ const borderColor = 'rgba(29, 112, 214, 1)';
 const secondBackgroundColor = 'rgba(255, 119, 0, 0.7)';
 const secondBorderColor = 'rgba(255, 119, 0, 1)';
 
+/** Helper para mediciones de un solo valor (valueQuantity). */
+function single(id: string, code: string, title: string, unit: string): ObservationType {
+  return {
+    id,
+    code,
+    title,
+    description: title,
+    chartDatasets: [{ label: title, unit, backgroundColor, borderColor }],
+  };
+}
+
+// Todas las mediciones CKM (más altura/peso). El orden define el orden del menú.
+// Los LOINC coinciden con src/ckm/constants.ts y con lo que carga Control.
 export const measurementStyles: Record<string, ObservationType> = {
   'blood-pressure': {
     id: 'blood-pressure',
-    code: '85354-9',
-    title: 'Blood Pressure',
+    code: LOINC_BP_PANEL,
+    title: 'Presión arterial',
     description:
-      'Your blood pressure is the pressure exerted on the walls of your blood vessels. When this pressure is high, it can damage your blood vessels and increase your risk for a heart attack or stroke. We measure your blood pressure periodically to make sure it is not staying high. Hypertention is a condition that refers to consistantly high blood pressure.',
+      'La presión arterial es la fuerza que ejerce la sangre sobre las paredes de las arterias. ' +
+      'Valores altos sostenidos (hipertensión) aumentan el riesgo cardiovascular.',
     chartDatasets: [
       {
-        label: 'Diastolic',
-        code: '8462-4',
+        label: 'Diastólica',
+        code: LOINC.dbp,
         unit: 'mm[Hg]',
         backgroundColor: secondBackgroundColor,
         borderColor: secondBorderColor,
       },
-      {
-        label: 'Systolic',
-        code: '8480-6',
-        unit: 'mm[Hg]',
-        backgroundColor,
-        borderColor,
-      },
+      { label: 'Sistólica', code: LOINC.sbp, unit: 'mm[Hg]', backgroundColor, borderColor },
     ],
   },
-  height: {
-    id: 'height',
-    code: '8302-2',
-    title: 'Height',
-    description: 'Your height values',
-    chartDatasets: [
-      {
-        label: 'Height',
-        unit: 'in',
-        backgroundColor,
-        borderColor,
-      },
-    ],
-  },
-  weight: {
-    id: 'weight',
-    code: '29463-7',
-    title: 'Weight',
-    description: 'Your weight values',
-    chartDatasets: [
-      {
-        label: 'Weight',
-        unit: 'lbs',
-        backgroundColor,
-        borderColor,
-      },
-    ],
-  },
-  bmi: {
-    id: 'bmi',
-    code: '39156-5',
-    title: 'BMI',
-    description: 'An indicator of body density as determined by the relationship of weight to height',
-    chartDatasets: [
-      {
-        label: 'BMI',
-        unit: 'kg/m^2',
-        backgroundColor,
-        borderColor,
-      },
-    ],
-  },
+  bmi: single('bmi', LOINC.bmi, 'Índice de masa corporal (IMC)', 'kg/m^2'),
+  waist: single('waist', LOINC.waist, 'Circunferencia de cintura', 'cm'),
+  egfr: single('egfr', LOINC.egfr, 'Filtrado glomerular (TFGe)', 'mL/min/{1.73_m2}'),
+  glucose: single('glucose', LOINC.glucoseFasting, 'Glucemia en ayunas', 'mg/dL'),
+  hba1c: single('hba1c', LOINC.hba1c, 'Hemoglobina glicosilada (HbA1c)', '%'),
+  'total-cholesterol': single('total-cholesterol', LOINC.cholesterolTotal, 'Colesterol total', 'mg/dL'),
+  hdl: single('hdl', LOINC.hdlc, 'Colesterol HDL', 'mg/dL'),
+  ldl: single('ldl', LOINC.ldlc, 'Colesterol LDL', 'mg/dL'),
+  'non-hdl': single('non-hdl', LOINC.nonHdlc, 'Colesterol No-HDL', 'mg/dL'),
+  triglycerides: single('triglycerides', LOINC.triglycerides, 'Triglicéridos', 'mg/dL'),
+  creatinine: single('creatinine', LOINC.creatinine, 'Creatinina', 'mg/dL'),
+  uacr: single('uacr', LOINC.uacr, 'UACR (albúmina/creatinina)', 'mg/g'),
+  potassium: single('potassium', LOINC.potassium, 'Potasio', 'mmol/L'),
+  ntprobnp: single('ntprobnp', LOINC.ntProBNP, 'NT-proBNP', 'pg/mL'),
+  troponin: single('troponin', LOINC.hsCtnI, 'Troponina I ultrasensible', 'ng/L'),
+  cac: single('cac', LOINC.cac, 'Score de calcio coronario', 'Agatston'),
+  height: single('height', '8302-2', 'Altura', 'cm'),
+  weight: single('weight', '29463-7', 'Peso', 'kg'),
 };
