@@ -29,7 +29,10 @@ async function main(): Promise<void> {
   }
   const medplum = new MedplumClient({ baseUrl, fetch });
   await medplum.startClientLogin(clientId, clientSecret);
-  console.log(`Conectado a ${baseUrl}\n`);
+  const clientProject = medplum.getProject()?.id;
+  console.log(`Conectado a ${baseUrl}`);
+  console.log(`Proyecto del client: ${clientProject}`);
+  console.log('  (los bots/subscriptions deben quedar en el MISMO proyecto que los pacientes de Control)\n');
 
   const resetIdx = process.argv.indexOf('--reprocess');
   if (process.argv.includes('--reset-subs')) {

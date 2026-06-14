@@ -35,6 +35,18 @@ async function main(): Promise<void> {
   }
   console.log(`Proyecto ${projectId} en ${baseUrl}`);
 
+  // Red de seguridad: los bots/subscriptions DEBEN quedar en el mismo proyecto
+  // que los pacientes (los de Control). Si MEDPLUM_EXPECTED_PROJECT está seteado
+  // y no coincide, abortar para no desplegar al proyecto equivocado.
+  const expected = process.env.MEDPLUM_EXPECTED_PROJECT;
+  if (expected && expected !== projectId) {
+    throw new Error(
+      `El client pertenece al proyecto ${projectId}, pero MEDPLUM_EXPECTED_PROJECT=${expected}.\n` +
+        '  Las Subscriptions solo disparan dentro de su proyecto: usá un ClientApplication\n' +
+        '  del proyecto donde viven los pacientes (Control). Deploy abortado.'
+    );
+  }
+
   const bundle = JSON.parse(fs.readFileSync(BUNDLE_FILE, 'utf8')) as Bundle;
   let transactionString = fs.readFileSync(BUNDLE_FILE, 'utf8');
   const botEntries: BundleEntry[] = (bundle.entry ?? []).filter((e) => e.resource?.resourceType === 'Bot');
