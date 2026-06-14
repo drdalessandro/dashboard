@@ -29,9 +29,17 @@ async function main(): Promise<void> {
   }
   const medplum = new MedplumClient({ baseUrl, fetch });
   await medplum.startClientLogin(clientId, clientSecret);
-  const clientProject = medplum.getProject()?.id;
+  const project = medplum.getProject();
   console.log(`Conectado a ${baseUrl}`);
-  console.log(`Proyecto del client: ${clientProject}`);
+  console.log(`Proyecto del client: ${project?.id}`);
+  // Para que las Subscriptions disparen bots, el proyecto necesita la feature
+  // "bots". Sin ella, $execute funciona pero el disparo automático no.
+  const features = project?.features;
+  console.log(`Features del proyecto: ${features ? JSON.stringify(features) : '(ninguna)'}`);
+  if (!features?.includes('bots')) {
+    console.log('  ⚠ Falta la feature "bots": las Subscriptions NO van a disparar bots en este proyecto.');
+    console.log('    Un super-admin debe agregar "bots" a Project.features de ' + project?.id + '.');
+  }
   console.log('  (los bots/subscriptions deben quedar en el MISMO proyecto que los pacientes de Control)\n');
 
   const resetIdx = process.argv.indexOf('--reprocess');
