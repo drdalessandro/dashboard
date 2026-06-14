@@ -51,6 +51,14 @@ async function main(): Promise<void> {
     await recreateSubscriptions(medplum);
     return;
   }
+  if (process.argv.includes('--reprocess-all')) {
+    await reprocessAll(medplum);
+    return;
+  }
+  if (process.argv.includes('--fix-bot-membership')) {
+    await fixBotMembership(medplum);
+    return;
+  }
   if (resetIdx !== -1) {
     const patientId = process.argv[resetIdx + 1];
     if (!patientId) {
@@ -233,6 +241,95 @@ async function reprocess(medplum: MedplumClient, patientId: string): Promise<voi
   }
 
   console.log('\nVerificá el Patient: las extensiones hGraph/CKM/PREVENTInputs deben tener lastUpdated nuevo.');
+}
+
+/** Ejecuta los bots (vía $execute) sobre el último recurso de cada tipo del
+ *  paciente. Devuelve cuántos $execute hizo. Silencioso salvo errores. */
+async function runBotsForPatient(medplum: MedplumClient, patientId: string): Promise<number> {
+  let ran = 0;
+  const sdohBot = await medplum.searchOne('Bot', 'name=sdoh-response');
+  const responses = await medplum.searchResources('QuestionnaireResponse', {
+    subject: `Patient/${patientId}`,
+    questionnaire: SDOH_QUESTIONNAIRE_URL,
+    _sort: '-_lastUpdated',
+    _count: '1',
+  });
+  if (sdohBot && responses.length > 0) {
+    await medplum.post(medplum.fhirUrl('Bot', sdohBot.id as string, '$execute'), responses[0] as QuestionnaireResponse);
+    ran++;
+  }
+  const ckmBot = await medplum.searchOne('Bot', 'name=ckm-recalculate');
+  const obs = await medplum.searchResources('Observation', {
+    subject: `Patient/${patientId}`,
+    code: CKM_OBSERVATION_CODES.join(','),
+    _sort: '-_lastUpdated',
+    _count: '1',
+  });
+  if (ckmBot && obs.length > 0) {
+    await medplum.post(medplum.fhirUrl('Bot', ckmBot.id as string, '$execute'), obs[0] as Observation);
+    ran++;
+  }
+  return ran;
+}
+
+/**
+ * Backfill masivo: reprocesa todos los pacientes vía $execute. Stopgap mientras
+ * el disparo automático por Subscription no funciona (worker async del server).
+ * Cron-eable (ej. cada 5 min) hasta que se arregle el worker.
+ */
+async function reprocessAll(medplum: MedplumClient): Promise<void> {
+  const patients = await medplum.searchResources('Patient', { _count: '500' });
+  console.log(`Reprocesando ${patients.length} pacientes vía $execute...`);
+  let updated = 0;
+  for (const p of patients) {
+    if (!p.id) {
+      continue;
+    }
+    try {
+      const ran = await runBotsForPatient(medplum, p.id);
+      if (ran > 0) {
+        updated++;
+      }
+    } catch (err) {
+      console.log(`  ✗ Patient/${p.id}: ${(err as Error).message}`);
+    }
+  }
+  console.log(`Listo. Pacientes con bots ejecutados: ${updated}/${patients.length}.`);
+}
+
+/**
+ * Crea una ProjectMembership para cada bot CKM en el proyecto ACTUAL si no la
+ * tiene. Sin ella, el disparo por Subscription falla con "Could not find
+ * project membership for bot" (el bot se creó en otro proyecto que la sub).
+ */
+async function fixBotMembership(medplum: MedplumClient): Promise<void> {
+  const projectId = medplum.getProject()?.id;
+  console.log(`Asegurando membership de los bots CKM en el proyecto ${projectId}...`);
+  for (const name of CKM_BOT_NAMES) {
+    const bot = await medplum.searchOne('Bot', `name=${name}`);
+    if (!bot) {
+      console.log(`  ✗ ${name}: bot no encontrado`);
+      continue;
+    }
+    const memberships = await medplum.searchResources('ProjectMembership', `profile=Bot/${bot.id}`);
+    const inThisProject = memberships.find((m) => m.project?.reference === `Project/${projectId}`);
+    if (inThisProject) {
+      console.log(`  · ${name}: ya tiene membership en este proyecto (${inThisProject.id})`);
+      continue;
+    }
+    try {
+      const created = await medplum.createResource({
+        resourceType: 'ProjectMembership',
+        project: { reference: `Project/${projectId}` },
+        user: { reference: `Bot/${bot.id}` },
+        profile: { reference: `Bot/${bot.id}` },
+      });
+      console.log(`  ✓ ${name}: membership creada en ${projectId} (${created.id})`);
+    } catch (err) {
+      console.log(`  ✗ ${name}: no se pudo crear la membership — ${(err as Error).message}`);
+    }
+  }
+  console.log('\nVerificá con: npm run verify-prevent (la subscription debería disparar el bot).');
 }
 
 main().catch((err) => {
