@@ -110,6 +110,31 @@ async function resetSubscriptions(medplum: MedplumClient): Promise<void> {
 async function reprocess(medplum: MedplumClient, patientId: string): Promise<void> {
   console.log(`Re-procesando recursos existentes de Patient/${patientId}...\n`);
 
+  // Diagnóstico de proyecto: si el paciente está en otro proyecto que los bots,
+  // las Subscriptions nunca disparan (y este client podría no verlo).
+  const me = medplum.getProject()?.id;
+  let patient;
+  try {
+    patient = await medplum.readResource('Patient', patientId);
+  } catch (err) {
+    console.log(`  ✗ No puedo leer Patient/${patientId}: ${(err as Error).message}`);
+    console.log(`     Probablemente está en OTRO proyecto que el client/bots (proyecto del client: ${me}).`);
+    return;
+  }
+  const patientProject = patient.meta?.project;
+  console.log(`  Proyecto del client/bots: ${me}`);
+  console.log(`  Proyecto del Patient:     ${patientProject}`);
+  if (patientProject && patientProject !== me) {
+    console.log(
+      '  ⚠ El Patient está en OTRO proyecto que los bots. Por eso las Subscriptions\n' +
+        '    no disparan: solo disparan dentro de su mismo proyecto. Hay que registrar\n' +
+        '    a los pacientes de Control en el MISMO proyecto que los bots, o desplegar\n' +
+        '    los bots/subscriptions también en el proyecto de Control.\n'
+    );
+  } else {
+    console.log('  ✓ Mismo proyecto. El disparo debería funcionar; revisamos el $execute.\n');
+  }
+
   // SDOH: última respuesta del cuestionario canónico
   const sdohBot = await medplum.searchOne('Bot', 'name=sdoh-response');
   const responses = await medplum.searchResources('QuestionnaireResponse', {
