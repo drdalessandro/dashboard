@@ -10,7 +10,7 @@
 // Uso:
 //   MEDPLUM_CLIENT_ID=xxx MEDPLUM_CLIENT_SECRET=xxx npm run upload-med-valueset
 import { MedplumClient } from '@medplum/core';
-import type { ValueSet, ValueSetComposeIncludeConcept } from '@medplum/fhirtypes';
+import type { CodeSystem, ValueSet, ValueSetComposeIncludeConcept } from '@medplum/fhirtypes';
 
 const VALUESET_URL = 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1010.4';
 const RXNORM_SYSTEM = 'http://www.nlm.nih.gov/research/umls/rxnorm';
@@ -162,12 +162,42 @@ async function main(): Promise<void> {
     compose: { include: [{ system: RXNORM_SYSTEM, concept: concepts }] },
   };
 
+  // CodeSystem fragmento: Medplum self-hosted necesita el CodeSystem de RxNorm
+  // presente para expandir/validar los conceptos. Como RxNorm no está cargado,
+  // publicamos un fragmento con sólo estos conceptos.
+  const codeSystem: CodeSystem = {
+    resourceType: 'CodeSystem',
+    url: RXNORM_SYSTEM,
+    name: 'RxNormCardiometabolicFragment',
+    title: 'RxNorm — fragmento cardiometabólico (CKM)',
+    status: 'active',
+    content: 'fragment',
+    concept: concepts.map((c) => ({ code: c.code as string, display: c.display })),
+  };
+
   const medplum = new MedplumClient({ baseUrl, fetch });
   await medplum.startClientLogin(clientId, clientSecret);
   console.log(`Proyecto del client: ${medplum.getProject()?.id}`);
+
+  const cs = await medplum.upsertResource(codeSystem, `url=${encodeURIComponent(RXNORM_SYSTEM)}`);
+  console.log(`OK: CodeSystem/${cs.id} (${codeSystem.concept?.length} conceptos)`);
   const result = await medplum.upsertResource(valueSet, `url=${encodeURIComponent(VALUESET_URL)}`);
   console.log(`OK: ValueSet/${result.id} (${concepts.length} conceptos) en ${baseUrl}`);
-  console.log('El diálogo de medicación del chart ya no debería dar "ValueSet ... not found".');
+
+  // Prueba de $expand: confirma que el servidor expande/filtra (independiente de la UI).
+  try {
+    const expanded = await medplum.valueSetExpand({ url: VALUESET_URL, filter: 'ator', count: 10 });
+    const hits = expanded.expansion?.contains ?? [];
+    console.log(`\nTest $expand filter="ator": ${hits.length} resultado(s)`);
+    hits.forEach((h) => console.log(`  ${h.code}  ${h.display}`));
+    if (hits.length === 0) {
+      console.log('  ⚠ El servidor no devolvió resultados; revisar config de terminología del server.');
+    } else {
+      console.log('  ✓ El $expand funciona. Recargá el chart con Ctrl+Shift+R y probá el diálogo.');
+    }
+  } catch (err) {
+    console.log(`\nTest $expand falló: ${(err as Error).message}`);
+  }
 }
 
 main().catch((err) => {
