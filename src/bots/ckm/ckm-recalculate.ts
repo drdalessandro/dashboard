@@ -30,37 +30,21 @@ import type { BotEvent, MedplumClient } from '@medplum/core';
 import type { Communication, Condition, Observation, Patient, Practitioner, Reference } from '@medplum/fhirtypes';
 import type { CKMObservationMap } from '../../ckm/observations';
 import type { PREVENTScores } from '../../ckm/types';
+import {
+  ageFromBirthDate,
+  deriveMedicationFlags,
+  hasDiabetes,
+  hasSmoking,
+  isActiveCondition,
+  isClinicalCVD,
+  patientPreventSex,
+} from '../../ckm/clinical';
 import { getCKMStage, getHGraphData, withCKMExtensions } from '../../ckm/extensions';
 import { extractCKMValues, getLatestCKMObservations, isImplausibleBloodPressure } from '../../ckm/observations';
 import { buildPreventInputs, computePrevent } from '../../ckm/prevent';
 import { computeMetrics, deriveStage, detectCriticalValues } from '../../ckm/scoring';
 
 const DEFAULT_APP_URL = 'https://seguimiento.medplum.com.ar';
-
-// Prefijos ICD-10 de ECV clínica (estadío 4): enfermedad coronaria (I20-I25),
-// insuficiencia cardíaca (I50), enfermedad cerebrovascular (I60-I69),
-// fibrilación/aleteo auricular (I48) y enfermedad arterial periférica (I70-I73)
-const CLINICAL_CVD_ICD10 = /^I(2[0-5]|48|50|6\d|7[0-3])/;
-
-function isClinicalCVD(condition: Condition): boolean {
-  return Boolean(condition.code?.coding?.some((c) => c.code && CLINICAL_CVD_ICD10.test(c.code)));
-}
-
-// ICD-10 de diabetes (E10-E14) y código SNOMED/ICD de tabaquismo activo
-const DIABETES_ICD10 = /^E1[0-4]/;
-const SMOKING_CODES = /^(Z72\.0|F17|449868002|77176002)/;
-
-function conditionMatches(condition: Condition, pattern: RegExp): boolean {
-  return Boolean(condition.code?.coding?.some((c) => c.code && pattern.test(c.code)));
-}
-
-function ageFromBirthDate(birthDate: string | undefined): number {
-  if (!birthDate) {
-    return NaN;
-  }
-  const diff = Date.now() - new Date(birthDate).getTime();
-  return Math.floor(diff / (365.25 * 24 * 3600 * 1000));
-}
 
 /**
  * Recolecta las variables PREVENT del paciente y calcula los scores.
@@ -73,7 +57,7 @@ async function computePreventScores(
   values: CKMObservationMap,
   activeConditions: Condition[]
 ): Promise<PREVENTScores | undefined> {
-  const sex = patient.gender === 'female' ? 'female' : patient.gender === 'male' ? 'male' : undefined;
+  const sex = patientPreventSex(patient);
   if (!sex) {
     return undefined;
   }
@@ -83,21 +67,13 @@ async function computePreventScores(
     status: 'active',
     _count: '100',
   });
-  const medText = medications
-    .map((m) => m.medicationCodeableConcept?.text ?? m.medicationCodeableConcept?.coding?.[0]?.display ?? '')
-    .join(' ')
-    .toLowerCase();
-  const onStatin = /statin|estatina|atorvastat|rosuvastat|simvastat|pravastat/.test(medText);
-  const onAntihypertensive =
-    /enalapril|losart|valsart|amlodip|ramipril|lisinopril|hidroclorotiazida|hydrochlorothiazide|antihipertens/.test(
-      medText
-    );
+  const { onStatin, onAntihypertensive } = deriveMedicationFlags(medications);
 
   const inputs = buildPreventInputs(values, {
     sex,
     ageYears: ageFromBirthDate(patient.birthDate),
-    diabetes: activeConditions.some((c) => conditionMatches(c, DIABETES_ICD10)),
-    smoking: activeConditions.some((c) => conditionMatches(c, SMOKING_CODES)),
+    diabetes: hasDiabetes(activeConditions),
+    smoking: hasSmoking(activeConditions),
     onAntihypertensive,
     onStatin,
   });
@@ -121,10 +97,7 @@ export async function handler(medplum: MedplumClient, event: BotEvent<Observatio
     subject: `Patient/${patientId}`,
     _count: '200',
   });
-  const active = conditions.filter((c) => {
-    const status = c.clinicalStatus?.coding?.[0]?.code;
-    return !status || status === 'active' || status === 'recurrence' || status === 'relapse';
-  });
+  const active = conditions.filter(isActiveCondition);
   const hasClinicalCVD = active.some(isClinicalCVD);
 
   const previousStage = getCKMStage(patient);
