@@ -4,7 +4,7 @@ import { Button, Group, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/c
 import { formatDate } from '@medplum/core';
 import type { Patient, Reference } from '@medplum/fhirtypes';
 import { Loading } from '@medplum/react';
-import { IconClipboardText } from '@tabler/icons-react';
+import { IconAdjustments, IconClipboardText } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { Link } from 'react-router';
 import { getPREVENTInputs } from '../extensions';
@@ -38,6 +38,16 @@ export function PREVENTPanel(props: PREVENTPanelProps): JSX.Element {
           <ScoreStat label="IC 10 años" value={preventScores?.hf10y} />
           <ScoreStat label="ECV total 30 años" value={preventScores?.cvdTotal30y} />
         </SimpleGrid>
+        <Button
+          component={Link}
+          to={`/ckm/simulator/${patient?.id}`}
+          variant="light"
+          size="xs"
+          fullWidth
+          leftSection={<IconAdjustments size={16} />}
+        >
+          Simulador ¿Y si...?
+        </Button>
         <Group justify="space-between" wrap="nowrap">
           <Button
             component={Link}

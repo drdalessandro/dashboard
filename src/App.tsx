@@ -17,6 +17,7 @@ import { Route, Routes } from 'react-router';
 import { CKMDashboard } from './pages/CKMDashboard';
 import { EncounterPage } from './pages/EncounterPage';
 import { SDOHForm } from './pages/SDOHForm';
+import { SimulatorPage } from './pages/SimulatorPage';
 import { LandingPage } from './pages/LandingPage';
 import { PatientPage } from './pages/PatientPage';
 import { ResourcePage } from './pages/ResourcePage';
@@ -73,6 +74,7 @@ export function App(): JSX.Element | null {
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/ckm" element={<CKMDashboard />} />
             <Route path="/ckm/sdoh/:patientId" element={<SDOHForm />} />
+            <Route path="/ckm/simulator/:patientId" element={<SimulatorPage />} />
             <Route path="/Patient/:id">
               <Route index element={<PatientPage />} />
               <Route path="*" element={<PatientPage />} />
