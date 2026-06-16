@@ -6,6 +6,7 @@ import { PatientSummary, useMedplum } from '@medplum/react';
 import { useEffect, useState } from 'react';
 import type { JSX } from 'react';
 import { useParams } from 'react-router';
+import { DatosArgentina } from '../ckm/components/DatosArgentina';
 import { PREVENTPanel } from '../ckm/components/PREVENTPanel';
 import { PatientDetails } from '../components/PatientDetails';
 
@@ -33,6 +34,7 @@ export function PatientPage(): JSX.Element {
       <Grid.Col span={4}>
         <Stack gap="md">
           <PREVENTPanel patient={patient} />
+          <DatosArgentina patient={patient} onChange={onPatientChange} />
           <PatientSummary patient={patient} />
         </Stack>
       </Grid.Col>
