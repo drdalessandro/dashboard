@@ -11,7 +11,8 @@
 //
 // Sin argumentos importa los dos ValueSets que usa el PatientSummary.
 import { MedplumClient } from '@medplum/core';
-import type { ValueSet, ValueSetComposeInclude } from '@medplum/fhirtypes';
+import type { CodeSystemConcept, ValueSet, ValueSetComposeInclude } from '@medplum/fhirtypes';
+import { upsertCodeSystemFragment } from './lib/terminology';
 
 const VSAC_FHIR_BASE = 'https://cts.nlm.nih.gov/fhir';
 const PAGE_SIZE = 500;
@@ -92,6 +93,29 @@ function buildValueSet(oid: string, data: Awaited<ReturnType<typeof fetchVsacExp
   };
 }
 
+/** Agrupa los conceptos descargados por sistema (para los CodeSystem fragmento). */
+function conceptsBySystem(data: Awaited<ReturnType<typeof fetchVsacExpansion>>): Map<string, CodeSystemConcept[]> {
+  const bySystem = new Map<string, Map<string, string | undefined>>();
+  for (const c of data.concepts) {
+    if (!c.system || !c.code) {
+      continue;
+    }
+    const group = bySystem.get(c.system) ?? new Map<string, string | undefined>();
+    if (!group.has(c.code)) {
+      group.set(c.code, c.display);
+    }
+    bySystem.set(c.system, group);
+  }
+  const result = new Map<string, CodeSystemConcept[]>();
+  for (const [system, codes] of bySystem) {
+    result.set(
+      system,
+      [...codes.entries()].map(([code, display]) => ({ code, display }))
+    );
+  }
+  return result;
+}
+
 async function main(): Promise<void> {
   const umlsApiKey = process.env.UMLS_API_KEY;
   const baseUrl = process.env.MEDPLUM_BASE_URL ?? 'https://api.medplum.com.ar';
@@ -118,8 +142,17 @@ async function main(): Promise<void> {
     const sizeMb = (JSON.stringify(valueSet).length / 1024 / 1024).toFixed(1);
     console.log(`Subiendo ${valueSet.url} (${data.concepts.length} conceptos, ~${sizeMb} MB) a ${baseUrl}...`);
     try {
+      // CodeSystem fragmento por sistema (mergeando), para que el ValueSet expanda.
+      for (const [system, concepts] of conceptsBySystem(data)) {
+        const n = await upsertCodeSystemFragment(medplum, system, concepts);
+        console.log(`  CodeSystem ${system}: ${n} conceptos`);
+      }
       const result = await medplum.upsertResource(valueSet, `url=${encodeURIComponent(valueSet.url as string)}`);
       console.log(`  OK: ValueSet/${result.id}`);
+      const expanded = await medplum.valueSetExpand({ url: valueSet.url as string, count: 5 });
+      console.log(
+        `  Test $expand: ${expanded.expansion?.contains?.length ?? 0} de ${data.concepts.length} (muestra de 5)`
+      );
     } catch (err) {
       if (err instanceof Error && err.message.includes('413')) {
         throw new Error(
