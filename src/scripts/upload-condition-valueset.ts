@@ -32,7 +32,7 @@ const CONDITIONS: { code: string; display: string }[] = [
   { code: 'E11.65', display: 'Diabetes tipo 2 con hiperglucemia' },
   { code: 'E10.9', display: 'Diabetes mellitus tipo 1 sin complicaciones' },
   { code: 'R73.03', display: 'Prediabetes' },
-  { code: 'E88.81', display: 'Síndrome metabólico' },
+  { code: 'E88.810', display: 'Síndrome metabólico' },
   // Dislipidemia
   { code: 'E78.5', display: 'Hiperlipidemia no especificada' },
   { code: 'E78.00', display: 'Hipercolesterolemia pura' },
