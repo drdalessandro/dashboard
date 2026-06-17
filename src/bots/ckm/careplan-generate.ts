@@ -13,9 +13,15 @@
 // GUARDARRAÍL: el CarePlan se crea como 'draft'. El médico lo revisa y aprueba
 // (status 'active') desde la UI. El bot no prescribe ni activa nada.
 //
+// IMPORTANTE: la llamada al LLM tarda más que el timeout por defecto del Lambda
+// de Medplum (10s). Subí el timeout del Lambda del bot a ~60s (AWS) para que el
+// plan se genere sin "Sandbox.Timedout".
+//
 // Secrets del Bot:
 // - ANTHROPIC_API_KEY (requerido): API key de Anthropic.
 // - CKM_CAREPLAN_MODEL (opcional): model id (default claude-opus-4-8).
+// - CKM_CAREPLAN_TIMEOUT_MS (opcional): abort de la llamada a Anthropic (default
+//   55000); debe ser menor que el timeout del Lambda.
 import type { BotEvent, MedplumClient } from '@medplum/core';
 import type { CarePlan, Goal, Patient, Reference, Task } from '@medplum/fhirtypes';
 import { ageFromBirthDate, deriveMedicationFlags, isActiveCondition, patientPreventSex } from '../../ckm/clinical';
@@ -70,25 +76,44 @@ function resolvePatientId(input: unknown): string | undefined {
 async function generateProposal(
   apiKey: string,
   model: string,
-  ctx: CarePlanContext
+  ctx: CarePlanContext,
+  timeoutMs: number
 ): Promise<CarePlanProposal> {
   const { system, user } = buildCarePlanMessages(ctx);
-  const response = await fetch(ANTHROPIC_URL, {
-    method: 'POST',
-    headers: {
-      'x-api-key': apiKey,
-      'anthropic-version': ANTHROPIC_VERSION,
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 6000,
-      system,
-      messages: [{ role: 'user', content: user }],
-      tools: [CAREPLAN_TOOL],
-      tool_choice: { type: 'tool', name: CAREPLAN_TOOL.name },
-    }),
-  });
+  // Abort para que un cuelgue de red falle con un mensaje claro (y no como
+  // Sandbox.Timedout) si el Lambda no llega a api.anthropic.com.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let response: Response;
+  try {
+    response = await fetch(ANTHROPIC_URL, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': ANTHROPIC_VERSION,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: 4000,
+        system,
+        messages: [{ role: 'user', content: user }],
+        tools: [CAREPLAN_TOOL],
+        tool_choice: { type: 'tool', name: CAREPLAN_TOOL.name },
+      }),
+    });
+  } catch (err) {
+    if ((err as Error).name === 'AbortError') {
+      throw new Error(
+        `Timeout (${timeoutMs}ms) contactando a Anthropic. Verificá que el Lambda del bot tenga salida a ` +
+          'api.anthropic.com y que su timeout sea mayor (recomendado 60s).'
+      );
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
 
   if (!response.ok) {
     throw new Error(`Anthropic respondió HTTP ${response.status}: ${await response.text()}`);
@@ -149,6 +174,7 @@ export async function handler(medplum: MedplumClient, event: BotEvent): Promise<
     throw new Error('Falta el secret ANTHROPIC_API_KEY del bot.');
   }
   const model = event.secrets['CKM_CAREPLAN_MODEL']?.valueString || DEFAULT_MODEL;
+  const timeoutMs = Number(event.secrets['CKM_CAREPLAN_TIMEOUT_MS']?.valueString) || 55000;
 
   const patientId = resolvePatientId(event.input);
   if (!patientId) {
@@ -157,7 +183,7 @@ export async function handler(medplum: MedplumClient, event: BotEvent): Promise<
   const patient = await medplum.readResource('Patient', patientId);
 
   const ctx = await buildContext(medplum, patient);
-  const proposal = await generateProposal(apiKey, model, ctx);
+  const proposal = await generateProposal(apiKey, model, ctx, timeoutMs);
 
   const startIso = new Date().toISOString();
   // Crear Goals primero para poder referenciarlos desde el CarePlan.

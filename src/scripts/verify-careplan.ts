@@ -135,7 +135,12 @@ async function diagnose(medplum: MedplumClient, botId: string, message: string):
     try {
       const code = await (await medplum.download(codeUrl)).text();
       const ok = code.includes('crear_plan_bienestar');
-      console.log(`  Código desplegado tiene la tool del plan: ${ok ? 'SÍ ✓' : 'NO ✗ → redesplegá'}`);
+      // Bot.executableCode puede quedar viejo si el deploy salteó la transacción
+      // "strict isolation" (el Lambda igual corre el código nuevo vía $deploy),
+      // así que un "NO" acá NO es concluyente.
+      console.log(
+        `  executableCode del recurso tiene la tool: ${ok ? 'SÍ ✓' : 'NO (puede ser falso negativo del deploy)'}`
+      );
     } catch {
       /* best-effort */
     }
