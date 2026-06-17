@@ -176,6 +176,26 @@ async function diagnose(medplum: MedplumClient, patientId: string): Promise<void
     console.log(
       `  Bot ckm-recalculate: Bot/${bot.id} — código ejecutable ${bot.executableCode?.url ? 'presente' : 'AUSENTE (no desplegado)'}`
     );
+
+    // Chequeo DEFINITIVO de versión: bajar el código desplegado y ver si tiene
+    // la regla 3 strikes. Si no la tiene, el Lambda quedó con código viejo.
+    const codeUrl = bot.executableCode?.url;
+    if (codeUrl) {
+      try {
+        const blob = await medplum.download(codeUrl);
+        const code = await blob.text();
+        const hasRule = code.includes(ALERT_RULE_SYSTEM) || code.includes('ckm-alert-rule');
+        console.log(
+          `  Código DESPLEGADO tiene la regla 3 strikes: ${hasRule ? 'SÍ ✓' : 'NO ✗  → es código VIEJO, redesplegá'}`
+        );
+        if (!hasRule) {
+          console.log('      npm run build:bots && npm run deploy-bots-server   (y verificá "✓ ckm-recalculate desplegado")');
+        }
+      } catch (err) {
+        console.log(`  (no pude bajar el código desplegado para verificar versión: ${(err as Error).message})`);
+      }
+    }
+
     const audits = await medplum.searchResources('AuditEvent', {
       entity: `Bot/${bot.id}`,
       _count: '5',
