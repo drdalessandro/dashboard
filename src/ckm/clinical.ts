@@ -15,6 +15,12 @@ export const CLINICAL_CVD_ICD10 = /^I(2[0-5]|48|50|6\d|7[0-3])/;
 // ICD-10 de diabetes (E10-E14)
 export const DIABETES_ICD10 = /^E1[0-4]/;
 
+// ICD-10 de hipertensión (I10-I16), enfermedad renal crónica (N18) e
+// insuficiencia cardíaca (I50) — para las reglas de estudios sugeridos.
+export const HYPERTENSION_ICD10 = /^I1[0-6]/;
+export const CKD_ICD10 = /^N18/;
+export const HEART_FAILURE_ICD10 = /^I50/;
+
 // Tabaquismo activo: ICD-10 (Z72.0, F17.x) y SNOMED (fumador actual)
 export const SMOKING_CODES = /^(Z72\.0|F17|449868002|77176002)/;
 
@@ -47,6 +53,21 @@ export function hasDiabetes(conditions: Condition[]): boolean {
 /** Hay tabaquismo activo si alguna Condition activa lo codifica. */
 export function hasSmoking(conditions: Condition[]): boolean {
   return conditions.some((c) => conditionMatches(c, SMOKING_CODES));
+}
+
+/** Hay hipertensión si alguna Condition activa la codifica (ICD-10 I10-I16). */
+export function hasHypertension(conditions: Condition[]): boolean {
+  return conditions.some((c) => conditionMatches(c, HYPERTENSION_ICD10));
+}
+
+/** Hay enfermedad renal crónica si alguna Condition activa la codifica (N18). */
+export function hasCKD(conditions: Condition[]): boolean {
+  return conditions.some((c) => conditionMatches(c, CKD_ICD10));
+}
+
+/** Hay insuficiencia cardíaca si alguna Condition activa la codifica (I50). */
+export function hasHeartFailure(conditions: Condition[]): boolean {
+  return conditions.some((c) => conditionMatches(c, HEART_FAILURE_ICD10));
 }
 
 /** Flags de medicación PREVENT a partir de las MedicationRequest activas. */
