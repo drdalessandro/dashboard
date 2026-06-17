@@ -16,6 +16,7 @@
     "upload-condition-valueset": "tsx src/scripts/upload-condition-valueset.ts",
     "seed-ckm-demo": "tsx src/scripts/seed-ckm-demo.ts",
     "verify-prevent": "tsx src/scripts/verify-prevent.ts",
+    "verify-alerts": "tsx src/scripts/verify-alerts.ts",
     "deploy-bots-server": "tsx src/scripts/deploy-bots-server.ts",
     "upload-access-policy": "tsx src/scripts/upload-access-policy.ts",
     "upload-sdoh": "tsx src/scripts/upload-sdoh-questionnaire.ts",
