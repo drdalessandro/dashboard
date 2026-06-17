@@ -75,9 +75,11 @@ describe('clinical — flags PREVENT compartidos', () => {
   });
 
   test('ageFromBirthDate calcula años y NaN sin fecha', () => {
-    const tenYearsAgo = new Date();
-    tenYearsAgo.setFullYear(tenYearsAgo.getFullYear() - 10);
-    expect(ageFromBirthDate(tenYearsAgo.toISOString().slice(0, 10))).toBe(10);
+    // 30 años + 100 días de margen para no quedar sobre el límite del año bisiesto
+    const birth = new Date();
+    birth.setFullYear(birth.getFullYear() - 30);
+    birth.setDate(birth.getDate() - 100);
+    expect(ageFromBirthDate(birth.toISOString().slice(0, 10))).toBe(30);
     expect(Number.isNaN(ageFromBirthDate(undefined))).toBe(true);
   });
 });

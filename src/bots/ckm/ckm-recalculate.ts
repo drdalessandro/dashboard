@@ -16,20 +16,33 @@
 //    medplum.sendEmail() al médico de cabecera (generalPractitioner con email
 //    en telecom) o al secret CKM_ALERT_EMAIL del Bot. El email no incluye
 //    datos clínicos ni nombre del paciente, solo el link al chart.
+// 6. Alertas de tendencia "3 strikes" (ckm/alert-rules): si hay 3+ lecturas
+//    anormales repetidas (PA elevada, HDL bajo, etc.) crea un DetectedIssue
+//    (ancla anti-spam, con cooldown), una Communication 'alert', una Task de
+//    revisión asignada al médico de cabecera y envía el email. No re-alerta una
+//    regla que ya tenga un DetectedIssue dentro de ALERT_COOLDOWN_DAYS.
 //
 // Secrets del Bot (opcionales):
 // - CKM_ALERT_EMAIL: destinatario de respaldo si el paciente no tiene
 //   generalPractitioner con email
 // - CKM_APP_URL: base del link al chart (default https://seguimiento.medplum.com.ar)
-//
-// TODO PREVENT: el cálculo de los scores PREVENT (ASCVD/IC a 10 años, ECV
-// total a 30 años) requiere los coeficientes oficiales publicados de las
-// ecuaciones (Khan et al., Circulation 2023). Hasta integrarlos de una fuente
-// validada, este bot preserva los scores ya guardados en la extensión.
+// - CKM_ALERT_MIN_COUNT: lecturas anormales para disparar tendencia (default 3)
+// - CKM_ALERT_WINDOW_DAYS: ventana de conteo en días (default 180)
 import type { BotEvent, MedplumClient } from '@medplum/core';
-import type { Communication, Condition, Observation, Patient, Practitioner, Reference } from '@medplum/fhirtypes';
+import type {
+  Communication,
+  Condition,
+  DetectedIssue,
+  Observation,
+  Patient,
+  Practitioner,
+  Reference,
+  Task,
+} from '@medplum/fhirtypes';
 import type { CKMObservationMap } from '../../ckm/observations';
 import type { PREVENTScores } from '../../ckm/types';
+import type { TriggeredAlert } from '../../ckm/alert-rules';
+import { ALERT_RULE_SYSTEM, DEFAULT_ALERT_CONFIG, evaluateThresholdRules } from '../../ckm/alert-rules';
 import {
   ageFromBirthDate,
   deriveMedicationFlags,
@@ -40,11 +53,20 @@ import {
   patientPreventSex,
 } from '../../ckm/clinical';
 import { getCKMStage, getHGraphData, withCKMExtensions } from '../../ckm/extensions';
-import { extractCKMValues, getLatestCKMObservations, isImplausibleBloodPressure } from '../../ckm/observations';
+import {
+  extractCKMValues,
+  getCKMObservationHistory,
+  getLatestCKMObservations,
+  isImplausibleBloodPressure,
+} from '../../ckm/observations';
 import { buildPreventInputs, computePrevent } from '../../ckm/prevent';
 import { computeMetrics, deriveStage, detectCriticalValues } from '../../ckm/scoring';
 
 const DEFAULT_APP_URL = 'https://seguimiento.medplum.com.ar';
+
+// Ventana de silencio (días) para no re-alertar la misma regla de tendencia:
+// si ya hay un DetectedIssue de esa regla en este lapso, no se vuelve a notificar.
+const ALERT_COOLDOWN_DAYS = 30;
 
 /**
  * Recolecta las variables PREVENT del paciente y calcula los scores.
@@ -139,7 +161,94 @@ export async function handler(medplum: MedplumClient, event: BotEvent<Observatio
     await sendAlertEmail(medplum, event, patient, messages.length);
   }
 
+  // Alertas de tendencia "3 strikes": 3+ lecturas anormales (PA elevada, HDL
+  // bajo, etc.). Aisladas en try/catch para no afectar el recálculo si fallan.
+  try {
+    await evaluateTrendAlerts(medplum, event, patient);
+  } catch (err) {
+    console.error(`Patient/${patient.id}: error evaluando alertas de tendencia`, err);
+  }
+
   return updated;
+}
+
+/**
+ * Evalúa las reglas de tendencia sobre el historial del paciente y notifica
+ * (DetectedIssue + Communication + Task + email) las reglas recién disparadas,
+ * evitando re-alertar las que ya tienen un DetectedIssue dentro del cooldown.
+ */
+async function evaluateTrendAlerts(
+  medplum: MedplumClient,
+  event: BotEvent<Observation>,
+  patient: Patient
+): Promise<void> {
+  const config = {
+    minCount: Number(event.secrets['CKM_ALERT_MIN_COUNT']?.valueString) || DEFAULT_ALERT_CONFIG.minCount,
+    windowDays: Number(event.secrets['CKM_ALERT_WINDOW_DAYS']?.valueString) || DEFAULT_ALERT_CONFIG.windowDays,
+  };
+  const history = await getCKMObservationHistory(medplum, patient.id as string);
+  const triggered = evaluateThresholdRules(history, patientPreventSex(patient), config);
+
+  for (const alert of triggered) {
+    if (await hasRecentDetectedIssue(medplum, patient.id as string, alert.ruleId)) {
+      continue;
+    }
+    await createDetectedIssue(medplum, patient, alert);
+    await createAlertCommunication(medplum, patient, [alert.message]);
+    await createReviewTask(medplum, patient, alert);
+    await sendAlertEmail(medplum, event, patient, 1);
+    console.log(`Patient/${patient.id}: alerta de tendencia "${alert.ruleId}" (${alert.count} lecturas)`);
+  }
+}
+
+/** ¿Hay un DetectedIssue de esta regla para el paciente dentro del cooldown? */
+async function hasRecentDetectedIssue(medplum: MedplumClient, patientId: string, ruleId: string): Promise<boolean> {
+  const existing = await medplum.searchResources('DetectedIssue', {
+    patient: `Patient/${patientId}`,
+    code: `${ALERT_RULE_SYSTEM}|${ruleId}`,
+    _sort: '-_lastUpdated',
+    _count: '1',
+  });
+  const last = existing[0];
+  if (!last) {
+    return false;
+  }
+  const when = last.identifiedDateTime ?? last.meta?.lastUpdated;
+  if (!when) {
+    return true; // existe pero sin fecha: por las dudas no re-alertar
+  }
+  return Date.now() - new Date(when).getTime() < ALERT_COOLDOWN_DAYS * 24 * 3600 * 1000;
+}
+
+/** Registra el problema detectado por la regla (ancla del anti-spam). */
+async function createDetectedIssue(medplum: MedplumClient, patient: Patient, alert: TriggeredAlert): Promise<void> {
+  const issue: DetectedIssue = {
+    resourceType: 'DetectedIssue',
+    status: 'final',
+    severity: 'moderate',
+    code: { coding: [{ system: ALERT_RULE_SYSTEM, code: alert.ruleId, display: alert.label }], text: alert.label },
+    patient: { reference: `Patient/${patient.id}` },
+    identifiedDateTime: new Date().toISOString(),
+    detail: alert.message,
+  };
+  await medplum.createResource(issue);
+}
+
+/** Crea una tarea de revisión asignada al médico de cabecera (si lo hay). */
+async function createReviewTask(medplum: MedplumClient, patient: Patient, alert: TriggeredAlert): Promise<void> {
+  const owner = patient.generalPractitioner?.find((r) => r.reference?.startsWith('Practitioner/'));
+  const task: Task = {
+    resourceType: 'Task',
+    status: 'requested',
+    intent: 'order',
+    priority: 'urgent',
+    code: { text: 'Revisar paciente — alerta CKM' },
+    description: alert.message,
+    for: { reference: `Patient/${patient.id}` },
+    owner,
+    authoredOn: new Date().toISOString(),
+  };
+  await medplum.createResource(task);
 }
 
 async function createAlertCommunication(medplum: MedplumClient, patient: Patient, messages: string[]): Promise<void> {

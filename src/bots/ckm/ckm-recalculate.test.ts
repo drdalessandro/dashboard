@@ -224,6 +224,47 @@ describe('Bot CKM recalculate', () => {
     expect(sendEmail).toHaveBeenCalledTimes(1);
   });
 
+  test('tendencia "3 strikes": 3 PA elevadas crean DetectedIssue + Task + Communication y no se duplican', async () => {
+    const medplum = new MockClient();
+    const sendEmail = vi.spyOn(medplum, 'sendEmail').mockResolvedValue({} as never);
+    const gp = await medplum.createResource({
+      resourceType: 'Practitioner',
+      telecom: [{ system: 'email', value: 'dra.lopez@example.com' }],
+    });
+    const patient = await medplum.createResource<Patient>({
+      resourceType: 'Patient',
+      gender: 'male',
+      generalPractitioner: [{ reference: `Practitioner/${gp.id}` }],
+    });
+    // 3 PA con sistólica elevada (>=140), diastólica normal, ninguna crítica
+    await medplum.createResource(bpPanel(patient.id as string, 145, 85, '2026-06-15'));
+    await medplum.createResource(bpPanel(patient.id as string, 148, 86, '2026-06-16'));
+    const latest = await medplum.createResource(bpPanel(patient.id as string, 150, 84, '2026-06-17'));
+
+    await handler(medplum, { bot, contentType, input: latest, secrets: {} });
+
+    const issues = await medplum.searchResources('DetectedIssue', `patient=Patient/${patient.id}`);
+    expect(issues).toHaveLength(1);
+    expect(issues[0].code?.coding?.[0]).toMatchObject({ code: 'sbp-high' });
+
+    const tasks = await medplum.searchResources('Task', `patient=Patient/${patient.id}`);
+    expect(tasks).toHaveLength(1);
+    expect(tasks[0]).toMatchObject({ owner: { reference: `Practitioner/${gp.id}` }, priority: 'urgent' });
+
+    const alerts = await medplum.searchResources('Communication', `subject=Patient/${patient.id}`);
+    expect(alerts).toHaveLength(1);
+    expect((alerts[0] as Communication).payload?.[0]?.contentString).toContain('Presión sistólica');
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+
+    // Segunda lectura elevada dentro del cooldown: no debe duplicar la alerta
+    const again = await medplum.createResource(bpPanel(patient.id as string, 151, 85, '2026-06-17'));
+    await handler(medplum, { bot, contentType, input: again, secrets: {} });
+
+    expect(await medplum.searchResources('DetectedIssue', `patient=Patient/${patient.id}`)).toHaveLength(1);
+    expect(await medplum.searchResources('Task', `patient=Patient/${patient.id}`)).toHaveLength(1);
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+  });
+
   test('preserva los scores PREVENT ya guardados en la extensión', async () => {
     const medplum = new MockClient();
     const prevent = { ascvd10y: 10.8, hf10y: 6.9, cvdTotal30y: 27.6 };
