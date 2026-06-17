@@ -80,9 +80,24 @@ async function main(): Promise<void> {
     }
   }
 
-  // 3. Ejecutar la transacción (Binarys + Bots + Subscriptions)
-  await medplum.executeBatch(JSON.parse(transactionString) as Bundle);
-  console.log('  Transacción ejecutada (código fuente + suscripciones).');
+  // 3. Ejecutar la transacción (Binarys + Bots + Subscriptions). En proyectos con
+  //    "strict isolation" la transacción entera puede rechazarse por cantidad de
+  //    entries. NO es fatal: el código EJECUTABLE se despliega igual en el paso 4
+  //    ($deploy, que actualiza el Lambda y el Bot.executableCode), y los Bots ya
+  //    existen. Si faltaran Subscriptions, se recrean con --recreate-subs.
+  try {
+    await medplum.executeBatch(JSON.parse(transactionString) as Bundle);
+    console.log('  Transacción ejecutada (código fuente + suscripciones).');
+  } catch (err) {
+    const msg = (err as Error).message ?? String(err);
+    if (/strict isolation|too many entries/i.test(msg)) {
+      console.log(`  ⚠ La transacción no se aplicó ("${msg}"). No es fatal.`);
+      console.log('     El código ejecutable se despliega igual abajo (paso 4, $deploy).');
+      console.log('     Si faltan Subscriptions: npm run ckm-bots-doctor -- --recreate-subs');
+    } else {
+      throw err;
+    }
+  }
 
   // 4. Desplegar el código ejecutable de cada bot a Lambda. Se continúa ante
   //    un fallo para no dejar a medias el resto y poder reportar el detalle.

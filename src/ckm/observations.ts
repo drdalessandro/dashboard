@@ -108,3 +108,44 @@ export async function getLatestCKMObservations(medplum: MedplumClient, patientId
   });
   return latestCKMValues(observations.filter((o) => o.status !== 'entered-in-error'));
 }
+
+/** Historial de un parámetro CKM: todas sus lecturas, de más nueva a más vieja. */
+export type CKMObservationHistory = Partial<Record<CKMParameterId, CKMObservationValue[]>>;
+
+/**
+ * Agrupa una lista de Observations por parámetro CKM conservando todas las
+ * lecturas (no solo la última), ordenadas de más nueva a más vieja. Descarta
+ * las lecturas de PA implausibles (sistólica <= diastólica).
+ */
+export function groupCKMValues(observations: Observation[]): CKMObservationHistory {
+  const sorted = [...observations].sort((a, b) => observationDate(b).localeCompare(observationDate(a)));
+  const result: CKMObservationHistory = {};
+  for (const observation of sorted) {
+    const values = extractCKMValues(observation);
+    if (isImplausibleBloodPressure(values)) {
+      delete values.sbp;
+      delete values.dbp;
+    }
+    for (const [param, value] of Object.entries(values) as [CKMParameterId, CKMObservationValue][]) {
+      (result[param] ??= []).push(value);
+    }
+  }
+  return result;
+}
+
+/**
+ * Busca las Observations CKM del paciente y devuelve el historial por
+ * parámetro (todas las lecturas), para evaluar tendencias/reglas de alerta.
+ */
+export async function getCKMObservationHistory(
+  medplum: MedplumClient,
+  patientId: string
+): Promise<CKMObservationHistory> {
+  const observations = await medplum.searchResources('Observation', {
+    subject: `Patient/${patientId}`,
+    code: CKM_OBSERVATION_CODES.join(','),
+    _sort: '-date',
+    _count: '500',
+  });
+  return groupCKMValues(observations.filter((o) => o.status !== 'entered-in-error'));
+}

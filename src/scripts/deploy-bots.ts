@@ -49,6 +49,12 @@ const Bots: BotDescription[] = [
     criteria: `QuestionnaireResponse?questionnaire=${SDOH_QUESTIONNAIRE_URL}`,
     runtimeVersion: CKM_RUNTIME,
   },
+  {
+    // Disparo MANUAL (medplum.executeBot desde el chart): sin criteria, no crea Subscription.
+    src: 'src/bots/ckm/careplan-generate.ts',
+    dist: 'dist/bots/ckm/careplan-generate.js',
+    runtimeVersion: CKM_RUNTIME,
+  },
 ];
 
 async function main(): Promise<void> {
