@@ -15,7 +15,7 @@
 //   MEDPLUM_CLIENT_ID=xxx MEDPLUM_CLIENT_SECRET=xxx npm run verify-alerts
 import { MedplumClient } from '@medplum/core';
 import type { Observation, Patient } from '@medplum/fhirtypes';
-import { LOINC, LOINC_BP_PANEL, LOINC_SYSTEM } from '../ckm/constants';
+import { CKM_STAGE_URL, HGRAPH_DATA_URL, LOINC, LOINC_BP_PANEL, LOINC_SYSTEM, PREVENT_INPUTS_URL } from '../ckm/constants';
 import { ALERT_RULE_SYSTEM } from '../ckm/alert-rules';
 
 const TEST_IDENTIFIER_SYSTEM = 'https://seguimiento.medplum.com.ar/fhir/test';
@@ -123,15 +123,73 @@ async function main(): Promise<void> {
 
   if (detected && taskList.length > 0 && commList.length > 0) {
     console.log('\n✓ OK: la regla "3 strikes" disparó y creó DetectedIssue + Task + Communication.');
-  } else {
+    return;
+  }
+
+  await diagnose(medplum, pid);
+  process.exit(1);
+}
+
+/**
+ * Diagnostica por qué no apareció la alerta. Discrimina las dos causas raíz:
+ *   A) el bot NO corrió  -> el Patient no tiene extensiones CKM nuevas (sub/membership)
+ *   B) el bot corrió pero el camino de tendencia falló -> código viejo o AccessPolicy
+ * y vuelca los AuditEvents recientes del bot (outcome + descripción del error).
+ */
+async function diagnose(medplum: MedplumClient, patientId: string): Promise<void> {
+  console.log('\n── Diagnóstico ────────────────────────────');
+
+  // 1. ¿Corrió el bot? Se ve en las extensiones CKM del Patient de prueba.
+  try {
+    const patient = await medplum.readResource('Patient', patientId);
+    const has = (url: string): boolean => Boolean(patient.extension?.some((e) => e.url === url));
+    const ran = has(CKM_STAGE_URL) || has(HGRAPH_DATA_URL) || has(PREVENT_INPUTS_URL);
+    console.log(`  Bot corrió sobre el paciente: ${ran ? 'SÍ' : 'NO'}  (CKMStage=${has(CKM_STAGE_URL)} hGraph=${has(HGRAPH_DATA_URL)})`);
+    if (!ran) {
+      console.log(
+        '  → El bot NO se ejecutó. Causa típica: la Subscription no dispara o falta\n' +
+          '    la membership del bot. Probá:\n' +
+          '      npm run ckm-bots-doctor                          (status: deployed?, sub activa?, accessPolicy?)\n' +
+          '      npm run ckm-bots-doctor -- --fix-bot-membership\n' +
+          `      npm run ckm-bots-doctor -- --reprocess ${patientId}   (ejecuta el bot vía $execute y muestra errores)`
+      );
+    } else {
+      console.log(
+        '  → El bot SÍ se ejecutó pero NO creó la alerta de tendencia. Causas probables:\n' +
+          '    a) El bot tiene CÓDIGO VIEJO (sin la regla 3 strikes): redesplegá\n' +
+          '         npm run build:bots && npm run deploy-bots-server\n' +
+          '    b) La AccessPolicy del bot le impide crear DetectedIssue/Task (el bot\n' +
+          '       traga el error). Mirá el accessPolicy en: npm run ckm-bots-doctor'
+      );
+    }
+  } catch (err) {
+    console.log(`  No pude releer el Patient de prueba: ${(err as Error).message}`);
+  }
+
+  // 2. AuditEvents recientes del bot: ¿corrió?, ¿con qué error?
+  try {
+    const bot = await medplum.searchOne('Bot', 'name=ckm-recalculate');
+    if (!bot) {
+      console.log('  Bot ckm-recalculate: NO existe en este proyecto.');
+      return;
+    }
     console.log(
-      '\n✗ No se detectó la alerta esperada. Verificá:\n' +
-        '  - El bot está desplegado con el código nuevo (npm run build:bots && npm run deploy-bots-server)\n' +
-        '  - La Subscription del bot está activa y en el proyecto de los pacientes\n' +
-        '  - El bot tiene ProjectMembership (npm run ckm-bots-doctor -- --fix-bot-membership)\n' +
-        '  - Subí POLL_ATTEMPTS si el procesamiento async está lento.'
+      `  Bot ckm-recalculate: Bot/${bot.id} — código ejecutable ${bot.executableCode?.url ? 'presente' : 'AUSENTE (no desplegado)'}`
     );
-    process.exit(1);
+    const audits = await medplum.searchResources('AuditEvent', {
+      entity: `Bot/${bot.id}`,
+      _count: '5',
+      _sort: '-_lastUpdated',
+    });
+    console.log(`  AuditEvents recientes del bot: ${audits.length}`);
+    for (const a of audits) {
+      console.log(`    ${a.recorded} outcome=${a.outcome ?? '?'} ${a.outcomeDesc ? '— ' + a.outcomeDesc.slice(0, 300) : ''}`);
+    }
+    if (audits.length === 0) {
+      console.log('    (sin AuditEvents: el bot no se está ejecutando; revisá la Subscription)');
+    }
+  } catch (err) {
+    console.log(`  No pude leer AuditEvents del bot: ${(err as Error).message}`);
   }
 }
 
