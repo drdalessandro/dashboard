@@ -15,6 +15,8 @@ export interface DashboardRow {
   ascvd10y?: number;
   hf10y?: number;
   cvdTotal30y?: number;
+  /** Score de calcio coronario (Agatston), si está entre las métricas. Reclasifica ASCVD. */
+  cac?: number;
   riskUpdated?: string;
   hasAlert: boolean;
 }
@@ -85,7 +87,8 @@ export async function loadDashboardRows(medplum: MedplumClient): Promise<Dashboa
   const alertedPatients = new Set(alerts.map((a) => a.subject?.reference));
 
   return patients.map((patient) => {
-    const prevent = getHGraphData(patient).prevent;
+    const hGraph = getHGraphData(patient);
+    const prevent = hGraph.prevent;
     return {
       patient,
       name: patient.name ? formatHumanName(patient.name[0] as HumanName) : '',
@@ -93,6 +96,7 @@ export async function loadDashboardRows(medplum: MedplumClient): Promise<Dashboa
       ascvd10y: prevent?.ascvd10y,
       hf10y: prevent?.hf10y,
       cvdTotal30y: prevent?.cvdTotal30y,
+      cac: hGraph.metrics?.find((m) => m.id === 'cac')?.value,
       riskUpdated: riskUpdatedByPatient.get(`Patient/${patient.id}`),
       hasAlert: alertedPatients.has(`Patient/${patient.id}`),
     };

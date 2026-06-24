@@ -24,7 +24,10 @@ describe('Carga del panel CKM', () => {
         { url: CKM_STAGE_URL, valueInteger: 3 },
         {
           url: HGRAPH_DATA_URL,
-          valueString: JSON.stringify({ metrics: [], prevent: { ascvd10y: 18.2, hf10y: 12.4, cvdTotal30y: 41.9 } }),
+          valueString: JSON.stringify({
+            metrics: [{ id: 'cac', label: 'Score de calcio', value: 220, unit: 'Agatston', score: 0.45, status: 'moderate' }],
+            prevent: { ascvd10y: 18.2, hf10y: 12.4, cvdTotal30y: 41.9 },
+          }),
         },
       ],
     });
@@ -59,6 +62,7 @@ describe('Carga del panel CKM', () => {
       ascvd10y: 18.2,
       hf10y: 12.4,
       cvdTotal30y: 41.9,
+      cac: 220,
       hasAlert: true,
     });
     expect(jorge?.riskUpdated).toBeDefined();
@@ -69,6 +73,7 @@ describe('Carga del panel CKM', () => {
       ascvd10y: undefined,
       hf10y: undefined,
       cvdTotal30y: undefined,
+      cac: undefined,
       hasAlert: false,
     });
     expect(sinDatos?.riskUpdated).toBeUndefined();
