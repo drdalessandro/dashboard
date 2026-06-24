@@ -15,12 +15,12 @@ export default defineConfig({
   envPrefix: ['MEDPLUM_', 'GOOGLE_'],
   plugins: [react()],
   preview: {
-    port: 3007,
+    port: 3008,
     allowedHosts: true,
     host: 'dashboard.medplum.com.ar',
   },
   server: {
     host: 'localhost',
-    port: 3007,
+    port: 3008,
   },
 });
