@@ -15,6 +15,7 @@
     "upload-med-valueset": "tsx src/scripts/upload-medication-valueset.ts",
     "upload-condition-valueset": "tsx src/scripts/upload-condition-valueset.ts",
     "seed-ckm-demo": "tsx src/scripts/seed-ckm-demo.ts",
+    "upload-biomarker-defs": "tsx src/scripts/upload-biomarker-definitions.ts",
     "verify-prevent": "tsx src/scripts/verify-prevent.ts",
     "verify-alerts": "tsx src/scripts/verify-alerts.ts",
     "verify-careplan": "tsx src/scripts/verify-careplan.ts",

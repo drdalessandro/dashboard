@@ -5,6 +5,7 @@ import {
   IconClipboardHeart,
   IconClipboardList,
   IconDatabaseImport,
+  IconFlask,
   IconHeartRateMonitor,
   IconHealthRecognition,
   IconQuestionMark,
@@ -63,6 +64,7 @@ export function App(): JSX.Element | null {
             { icon: <IconQuestionMark />, label: 'Upload Questionnaires', href: '/upload/questionnaire' },
             { icon: <IconRobot />, label: 'Upload Example Bots', href: '/upload/bots' },
             { icon: <IconHealthRecognition />, label: 'Upload Example Patient Data', href: '/upload/example' },
+            { icon: <IconFlask />, label: 'Upload Biomarker Definitions', href: '/upload/biomarkers' },
           ],
         },
       ]}

@@ -11,6 +11,7 @@
 // Medplum. Sin dependencias de UI: usable por el FrontEnd y por los bots.
 import type { Observation } from '@medplum/fhirtypes';
 import { LOINC_SYSTEM } from './constants';
+import type { BiomarkerDefinition } from './observation-definitions';
 
 /** Nivel cualitativo de un potenciador, de mejor a peor. */
 export type EnhancerLevel = 'optimal' | 'borderline' | 'high';
@@ -85,6 +86,28 @@ export function classifyEnhancer(def: EnhancerDefinition, value: number): Enhanc
   return LEVEL_INFO.high;
 }
 
+/**
+ * Definición efectiva del potenciador: si hay una ObservationDefinition cargada
+ * para su LOINC, toma de ahí los umbrales (óptimo/convencional), la unidad, la
+ * interpretación y la fuente; si no, usa el hardcode. Así los rangos salen de la
+ * fuente de verdad FHIR cuando está disponible, con fallback al default.
+ */
+export function resolveEnhancer(base: EnhancerDefinition, od?: BiomarkerDefinition): EnhancerDefinition {
+  if (!od) {
+    return base;
+  }
+  const optimalHigh = od.optimal.find((r) => !r.gender)?.high ?? od.optimal[0]?.high;
+  const conventionalHigh = od.conventional.find((r) => !r.gender)?.high ?? od.conventional[0]?.high;
+  return {
+    ...base,
+    optimalBelow: optimalHigh ?? base.optimalBelow,
+    conventionalBelow: conventionalHigh ?? base.conventionalBelow,
+    unit: od.unit ?? base.unit,
+    interpretation: od.interpretation ?? base.interpretation,
+    source: od.source ?? base.source,
+  };
+}
+
 /** Una lectura clasificada de un potenciador para un paciente. */
 export interface EnhancerReading {
   def: EnhancerDefinition;
@@ -108,14 +131,19 @@ export const ENHANCER_LOINC_CODES: string[] = RISK_ENHANCERS.map((e) => e.loinc)
 
 /**
  * Reduce una lista de Observations a la última lectura clasificada de cada
- * potenciador. Descarta las marcadas entered-in-error y las que no tienen
- * valueQuantity. Devuelve solo los potenciadores con dato (en el orden de
- * RISK_ENHANCERS).
+ * potenciador. Si se pasa el índice de ObservationDefinitions (por LOINC), los
+ * umbrales salen de ahí (fuente de verdad FHIR); si no, del hardcode. Descarta
+ * las marcadas entered-in-error y las que no tienen valueQuantity. Devuelve
+ * solo los potenciadores con dato (en el orden de RISK_ENHANCERS).
  */
-export function readEnhancers(observations: Observation[]): EnhancerReading[] {
+export function readEnhancers(
+  observations: Observation[],
+  dynamicByLoinc?: Map<string, BiomarkerDefinition>
+): EnhancerReading[] {
   const newestFirst = [...observations].sort((a, b) => observationDate(b).localeCompare(observationDate(a)));
   const readings: EnhancerReading[] = [];
-  for (const def of RISK_ENHANCERS) {
+  for (const base of RISK_ENHANCERS) {
+    const def = resolveEnhancer(base, dynamicByLoinc?.get(base.loinc));
     const obs = newestFirst.find(
       (o) => o.status !== 'entered-in-error' && hasLoinc(o, def.loinc) && o.valueQuantity?.value !== undefined
     );

@@ -1,5 +1,6 @@
 import type { Observation } from '@medplum/fhirtypes';
-import { classifyEnhancer, readEnhancers, RISK_ENHANCERS } from './biomarkers';
+import { classifyEnhancer, readEnhancers, resolveEnhancer, RISK_ENHANCERS } from './biomarkers';
+import type { BiomarkerDefinition } from './observation-definitions';
 
 const apob = RISK_ENHANCERS.find((e) => e.id === 'apob')!;
 const lpa = RISK_ENHANCERS.find((e) => e.id === 'lpa')!;
@@ -78,5 +79,55 @@ describe('readEnhancers', () => {
 
   test('sin observaciones devuelve lista vacía', () => {
     expect(readEnhancers([])).toStrictEqual([]);
+  });
+
+  test('usa los umbrales de la ObservationDefinition cuando se pasa el índice', () => {
+    // Con el hardcode (convencional <130), ApoB 95 sería "Límite". Si la OD baja
+    // el convencional a <90, 95 pasa a "Elevado": la clasificación sigue al FHIR.
+    const byLoinc = new Map<string, BiomarkerDefinition>([
+      ['1884-6', { label: 'ApoB', conventional: [{ high: 90 }], optimal: [{ high: 70 }] }],
+    ]);
+    expect(readEnhancers([obs('1884-6', 95, '2026-06-01')], byLoinc)[0].info.level).toBe('high');
+    // Sin el índice, el mismo valor es "Límite" (hardcode).
+    expect(readEnhancers([obs('1884-6', 95, '2026-06-01')])[0].info.level).toBe('borderline');
+  });
+});
+
+describe('resolveEnhancer — rangos dinámicos desde ObservationDefinition', () => {
+  const od = (over: Partial<BiomarkerDefinition>): BiomarkerDefinition => ({
+    label: 'X',
+    conventional: [],
+    optimal: [],
+    ...over,
+  });
+
+  test('sin OD devuelve el hardcode tal cual', () => {
+    expect(resolveEnhancer(apob, undefined)).toBe(apob);
+  });
+
+  test('toma óptimo/convencional, unidad, interpretación y fuente de la OD', () => {
+    const def = resolveEnhancer(
+      apob,
+      od({
+        optimal: [{ high: 80 }],
+        conventional: [{ high: 120 }],
+        unit: 'mg/dL (FHIR)',
+        interpretation: 'interpretación dinámica',
+        source: 'fuente dinámica',
+      })
+    );
+    expect(def).toMatchObject({
+      optimalBelow: 80,
+      conventionalBelow: 120,
+      unit: 'mg/dL (FHIR)',
+      interpretation: 'interpretación dinámica',
+      source: 'fuente dinámica',
+    });
+  });
+
+  test('si la OD no trae high, conserva el umbral del hardcode', () => {
+    const def = resolveEnhancer(apob, od({ optimal: [{ low: 1 }], conventional: [] }));
+    expect(def.optimalBelow).toBe(apob.optimalBelow);
+    expect(def.conventionalBelow).toBe(apob.conventionalBelow);
   });
 });
