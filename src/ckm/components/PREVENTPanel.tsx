@@ -14,6 +14,7 @@ import type { PreventOutcome } from '../risk';
 import { CKMStageBadge } from './CKMStageBadge';
 import { HGraph } from './HGraph';
 import { RiskBadge } from './RiskBadge';
+import { RiskEnhancers } from './RiskEnhancers';
 
 export interface PREVENTPanelProps {
   patient: Patient | Reference<Patient> | string;
@@ -44,6 +45,7 @@ export function PREVENTPanel(props: PREVENTPanelProps): JSX.Element {
         <Text size="xs" c="dimmed">
           {PROVISIONAL_NOTE}
         </Text>
+        <RiskEnhancers patientId={patient?.id} />
         <Button
           component={Link}
           to={`/ckm/simulator/${patient?.id}`}
