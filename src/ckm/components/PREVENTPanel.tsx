@@ -4,7 +4,7 @@ import { Button, Group, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/c
 import { formatDate } from '@medplum/core';
 import type { Patient, Reference } from '@medplum/fhirtypes';
 import { Loading } from '@medplum/react';
-import { IconAdjustments, IconClipboardText } from '@tabler/icons-react';
+import { IconAdjustments, IconClipboardText, IconFlask } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { Link } from 'react-router';
 import { getPREVENTInputs } from '../extensions';
@@ -48,6 +48,16 @@ export function PREVENTPanel(props: PREVENTPanelProps): JSX.Element {
           {PROVISIONAL_NOTE}
         </Text>
         <RiskEnhancers patientId={patient?.id} />
+        <Button
+          component={Link}
+          to={`/ckm/biomarkers/${patient?.id}`}
+          variant="light"
+          size="xs"
+          fullWidth
+          leftSection={<IconFlask size={16} />}
+        >
+          Panel de biomarcadores
+        </Button>
         <Button
           component={Link}
           to={`/ckm/simulator/${patient?.id}`}

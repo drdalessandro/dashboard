@@ -12,6 +12,10 @@ export interface ObservationDefinitionsData {
   loading: boolean;
 }
 
+// Referencia estable para el estado "cargando/sin datos", así los consumidores
+// que derivan memos del array (ej. lista de códigos) no entran en loop.
+const EMPTY: BiomarkerDefinition[] = [];
+
 export function useObservationDefinitions(): ObservationDefinitionsData {
   const medplum = useMedplum();
   const [definitions, setDefinitions] = useState<BiomarkerDefinition[]>();
@@ -35,7 +39,7 @@ export function useObservationDefinitions(): ObservationDefinitionsData {
     };
   }, [medplum]);
 
-  const byLoinc = useMemo(() => indexByLoinc(definitions ?? []), [definitions]);
+  const byLoinc = useMemo(() => indexByLoinc(definitions ?? EMPTY), [definitions]);
 
-  return { definitions: definitions ?? [], byLoinc, loading: definitions === undefined };
+  return { definitions: definitions ?? EMPTY, byLoinc, loading: definitions === undefined };
 }
