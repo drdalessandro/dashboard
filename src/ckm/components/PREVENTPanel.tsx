@@ -9,8 +9,10 @@ import type { JSX } from 'react';
 import { Link } from 'react-router';
 import { getPREVENTInputs } from '../extensions';
 import { useCKMData } from '../hooks/useCKMData';
+import type { PreventOutcome } from '../risk';
 import { CKMStageBadge } from './CKMStageBadge';
 import { HGraph } from './HGraph';
+import { RiskBadge } from './RiskBadge';
 
 export interface PREVENTPanelProps {
   patient: Patient | Reference<Patient> | string;
@@ -34,9 +36,9 @@ export function PREVENTPanel(props: PREVENTPanelProps): JSX.Element {
         </Group>
         <HGraph metrics={hGraphMetrics ?? []} />
         <SimpleGrid cols={3}>
-          <ScoreStat label="ASCVD 10 años" value={preventScores?.ascvd10y} />
-          <ScoreStat label="IC 10 años" value={preventScores?.hf10y} />
-          <ScoreStat label="ECV total 30 años" value={preventScores?.cvdTotal30y} />
+          <ScoreStat label="ASCVD 10 años" outcome="ascvd10y" value={preventScores?.ascvd10y} />
+          <ScoreStat label="IC 10 años" outcome="hf10y" value={preventScores?.hf10y} />
+          <ScoreStat label="ECV total 30 años" outcome="cvdTotal30y" value={preventScores?.cvdTotal30y} />
         </SimpleGrid>
         <Button
           component={Link}
@@ -70,12 +72,13 @@ export function PREVENTPanel(props: PREVENTPanelProps): JSX.Element {
   );
 }
 
-function ScoreStat(props: { label: string; value?: number }): JSX.Element {
+function ScoreStat(props: { label: string; outcome: PreventOutcome; value?: number }): JSX.Element {
   return (
-    <Stack gap={0} align="center">
+    <Stack gap={4} align="center">
       <Text fz={28} fw={700} lh={1.2}>
         {props.value !== undefined ? `${props.value}%` : '—'}
       </Text>
+      <RiskBadge outcome={props.outcome} value={props.value} />
       <Text size="xs" c="dimmed" ta="center">
         {props.label}
       </Text>
