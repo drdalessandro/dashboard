@@ -1,9 +1,11 @@
 // Siembra Observations de demostración de los biomarcadores BioWellness para
 // poblar el panel /ckm/biomarkers de un paciente. Para cada biomarcador del
-// bundle genera un valor ubicado a propósito en óptimo / normal / fuera de rango
-// (mezcla determinística por paciente+biomarcador), respetando el género.
+// bundle genera una serie temporal (5 puntos a lo largo de ~7 meses) que termina
+// en una banda óptimo / normal / fuera de rango (mezcla determinística por
+// paciente+biomarcador), respetando el género — así las sparklines de tendencia
+// muestran movimiento y el último valor coincide con el del panel.
 //
-// Idempotente: una Observation por (paciente, biomarcador), upsert por
+// Idempotente: una Observation por (paciente, biomarcador, punto), upsert por
 // identifier, así re-correrlo actualiza sin duplicar.
 //
 // Uso:
@@ -14,13 +16,16 @@
 import { MedplumClient } from '@medplum/core';
 import type { Bundle, Observation, ObservationDefinition, Patient } from '@medplum/fhirtypes';
 import biomarkerBundle from '../../data/ckm/biomarker-definitions.json';
-import { bandForKey, resolveSeedValue } from '../ckm/biomarker-seed';
+import { seedSeries } from '../ckm/biomarker-seed';
 import { parseObservationDefinition } from '../ckm/observation-definitions';
 import type { BiomarkerDefinition } from '../ckm/observation-definitions';
 
 const SEED_IDENTIFIER_SYSTEM = 'https://seguimiento.medplum.com.ar/seed-patient';
 const UCUM = 'http://unitsofmeasure.org';
 const DAY_MS = 86_400_000;
+// Puntos de la serie temporal por biomarcador (para las sparklines de tendencia).
+const SERIES_POINTS = 5;
+const SERIES_STEP_DAYS = 35;
 
 interface BiomarkerSpec {
   def: BiomarkerDefinition;
@@ -47,13 +52,14 @@ function buildObservation(
   patientId: string,
   spec: BiomarkerSpec,
   value: number,
-  effectiveDateTime: string
+  effectiveDateTime: string,
+  identifierValue: string
 ): Observation {
   const { def, ucum } = spec;
   return {
     resourceType: 'Observation',
     status: 'final',
-    identifier: [{ system: SEED_IDENTIFIER_SYSTEM, value: `biomarker-${patientId}-${def.biomarcadorId}` }],
+    identifier: [{ system: SEED_IDENTIFIER_SYSTEM, value: identifierValue }],
     category: [
       {
         coding: [
@@ -79,21 +85,23 @@ async function seedPatient(medplum: MedplumClient, patient: Patient, specs: Biom
   const patientId = patient.id as string;
   const now = Date.now();
   let written = 0;
-  for (let i = 0; i < specs.length; i++) {
-    const spec = specs[i];
-    if (!spec.def.biomarcadorId) {
+  for (const spec of specs) {
+    const biomarcadorId = spec.def.biomarcadorId;
+    if (!biomarcadorId) {
       continue;
     }
-    const preferred = bandForKey(`${patientId}|${spec.def.biomarcadorId}`);
-    const resolved = resolveSeedValue(spec.def, patient.gender, preferred);
-    if (!resolved) {
+    const series = seedSeries(spec.def, patient.gender, `${patientId}|${biomarcadorId}`, SERIES_POINTS);
+    if (!series) {
       continue;
     }
-    const effectiveDateTime = new Date(now - (i % 60) * DAY_MS).toISOString();
-    const obs = buildObservation(patientId, spec, resolved.value, effectiveDateTime);
-    const identifier = `biomarker-${patientId}-${spec.def.biomarcadorId}`;
-    await medplum.upsertResource(obs, `identifier=${SEED_IDENTIFIER_SYSTEM}|${identifier}`);
-    written++;
+    for (let k = 0; k < series.length; k++) {
+      const daysAgo = (series.length - 1 - k) * SERIES_STEP_DAYS;
+      const effectiveDateTime = new Date(now - daysAgo * DAY_MS).toISOString();
+      const identifierValue = `biomarker-${patientId}-${biomarcadorId}-${k}`;
+      const obs = buildObservation(patientId, spec, series[k], effectiveDateTime, identifierValue);
+      await medplum.upsertResource(obs, `identifier=${SEED_IDENTIFIER_SYSTEM}|${identifierValue}`);
+      written++;
+    }
   }
   return written;
 }

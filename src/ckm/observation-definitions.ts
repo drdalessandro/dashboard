@@ -239,6 +239,35 @@ export function latestValueByCode(observations: Observation[]): Map<string, Code
   return map;
 }
 
+/**
+ * Agrupa el historial completo por código de Observation, de más vieja a más
+ * nueva (orden natural para una sparkline). Descarta entered-in-error y las que
+ * no tienen valueQuantity.
+ */
+export function valuesByCodeHistory(observations: Observation[]): Map<string, CodedValue[]> {
+  const oldestFirst = [...observations].sort((a, b) => observationDate(a).localeCompare(observationDate(b)));
+  const map = new Map<string, CodedValue[]>();
+  for (const o of oldestFirst) {
+    if (o.status === 'entered-in-error' || o.valueQuantity?.value === undefined) {
+      continue;
+    }
+    for (const coding of o.code?.coding ?? []) {
+      if (!coding.code) {
+        continue;
+      }
+      const entry: CodedValue = {
+        value: o.valueQuantity.value,
+        unit: o.valueQuantity.unit,
+        date: observationDate(o) || undefined,
+      };
+      const list = map.get(coding.code) ?? [];
+      list.push(entry);
+      map.set(coding.code, list);
+    }
+  }
+  return map;
+}
+
 // Orden de los paneles (foco cardiovascular primero, luego el resto BioHacking).
 const PANEL_ORDER = [
   'metabolico',

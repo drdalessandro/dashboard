@@ -9,6 +9,7 @@ import type { HumanName } from '@medplum/fhirtypes';
 import { IconArrowLeft, IconDatabaseImport, IconInfoCircle } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { Link, useParams } from 'react-router';
+import { Sparkline } from '../ckm/components/Sparkline';
 import { useBiomarkerPanel } from '../ckm/hooks/useBiomarkerPanel';
 import { classifyBiomarkerValue } from '../ckm/observation-definitions';
 import type { BiomarkerDefinition, BiomarkerPanelGroup, CodedValue } from '../ckm/observation-definitions';
@@ -17,7 +18,7 @@ const DEFAULT_OPEN = ['metabolico', 'lipidico', 'inflamacion'];
 
 export function BiomarkerPanelPage(): JSX.Element {
   const { patientId } = useParams();
-  const { patient, groups, valuesByCode, gender, loading } = useBiomarkerPanel(patientId);
+  const { patient, groups, valuesByCode, historyByCode, gender, loading } = useBiomarkerPanel(patientId);
 
   if (loading) {
     return <Loader m="xl" />;
@@ -55,7 +56,13 @@ export function BiomarkerPanelPage(): JSX.Element {
         ) : (
           <Accordion multiple defaultValue={DEFAULT_OPEN} variant="separated">
             {groups.map((group) => (
-              <PanelSection key={group.panelCode} group={group} valuesByCode={valuesByCode} gender={gender} />
+              <PanelSection
+                key={group.panelCode}
+                group={group}
+                valuesByCode={valuesByCode}
+                historyByCode={historyByCode}
+                gender={gender}
+              />
             ))}
           </Accordion>
         )}
@@ -72,9 +79,10 @@ export function BiomarkerPanelPage(): JSX.Element {
 function PanelSection(props: {
   group: BiomarkerPanelGroup;
   valuesByCode: Map<string, CodedValue>;
+  historyByCode: Map<string, CodedValue[]>;
   gender?: string;
 }): JSX.Element {
-  const { group, valuesByCode, gender } = props;
+  const { group, valuesByCode, historyByCode, gender } = props;
   const withData = group.defs.filter((d) => d.code && valuesByCode.has(d.code)).length;
 
   return (
@@ -93,6 +101,7 @@ function PanelSection(props: {
             <Table.Tr>
               <Table.Th>Biomarcador</Table.Th>
               <Table.Th>Valor</Table.Th>
+              <Table.Th>Tendencia</Table.Th>
               <Table.Th>Convencional</Table.Th>
               <Table.Th>Óptimo</Table.Th>
               <Table.Th>Estado</Table.Th>
@@ -104,6 +113,7 @@ function PanelSection(props: {
                 key={def.biomarcadorId ?? def.code ?? def.label}
                 def={def}
                 reading={def.code ? valuesByCode.get(def.code) : undefined}
+                history={def.code ? historyByCode.get(def.code) : undefined}
                 gender={gender}
               />
             ))}
@@ -114,8 +124,21 @@ function PanelSection(props: {
   );
 }
 
-function BiomarkerRow(props: { def: BiomarkerDefinition; reading?: CodedValue; gender?: string }): JSX.Element {
-  const { def, reading, gender } = props;
+function trendLabel(history: CodedValue[], def: BiomarkerDefinition): string {
+  const first = history[0];
+  const last = history[history.length - 1];
+  const unit = last.unit ?? def.unit ?? '';
+  const date = last.date ? ` · último ${last.date.slice(0, 10)}` : '';
+  return `${history.length} lecturas · ${first.value} → ${last.value} ${unit}${date}`.trim();
+}
+
+function BiomarkerRow(props: {
+  def: BiomarkerDefinition;
+  reading?: CodedValue;
+  history?: CodedValue[];
+  gender?: string;
+}): JSX.Element {
+  const { def, reading, history, gender } = props;
   const status = classifyBiomarkerValue(def, reading?.value, gender);
 
   return (
@@ -141,6 +164,22 @@ function BiomarkerRow(props: { def: BiomarkerDefinition; reading?: CodedValue; g
           <Text size="sm">
             {reading.value} {reading.unit ?? def.unit ?? ''}
           </Text>
+        ) : (
+          <Text size="sm" c="dimmed">
+            —
+          </Text>
+        )}
+      </Table.Td>
+      <Table.Td>
+        {history && history.length >= 2 ? (
+          <Tooltip label={trendLabel(history, def)} withArrow events={{ hover: true, focus: true, touch: true }}>
+            <span style={{ display: 'inline-flex', verticalAlign: 'middle' }}>
+              <Sparkline
+                values={history.map((h) => h.value)}
+                dotColor={`var(--mantine-color-${status.color}-6)`}
+              />
+            </span>
+          </Tooltip>
         ) : (
           <Text size="sm" c="dimmed">
             —

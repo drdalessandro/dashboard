@@ -4,7 +4,7 @@
 import type { Observation, Patient } from '@medplum/fhirtypes';
 import { useMedplum, useResource } from '@medplum/react';
 import { useEffect, useMemo, useState } from 'react';
-import { groupByPanel, latestValueByCode } from '../observation-definitions';
+import { groupByPanel, latestValueByCode, valuesByCodeHistory } from '../observation-definitions';
 import type { BiomarkerPanelGroup, CodedValue } from '../observation-definitions';
 import { useObservationDefinitions } from './useObservationDefinitions';
 
@@ -12,6 +12,7 @@ export interface BiomarkerPanelData {
   patient?: Patient;
   groups: BiomarkerPanelGroup[];
   valuesByCode: Map<string, CodedValue>;
+  historyByCode: Map<string, CodedValue[]>;
   gender?: string;
   loading: boolean;
 }
@@ -60,6 +61,14 @@ export function useBiomarkerPanel(patientId: string | undefined): BiomarkerPanel
 
   const groups = useMemo(() => groupByPanel(definitions), [definitions]);
   const valuesByCode = useMemo(() => latestValueByCode(observations ?? EMPTY_OBSERVATIONS), [observations]);
+  const historyByCode = useMemo(() => valuesByCodeHistory(observations ?? EMPTY_OBSERVATIONS), [observations]);
 
-  return { patient, groups, valuesByCode, gender: patient?.gender, loading: defsLoading || observations === undefined };
+  return {
+    patient,
+    groups,
+    valuesByCode,
+    historyByCode,
+    gender: patient?.gender,
+    loading: defsLoading || observations === undefined,
+  };
 }
