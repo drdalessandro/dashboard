@@ -52,11 +52,24 @@ describe('Carga del panel CKM', () => {
     const rows = await loadDashboardRows(medplum);
 
     const jorge = rows.find((r) => r.patient.id === patient.id);
-    expect(jorge).toMatchObject({ name: 'Jorge Demo', stage: 3, ascvd10y: 18.2, hasAlert: true });
+    expect(jorge).toMatchObject({
+      name: 'Jorge Demo',
+      stage: 3,
+      ascvd10y: 18.2,
+      hf10y: 12.4,
+      cvdTotal30y: 41.9,
+      hasAlert: true,
+    });
     expect(jorge?.riskUpdated).toBeDefined();
 
     const sinDatos = rows.find((r) => r.patient.id === otherPatient.id);
-    expect(sinDatos).toMatchObject({ stage: undefined, ascvd10y: undefined, hasAlert: false });
+    expect(sinDatos).toMatchObject({
+      stage: undefined,
+      ascvd10y: undefined,
+      hf10y: undefined,
+      cvdTotal30y: undefined,
+      hasAlert: false,
+    });
     expect(sinDatos?.riskUpdated).toBeUndefined();
   });
 
