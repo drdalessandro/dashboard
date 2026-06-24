@@ -1,0 +1,104 @@
+// Generación de valores de demostración para los biomarcadores, ubicados a
+// propósito en una banda (óptimo / normal / fuera de rango) según los rangos de
+// cada ObservationDefinition, para poblar el panel con todos los estados. Puro
+// (sin Medplum): lo usa el script seed-biomarkers-demo y se testea solo.
+import { rangeForGender } from './observation-definitions';
+import type { BiomarkerDefinition } from './observation-definitions';
+
+/** Banda deseada para el valor sembrado. */
+export type SeedBand = 'optimal' | 'normal' | 'out';
+
+/** Redondea: 1 decimal para magnitudes chicas (HbA1c, HOMA-IR), entero si no. */
+export function roundSeedValue(value: number): number {
+  return Math.abs(value) < 20 ? Math.round(value * 10) / 10 : Math.round(value);
+}
+
+/**
+ * Devuelve un valor que cae en la banda pedida según los rangos del biomarcador
+ * (respetando el rango por género), o undefined si esa banda no es construible
+ * (ej. no hay rango convencional para generar un "fuera de rango"). Agnóstico a
+ * la dirección: usa los límites low/high disponibles.
+ */
+export function seedValueFor(def: BiomarkerDefinition, gender: string | undefined, band: SeedBand): number | undefined {
+  const optimal = rangeForGender(def.optimal, gender);
+  const conventional = rangeForGender(def.conventional, gender);
+  const oLo = optimal?.low;
+  const oHi = optimal?.high;
+  const cLo = conventional?.low;
+  const cHi = conventional?.high;
+
+  let raw: number | undefined;
+  if (band === 'optimal') {
+    if (oLo !== undefined && oHi !== undefined) {
+      raw = (oLo + oHi) / 2;
+    } else if (oHi !== undefined) {
+      raw = oHi * 0.9;
+    } else if (oLo !== undefined) {
+      raw = oLo * 1.1;
+    } else if (cHi !== undefined) {
+      raw = cHi * 0.7;
+    } else if (cLo !== undefined) {
+      raw = cLo * 1.3;
+    }
+  } else if (band === 'normal') {
+    // Dentro del convencional pero fuera del óptimo (necesita una brecha).
+    if (oHi !== undefined && cHi !== undefined && cHi > oHi) {
+      raw = (oHi + cHi) / 2;
+    } else if (oLo !== undefined && cLo !== undefined && cLo < oLo) {
+      raw = (oLo + cLo) / 2;
+    } else if (cLo !== undefined && cHi !== undefined) {
+      raw = (cLo + cHi) / 2;
+    }
+  } else {
+    // Fuera del convencional (alto si hay tope; bajo si solo hay piso).
+    if (cHi !== undefined) {
+      raw = cHi * 1.25;
+    } else if (cLo !== undefined) {
+      raw = cLo * 0.7;
+    } else if (oHi !== undefined) {
+      raw = oHi * 1.4;
+    } else if (oLo !== undefined) {
+      raw = oLo * 0.6;
+    }
+  }
+
+  if (raw === undefined || !Number.isFinite(raw) || raw <= 0) {
+    return undefined;
+  }
+  return roundSeedValue(raw);
+}
+
+export interface ResolvedSeed {
+  value: number;
+  band: SeedBand;
+}
+
+/**
+ * Resuelve un valor para la banda preferida; si no es construible, cae a óptimo
+ * y luego a fuera de rango. Devuelve undefined si el biomarcador no tiene rangos
+ * usables.
+ */
+export function resolveSeedValue(
+  def: BiomarkerDefinition,
+  gender: string | undefined,
+  preferred: SeedBand
+): ResolvedSeed | undefined {
+  const order: SeedBand[] = [preferred, 'optimal', 'normal', 'out'];
+  for (const band of order) {
+    const value = seedValueFor(def, gender, band);
+    if (value !== undefined) {
+      return { value, band };
+    }
+  }
+  return undefined;
+}
+
+/** Banda determinística por clave (paciente+biomarcador): ~50% óptimo, 30% normal, 20% fuera. */
+export function bandForKey(key: string): SeedBand {
+  let hash = 0;
+  for (const char of key) {
+    hash = (hash * 31 + char.charCodeAt(0)) % 100003;
+  }
+  const bucket = hash % 10;
+  return bucket < 5 ? 'optimal' : bucket < 8 ? 'normal' : 'out';
+}
