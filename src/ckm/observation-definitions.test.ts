@@ -9,6 +9,7 @@ import {
   latestValueByCode,
   parseObservationDefinition,
   rangeForGender,
+  valuesByCodeHistory,
 } from './observation-definitions';
 
 const bundle = bundleJson as unknown as Bundle;
@@ -150,6 +151,20 @@ describe('latestValueByCode', () => {
     ]);
     expect(map.get('1558-6')?.value).toBe(84);
     expect(map.get('2085-9')?.value).toBe(58);
+  });
+});
+
+describe('valuesByCodeHistory', () => {
+  test('historial por código, de más viejo a más nuevo, sin entered-in-error', () => {
+    const map = valuesByCodeHistory([
+      obs('1558-6', 84, '2026-06-01'),
+      obs('1558-6', 90, '2026-01-01'),
+      obs('1558-6', 88, '2026-03-01'),
+      obs('2085-9', 200, '2026-06-10', 'entered-in-error'),
+      obs('2085-9', undefined, '2026-06-09'),
+    ]);
+    expect(map.get('1558-6')?.map((v) => v.value)).toStrictEqual([90, 88, 84]);
+    expect(map.has('2085-9')).toBe(false);
   });
 });
 

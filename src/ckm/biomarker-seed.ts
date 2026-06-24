@@ -102,3 +102,46 @@ export function bandForKey(key: string): SeedBand {
   const bucket = hash % 10;
   return bucket < 5 ? 'optimal' : bucket < 8 ? 'normal' : 'out';
 }
+
+/** Banda de arranque (distinta de la final) para que la serie muestre movimiento. */
+function startBandFor(key: string, target: SeedBand): SeedBand {
+  let hash = 0;
+  for (const char of key) {
+    hash = (hash * 17 + char.charCodeAt(0)) % 7919;
+  }
+  const others = (['optimal', 'normal', 'out'] as SeedBand[]).filter((b) => b !== target);
+  return others[hash % others.length];
+}
+
+/**
+ * Genera una serie temporal (de más viejo a más nuevo) que arranca en una banda
+ * y termina exactamente en el valor de la banda final (bandForKey), para que la
+ * sparkline muestre una tendencia y el último valor coincida con el del panel.
+ * Devuelve undefined si el biomarcador no tiene rangos usables.
+ */
+export function seedSeries(
+  def: BiomarkerDefinition,
+  gender: string | undefined,
+  key: string,
+  points = 5
+): number[] | undefined {
+  const target = resolveSeedValue(def, gender, bandForKey(key));
+  if (!target) {
+    return undefined;
+  }
+  const start = resolveSeedValue(def, gender, startBandFor(key, target.band));
+  if (!start || points < 2) {
+    return [target.value];
+  }
+  const amplitude = Math.abs(target.value - start.value) * 0.06 + Math.abs(target.value) * 0.005;
+  const series: number[] = [];
+  for (let k = 0; k < points; k++) {
+    const t = k / (points - 1);
+    const base = start.value + (target.value - start.value) * t;
+    // Jitter determinístico (no en el último punto, que queda exacto).
+    const jitter = k === points - 1 ? 0 : Math.sin((k + 1) * 1.7 + key.length) * amplitude;
+    series.push(Math.max(0.1, roundSeedValue(base + jitter)));
+  }
+  series[series.length - 1] = target.value;
+  return series;
+}

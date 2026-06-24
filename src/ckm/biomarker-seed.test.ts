@@ -1,6 +1,6 @@
 import type { Bundle, ObservationDefinition } from '@medplum/fhirtypes';
 import bundleJson from '../../data/ckm/biomarker-definitions.json';
-import { bandForKey, resolveSeedValue, roundSeedValue, seedValueFor } from './biomarker-seed';
+import { bandForKey, resolveSeedValue, roundSeedValue, seedSeries, seedValueFor } from './biomarker-seed';
 import { classifyBiomarkerValue, indexByBiomarcador, parseObservationDefinition } from './observation-definitions';
 
 const defs = ((bundleJson as unknown as Bundle).entry ?? [])
@@ -52,6 +52,30 @@ describe('resolveSeedValue', () => {
     const resolved = resolveSeedValue(apob, 'male', 'out');
     expect(resolved?.band).toBe('out');
     expect(classifyBiomarkerValue(apob, resolved!.value, 'male').status).toMatch(/high|low/);
+  });
+});
+
+describe('seedSeries', () => {
+  test('serie de longitud N que termina en el valor de la banda final', () => {
+    const apob = byId.get('apob')!;
+    const series = seedSeries(apob, 'male', 'pX|apob', 5)!;
+    expect(series).toHaveLength(5);
+    expect(series.every((v) => Number.isFinite(v) && v > 0)).toBe(true);
+    const target = resolveSeedValue(apob, 'male', bandForKey('pX|apob'))!;
+    expect(series[series.length - 1]).toBe(target.value);
+  });
+
+  test('el último valor de la serie es el de la banda final para todas las defs', () => {
+    for (const def of defs) {
+      if (def.optimal.length === 0 && def.conventional.length === 0) {
+        continue;
+      }
+      const key = `pZ|${def.biomarcadorId}`;
+      const series = seedSeries(def, 'female', key, 5);
+      expect(series, def.label).toBeDefined();
+      const expected = resolveSeedValue(def, 'female', bandForKey(key))!.value;
+      expect(series![series!.length - 1], def.label).toBe(expected);
+    }
   });
 });
 
