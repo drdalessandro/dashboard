@@ -12,6 +12,8 @@ export interface DashboardRow {
   name: string;
   stage?: CKMStage;
   ascvd10y?: number;
+  hf10y?: number;
+  cvdTotal30y?: number;
   riskUpdated?: string;
   hasAlert: boolean;
 }
@@ -52,12 +54,17 @@ export async function loadDashboardRows(medplum: MedplumClient): Promise<Dashboa
   }
   const alertedPatients = new Set(alerts.map((a) => a.subject?.reference));
 
-  return patients.map((patient) => ({
-    patient,
-    name: patient.name ? formatHumanName(patient.name[0] as HumanName) : '',
-    stage: getCKMStage(patient),
-    ascvd10y: getHGraphData(patient).prevent?.ascvd10y,
-    riskUpdated: riskUpdatedByPatient.get(`Patient/${patient.id}`),
-    hasAlert: alertedPatients.has(`Patient/${patient.id}`),
-  }));
+  return patients.map((patient) => {
+    const prevent = getHGraphData(patient).prevent;
+    return {
+      patient,
+      name: patient.name ? formatHumanName(patient.name[0] as HumanName) : '',
+      stage: getCKMStage(patient),
+      ascvd10y: prevent?.ascvd10y,
+      hf10y: prevent?.hf10y,
+      cvdTotal30y: prevent?.cvdTotal30y,
+      riskUpdated: riskUpdatedByPatient.get(`Patient/${patient.id}`),
+      hasAlert: alertedPatients.has(`Patient/${patient.id}`),
+    };
+  });
 }

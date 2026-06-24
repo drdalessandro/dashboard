@@ -12,9 +12,10 @@ import { RiskBadge } from '../ckm/components/RiskBadge';
 import { CKM_STAGES } from '../ckm/constants';
 import { loadDashboardRows } from '../ckm/dashboard';
 import type { DashboardRow } from '../ckm/dashboard';
+import type { PreventOutcome } from '../ckm/risk';
 import type { CKMStage } from '../ckm/types';
 
-type SortField = 'stage' | 'risk';
+type SortField = 'stage' | PreventOutcome;
 
 interface SortState {
   field: SortField;
@@ -53,8 +54,8 @@ export function CKMDashboard(): JSX.Element {
       const direction = sort.descending ? -1 : 1;
       result = [...result].sort((a, b) => {
         // Sin dato va siempre al final, sin importar la dirección
-        const aValue = sort.field === 'stage' ? a.stage : a.ascvd10y;
-        const bValue = sort.field === 'stage' ? b.stage : b.ascvd10y;
+        const aValue = sort.field === 'stage' ? a.stage : a[sort.field];
+        const bValue = sort.field === 'stage' ? b.stage : b[sort.field];
         if (aValue === undefined && bValue === undefined) {
           return 0;
         }
@@ -104,7 +105,9 @@ export function CKMDashboard(): JSX.Element {
           <Table.Tr>
             <Table.Th>Paciente</Table.Th>
             <SortableTh label="Estadío" field="stage" sort={sort} onSort={toggleSort} />
-            <SortableTh label="PREVENT-CVD 10a" field="risk" sort={sort} onSort={toggleSort} />
+            <SortableTh label="ASCVD 10a" field="ascvd10y" sort={sort} onSort={toggleSort} />
+            <SortableTh label="IC 10a" field="hf10y" sort={sort} onSort={toggleSort} />
+            <SortableTh label="ECV 30a" field="cvdTotal30y" sort={sort} onSort={toggleSort} />
             <Table.Th>RiskAssessment</Table.Th>
             <Table.Th>Alertas</Table.Th>
           </Table.Tr>
@@ -126,16 +129,9 @@ export function CKMDashboard(): JSX.Element {
                   </Text>
                 )}
               </Table.Td>
-              <Table.Td>
-                {row.ascvd10y !== undefined ? (
-                  <Group gap="xs" wrap="nowrap">
-                    <Text>{row.ascvd10y}%</Text>
-                    <RiskBadge outcome="ascvd10y" value={row.ascvd10y} />
-                  </Group>
-                ) : (
-                  '—'
-                )}
-              </Table.Td>
+              <RiskCell outcome="ascvd10y" value={row.ascvd10y} />
+              <RiskCell outcome="hf10y" value={row.hf10y} />
+              <RiskCell outcome="cvdTotal30y" value={row.cvdTotal30y} />
               <Table.Td>{row.riskUpdated ? formatDate(row.riskUpdated) : '—'}</Table.Td>
               <Table.Td>
                 {row.hasAlert && (
@@ -154,6 +150,23 @@ export function CKMDashboard(): JSX.Element {
         </Text>
       )}
     </Paper>
+  );
+}
+
+function RiskCell(props: { outcome: PreventOutcome; value?: number }): JSX.Element {
+  return (
+    <Table.Td>
+      {props.value !== undefined ? (
+        <Group gap="xs" wrap="nowrap">
+          <Text>{props.value}%</Text>
+          <RiskBadge outcome={props.outcome} value={props.value} />
+        </Group>
+      ) : (
+        <Text c="dimmed" span>
+          —
+        </Text>
+      )}
+    </Table.Td>
   );
 }
 
