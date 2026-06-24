@@ -9,7 +9,7 @@ import type { JSX } from 'react';
 import { Link } from 'react-router';
 import { getPREVENTInputs } from '../extensions';
 import { useCKMData } from '../hooks/useCKMData';
-import { isProvisional, PROVISIONAL_NOTE } from '../risk';
+import { CAC_RECLASS_LEGEND, isProvisional, PROVISIONAL_NOTE } from '../risk';
 import type { PreventOutcome } from '../risk';
 import { CKMStageBadge } from './CKMStageBadge';
 import { HGraph } from './HGraph';
@@ -47,6 +47,11 @@ export function PREVENTPanel(props: PREVENTPanelProps): JSX.Element {
         <Text size="xs" c="dimmed">
           {PROVISIONAL_NOTE}
         </Text>
+        {cac !== undefined && (
+          <Text size="xs" c="dimmed">
+            {CAC_RECLASS_LEGEND}
+          </Text>
+        )}
         <RiskEnhancers patientId={patient?.id} />
         <Button
           component={Link}

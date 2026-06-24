@@ -130,6 +130,54 @@ describe('classifyBiomarkerValue', () => {
   });
 });
 
+describe('classifyBiomarkerValue — óptimo de una cola vs óptimo que excede el convencional', () => {
+  test('Hb: óptimo de una sola cola (≥14) NO tapa el tope convencional (18 -> Alto)', () => {
+    const hb = byId.get('hemoglobina')!; // conv 12–17.5, óptimo male ≥14 (sin tope)
+    expect(classifyBiomarkerValue(hb, 18, 'male').status).toBe('high');
+    expect(classifyBiomarkerValue(hb, 14.5, 'male').status).toBe('optimal');
+    expect(classifyBiomarkerValue(hb, 13, 'male').status).toBe('normal');
+  });
+
+  test('óptimo que excede el tope convencional: el valor on-target es Óptimo, no Alto', () => {
+    const t3 = byId.get('t3-libre')!; // conv 2.3–4.2, óptimo 3.5–4.5
+    expect(classifyBiomarkerValue(t3, 4.4).status).toBe('optimal');
+    expect(classifyBiomarkerValue(t3, 4.6).status).toBe('high'); // fuera del óptimo acotado
+
+    const dhea = byId.get('dhea-s')!; // conv 50–450, óptimo 350–500
+    expect(classifyBiomarkerValue(dhea, 470).status).toBe('optimal');
+
+    const testo = byId.get('testosterona-libre')!; // conv male 5–21, óptimo male 15–25
+    expect(classifyBiomarkerValue(testo, 23, 'male').status).toBe('optimal');
+  });
+});
+
+describe('parseObservationDefinition — fallbacks y OD incompleta', () => {
+  test('label cae a coding.display y luego a coding.code', () => {
+    const withDisplay = parseObservationDefinition({
+      resourceType: 'ObservationDefinition',
+      code: { coding: [{ code: 'C1', display: 'Disp' }] },
+    } as ObservationDefinition);
+    expect(withDisplay.label).toBe('Disp');
+
+    const onlyCode = parseObservationDefinition({
+      resourceType: 'ObservationDefinition',
+      code: { coding: [{ code: 'C2' }] },
+    } as ObservationDefinition);
+    expect(onlyCode.label).toBe('C2');
+  });
+
+  test('OD vacía: label "(sin nombre)", rangos vacíos, sin throw', () => {
+    const def = parseObservationDefinition({ resourceType: 'ObservationDefinition' } as unknown as ObservationDefinition);
+    expect(def).toMatchObject({
+      label: '(sin nombre)',
+      conventional: [],
+      optimal: [],
+      code: undefined,
+      panelCode: undefined,
+    });
+  });
+});
+
 function obs(code: string, value: number | undefined, date: string, status: Observation['status'] = 'final'): Observation {
   return {
     resourceType: 'Observation',

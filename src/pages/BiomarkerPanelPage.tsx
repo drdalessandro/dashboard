@@ -152,9 +152,14 @@ function BiomarkerRow(props: {
               withArrow
               multiline
               maw={360}
-              events={{ hover: true, focus: true, touch: true }}
+              events={{ hover: true, focus: false, touch: true }}
             >
-              <IconInfoCircle size={14} color="var(--mantine-color-dimmed)" aria-label={`Sobre ${def.label}`} />
+              <IconInfoCircle
+                size={14}
+                role="img"
+                color="var(--mantine-color-dimmed)"
+                aria-label={`Sobre ${def.label}`}
+              />
             </Tooltip>
           )}
         </Group>
@@ -172,11 +177,12 @@ function BiomarkerRow(props: {
       </Table.Td>
       <Table.Td>
         {history && history.length >= 2 ? (
-          <Tooltip label={trendLabel(history, def)} withArrow events={{ hover: true, focus: true, touch: true }}>
+          <Tooltip label={trendLabel(history, def)} withArrow events={{ hover: true, focus: false, touch: true }}>
             <span style={{ display: 'inline-flex', verticalAlign: 'middle' }}>
               <Sparkline
                 values={history.map((h) => h.value)}
                 dotColor={`var(--mantine-color-${status.color}-6)`}
+                label={trendLabel(history, def)}
               />
             </span>
           </Tooltip>
@@ -198,7 +204,7 @@ function BiomarkerRow(props: {
       </Table.Td>
       <Table.Td>
         {reading ? (
-          <Badge color={status.color} variant="light" autoContrast style={{ cursor: 'default' }}>
+          <Badge color={status.color} variant="light" style={{ cursor: 'default' }}>
             {status.label}
           </Badge>
         ) : (

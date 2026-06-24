@@ -124,9 +124,16 @@ export function indexByBiomarcador(defs: BiomarkerDefinition[]): Map<string, Bio
   return map;
 }
 
-/** Trae las ObservationDefinitions del servidor y las normaliza. */
+/**
+ * Trae las ObservationDefinitions de biomarcadores del servidor y las normaliza.
+ * Acota la búsqueda al sistema de identifier de biomarcador para no traer ODs
+ * ajenas de otros equipos ni quedar limitada por una sola página.
+ */
 export async function getBiomarkerDefinitions(medplum: MedplumClient): Promise<BiomarkerDefinition[]> {
-  const ods = await medplum.searchResources('ObservationDefinition', { _count: '200' });
+  const ods = await medplum.searchResources('ObservationDefinition', {
+    identifier: `${BIOMARCADOR_IDENTIFIER_SYSTEM}|`,
+    _count: '1000',
+  });
   return ods.map(parseObservationDefinition);
 }
 
@@ -179,16 +186,28 @@ export function classifyBiomarkerValue(
   }
   const optimal = rangeForGender(def.optimal, gender);
   const conventional = rangeForGender(def.conventional, gender);
-  // El rango convencional es la referencia dura: salir de él es alto/bajo, aunque
-  // el óptimo sea de una sola cola (ej. Hb óptima ≥14) y el valor lo "cumpla".
-  if (conventional?.high !== undefined && value > conventional.high) {
+  const aboveConventional = conventional?.high !== undefined && value > conventional.high;
+  const belowConventional = conventional?.low !== undefined && value < conventional.low;
+  // Dentro del óptimo es Óptimo, AUNQUE el óptimo se extienda más allá del
+  // convencional a propósito (T3 Libre, DHEA-S, Testosterona: óptimo > tope
+  // convencional). Excepción: un óptimo de UNA sola cola (Hb óptima ≥14, sin
+  // tope) no debe tapar el tope convencional — si el valor lo supera y el óptimo
+  // no acota esa cola, es alto/bajo.
+  if (optimal && inRange(value, optimal)) {
+    if (aboveConventional && optimal.high === undefined) {
+      return STATUS_INFO.high;
+    }
+    if (belowConventional && optimal.low === undefined) {
+      return STATUS_INFO.low;
+    }
+    return STATUS_INFO.optimal;
+  }
+  // Fuera del óptimo: el convencional es la referencia dura.
+  if (aboveConventional) {
     return STATUS_INFO.high;
   }
-  if (conventional?.low !== undefined && value < conventional.low) {
+  if (belowConventional) {
     return STATUS_INFO.low;
-  }
-  if (inRange(value, optimal)) {
-    return STATUS_INFO.optimal;
   }
   if (inRange(value, conventional)) {
     return STATUS_INFO.normal;

@@ -31,8 +31,13 @@ export function RiskEnhancers(props: RiskEnhancersProps): JSX.Element | null {
         <Text size="sm" fw={600}>
           Potenciadores de riesgo
         </Text>
-        <Tooltip label={SECTION_HELP} withArrow multiline maw={340} events={{ hover: true, focus: true, touch: true }}>
-          <IconInfoCircle size={15} color="var(--mantine-color-dimmed)" aria-label="Qué son los potenciadores de riesgo" />
+        <Tooltip label={SECTION_HELP} withArrow multiline maw={340} events={{ hover: true, focus: false, touch: true }}>
+          <IconInfoCircle
+            size={15}
+            role="img"
+            color="var(--mantine-color-dimmed)"
+            aria-label="Qué son los potenciadores de riesgo"
+          />
         </Tooltip>
       </Group>
       <Group gap="xs">
@@ -62,7 +67,7 @@ function EnhancerChip(props: { def: EnhancerDefinition; reading?: EnhancerReadin
     `${def.interpretation} (Fuente: ${def.source})`;
 
   return (
-    <Tooltip label={tooltip} withArrow multiline maw={340} events={{ hover: true, focus: true, touch: true }}>
+    <Tooltip label={tooltip} withArrow multiline maw={340} events={{ hover: true, focus: false, touch: true }}>
       <Badge
         color={info.color}
         variant="light"

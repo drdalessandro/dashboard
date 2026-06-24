@@ -132,4 +132,24 @@ describe('categorizeRiskWithCac — reclasificación de ASCVD por CAC', () => {
   test('sin valor de score devuelve undefined aunque haya CAC', () => {
     expect(categorizeRiskWithCac('ascvd10y', undefined, 0)).toBeUndefined();
   });
+
+  test('borde CAC = 100 sube (intermedio -> alto); 99 no cambia', () => {
+    expect(categorizeRiskWithCac('ascvd10y', 9.2, 100)).toMatchObject({ tier: { level: 'high' }, direction: 'up' });
+    expect(categorizeRiskWithCac('ascvd10y', 9.2, 99)).toMatchObject({ tier: { level: 'intermediate' }, direction: 'none' });
+  });
+
+  test('borde CAC = 300 lleva a Alto; 299 sube un nivel', () => {
+    expect(categorizeRiskWithCac('ascvd10y', 3, 300)).toMatchObject({ tier: { level: 'high' }, direction: 'up' });
+    expect(categorizeRiskWithCac('ascvd10y', 3, 299)).toMatchObject({ tier: { level: 'borderline' }, direction: 'up' });
+  });
+
+  test('CAC negativo (Agatston inválido) se ignora, no des-escala', () => {
+    expect(categorizeRiskWithCac('ascvd10y', 9.2, -5)).toMatchObject({ tier: { level: 'intermediate' }, direction: 'none' });
+  });
+
+  test('clamp: la nota no promete un cambio que no ocurrió (base ya en el piso)', () => {
+    const r = categorizeRiskWithCac('ascvd10y', 3, 0); // base 'low', no puede bajar más
+    expect(r?.direction).toBe('none');
+    expect(r?.cacNote).toMatch(/sin cambio/);
+  });
 });

@@ -158,11 +158,16 @@ export type RiskDirection = 'up' | 'down' | 'none';
 
 /** Notas de reclasificación por CAC (se muestran en el tooltip). */
 export const CAC_RECLASS_NOTES = {
-  zero: 'CAC = 0 (sin calcio coronario): categoría bajada un nivel (power of zero; MESA/ACC-AHA).',
+  zero:
+    'CAC = 0 (sin calcio coronario): categoría bajada un nivel (power of zero; MESA/ACC-AHA). ' +
+    'No aplicar en diabéticos, fumadores activos, Lp(a) muy elevada o antecedente familiar de ECV prematura.',
   mild: 'CAC 1–99: calcio coronario leve, sin cambio de categoría.',
   moderate: 'CAC 100–299: categoría subida un nivel.',
   high: 'CAC ≥ 300: riesgo alto por aterosclerosis coronaria establecida.',
 } as const;
+
+/** Leyenda de la marca ↑/↓ del badge cuando el CAC reclasifica la categoría. */
+export const CAC_RECLASS_LEGEND = '↑/↓ categoría de ASCVD ajustada por score de calcio coronario (CAC).';
 
 export interface RiskCategory {
   /** Tramo efectivo (ya reclasificado por CAC si correspondía). */
@@ -189,14 +194,16 @@ export function categorizeRiskWithCac(
   if (!base) {
     return undefined;
   }
-  if (outcome !== 'ascvd10y' || cac === undefined || !Number.isFinite(cac)) {
+  // CAC negativo es un Agatston inválido (no puede ser <0): se ignora, igual que
+  // NaN/undefined, en vez de tratarlo como "power of zero".
+  if (outcome !== 'ascvd10y' || cac === undefined || !Number.isFinite(cac) || cac < 0) {
     return { tier: base, base, direction: 'none' };
   }
   const tiers = RISK_BANDS.ascvd10y.tiers;
   const baseIdx = tiers.findIndex((t) => t.level === base.level);
   let targetIdx = baseIdx;
   let cacNote: string;
-  if (cac <= 0) {
+  if (cac === 0) {
     targetIdx = baseIdx - 1;
     cacNote = CAC_RECLASS_NOTES.zero;
   } else if (cac >= 300) {
@@ -211,5 +218,12 @@ export function categorizeRiskWithCac(
   targetIdx = Math.max(0, Math.min(tiers.length - 1, targetIdx));
   const tier = tiers[targetIdx];
   const direction: RiskDirection = targetIdx > baseIdx ? 'up' : targetIdx < baseIdx ? 'down' : 'none';
+  // Si el clamp dejó la categoría igual, la nota no debe prometer un ajuste que
+  // no ocurrió (el paciente ya estaba en el tramo extremo).
+  if (direction === 'none' && cac === 0) {
+    cacNote = 'CAC = 0 (sin calcio coronario): ya en la categoría más baja; sin cambio.';
+  } else if (direction === 'none' && cac >= 100) {
+    cacNote = 'CAC elevado: ya en la categoría más alta; sin cambio.';
+  }
   return { tier, base, direction, cacNote };
 }

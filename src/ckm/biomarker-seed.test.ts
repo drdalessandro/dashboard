@@ -29,12 +29,19 @@ describe('seedValueFor — cae en la banda pedida (sobre las 50 reales)', () => 
     }
   });
 
-  test('banda "normal" clasifica como Normal en marcadores con brecha óptimo/convencional', () => {
-    for (const slug of ['glucosa-en-ayunas', 'apob', 'hdl-colesterol']) {
-      const def = byId.get(slug)!;
-      const v = seedValueFor(def, 'male', 'normal');
-      expect(classifyBiomarkerValue(def, v, 'male').status, slug).toBe('normal');
+  test('banda "normal" clasifica como Normal en toda def con brecha construible (male y female)', () => {
+    let covered = 0;
+    for (const gender of ['male', 'female']) {
+      for (const def of defs) {
+        const v = seedValueFor(def, gender, 'normal');
+        if (v === undefined) {
+          continue;
+        }
+        covered++;
+        expect(classifyBiomarkerValue(def, v, gender).status, `${def.label} (${gender})`).toBe('normal');
+      }
     }
+    expect(covered).toBeGreaterThan(20);
   });
 });
 
