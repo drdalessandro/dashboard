@@ -21,10 +21,22 @@ export function RiskBadge(props: RiskBadgeProps): JSX.Element | null {
     return null;
   }
   const band = RISK_BANDS[outcome];
-  const tooltip = `${value}% · ${tier.label}${band.guidelineBased ? '' : ' (provisional)'} — ${band.source}`;
+  const provisional = !band.guidelineBased;
+  const caveat = provisional ? ' (provisional)' : '';
+  const tooltip = `${value}% · ${tier.label}${caveat} — ${band.source}`;
+  // El badge solo muestra el nivel ("Limítrofe"); el aria-label le da al lector
+  // de pantalla el valor y la salvedad, que si no quedan solo en el tooltip.
+  const ariaLabel = `${value}% · ${tier.label}${caveat}`;
   return (
-    <Tooltip label={tooltip} withArrow multiline maw={340}>
-      <Badge color={tier.color} variant="filled" size={size === 'md' ? 'lg' : 'md'} style={{ cursor: 'default' }}>
+    <Tooltip label={tooltip} withArrow multiline maw={340} events={{ hover: true, focus: true, touch: true }}>
+      <Badge
+        color={tier.color}
+        variant="filled"
+        autoContrast
+        size={size === 'md' ? 'lg' : 'md'}
+        aria-label={ariaLabel}
+        style={{ cursor: 'default' }}
+      >
         {tier.label}
       </Badge>
     </Tooltip>

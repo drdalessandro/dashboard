@@ -9,6 +9,7 @@ import type { JSX } from 'react';
 import { Link } from 'react-router';
 import { getPREVENTInputs } from '../extensions';
 import { useCKMData } from '../hooks/useCKMData';
+import { isProvisional, PROVISIONAL_NOTE } from '../risk';
 import type { PreventOutcome } from '../risk';
 import { CKMStageBadge } from './CKMStageBadge';
 import { HGraph } from './HGraph';
@@ -40,6 +41,9 @@ export function PREVENTPanel(props: PREVENTPanelProps): JSX.Element {
           <ScoreStat label="IC 10 años" outcome="hf10y" value={preventScores?.hf10y} />
           <ScoreStat label="ECV total 30 años" outcome="cvdTotal30y" value={preventScores?.cvdTotal30y} />
         </SimpleGrid>
+        <Text size="xs" c="dimmed">
+          {PROVISIONAL_NOTE}
+        </Text>
         <Button
           component={Link}
           to={`/ckm/simulator/${patient?.id}`}
@@ -73,6 +77,7 @@ export function PREVENTPanel(props: PREVENTPanelProps): JSX.Element {
 }
 
 function ScoreStat(props: { label: string; outcome: PreventOutcome; value?: number }): JSX.Element {
+  const label = isProvisional(props.outcome) ? `${props.label} *` : props.label;
   return (
     <Stack gap={4} align="center">
       <Text fz={28} fw={700} lh={1.2}>
@@ -80,7 +85,7 @@ function ScoreStat(props: { label: string; outcome: PreventOutcome; value?: numb
       </Text>
       <RiskBadge outcome={props.outcome} value={props.value} />
       <Text size="xs" c="dimmed" ta="center">
-        {props.label}
+        {label}
       </Text>
     </Stack>
   );

@@ -10,17 +10,11 @@ import { Link } from 'react-router';
 import { CKMStageBadge } from '../ckm/components/CKMStageBadge';
 import { RiskBadge } from '../ckm/components/RiskBadge';
 import { CKM_STAGES } from '../ckm/constants';
-import { loadDashboardRows } from '../ckm/dashboard';
-import type { DashboardRow } from '../ckm/dashboard';
+import { compareRows, loadDashboardRows } from '../ckm/dashboard';
+import type { DashboardRow, DashboardSort, DashboardSortField } from '../ckm/dashboard';
+import { isProvisional, PROVISIONAL_NOTE } from '../ckm/risk';
 import type { PreventOutcome } from '../ckm/risk';
 import type { CKMStage } from '../ckm/types';
-
-type SortField = 'stage' | PreventOutcome;
-
-interface SortState {
-  field: SortField;
-  descending: boolean;
-}
 
 const STAGE_OPTIONS = (Object.keys(CKM_STAGES) as unknown as CKMStage[]).map((stage) => ({
   value: String(stage),
@@ -32,7 +26,7 @@ export function CKMDashboard(): JSX.Element {
   const [rows, setRows] = useState<DashboardRow[]>();
   const [stageFilter, setStageFilter] = useState<string[]>([]);
   const [nameFilter, setNameFilter] = useState('');
-  const [sort, setSort] = useState<SortState>();
+  const [sort, setSort] = useState<DashboardSort>();
 
   useEffect(() => {
     loadDashboardRows(medplum).then(setRows).catch(console.error);
@@ -51,27 +45,12 @@ export function CKMDashboard(): JSX.Element {
       result = result.filter((row) => row.name.toLowerCase().includes(query));
     }
     if (sort) {
-      const direction = sort.descending ? -1 : 1;
-      result = [...result].sort((a, b) => {
-        // Sin dato va siempre al final, sin importar la dirección
-        const aValue = sort.field === 'stage' ? a.stage : a[sort.field];
-        const bValue = sort.field === 'stage' ? b.stage : b[sort.field];
-        if (aValue === undefined && bValue === undefined) {
-          return 0;
-        }
-        if (aValue === undefined) {
-          return 1;
-        }
-        if (bValue === undefined) {
-          return -1;
-        }
-        return (aValue - bValue) * direction;
-      });
+      result = [...result].sort((a, b) => compareRows(sort, a, b));
     }
     return result;
   }, [rows, stageFilter, nameFilter, sort]);
 
-  function toggleSort(field: SortField): void {
+  function toggleSort(field: DashboardSortField): void {
     setSort((current) =>
       current?.field === field ? { field, descending: !current.descending } : { field, descending: true }
     );
@@ -106,8 +85,18 @@ export function CKMDashboard(): JSX.Element {
             <Table.Th>Paciente</Table.Th>
             <SortableTh label="Estadío" field="stage" sort={sort} onSort={toggleSort} />
             <SortableTh label="ASCVD 10a" field="ascvd10y" sort={sort} onSort={toggleSort} />
-            <SortableTh label="IC 10a" field="hf10y" sort={sort} onSort={toggleSort} />
-            <SortableTh label="ECV 30a" field="cvdTotal30y" sort={sort} onSort={toggleSort} />
+            <SortableTh
+              label={`IC 10a${isProvisional('hf10y') ? ' *' : ''}`}
+              field="hf10y"
+              sort={sort}
+              onSort={toggleSort}
+            />
+            <SortableTh
+              label={`ECV 30a${isProvisional('cvdTotal30y') ? ' *' : ''}`}
+              field="cvdTotal30y"
+              sort={sort}
+              onSort={toggleSort}
+            />
             <Table.Th>RiskAssessment</Table.Th>
             <Table.Th>Alertas</Table.Th>
           </Table.Tr>
@@ -149,6 +138,9 @@ export function CKMDashboard(): JSX.Element {
           No hay pacientes que coincidan con los filtros.
         </Text>
       )}
+      <Text size="xs" c="dimmed" mt="xs">
+        {PROVISIONAL_NOTE}
+      </Text>
     </Paper>
   );
 }
@@ -172,9 +164,9 @@ function RiskCell(props: { outcome: PreventOutcome; value?: number }): JSX.Eleme
 
 function SortableTh(props: {
   label: string;
-  field: SortField;
-  sort?: SortState;
-  onSort: (field: SortField) => void;
+  field: DashboardSortField;
+  sort?: DashboardSort;
+  onSort: (field: DashboardSortField) => void;
 }): JSX.Element {
   const active = props.sort?.field === props.field;
   const Icon = active ? (props.sort?.descending ? IconChevronDown : IconChevronUp) : IconSelector;
