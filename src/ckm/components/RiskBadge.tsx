@@ -4,29 +4,35 @@
 // fuente de los umbrales.
 import { Badge, Tooltip } from '@mantine/core';
 import type { JSX } from 'react';
-import { categorizeRisk, RISK_BANDS } from '../risk';
+import { categorizeRiskWithCac, RISK_BANDS } from '../risk';
 import type { PreventOutcome } from '../risk';
 
 export interface RiskBadgeProps {
   outcome: PreventOutcome;
   value?: number;
+  /** Score de calcio coronario (Agatston). Si se provee, reclasifica ASCVD 10a. */
+  cac?: number;
   size?: 'sm' | 'md';
 }
 
 /** Devuelve null si no hay valor para categorizar (el caller decide el placeholder). */
 export function RiskBadge(props: RiskBadgeProps): JSX.Element | null {
-  const { outcome, value, size = 'sm' } = props;
-  const tier = categorizeRisk(outcome, value);
-  if (!tier) {
+  const { outcome, value, cac, size = 'sm' } = props;
+  const category = categorizeRiskWithCac(outcome, value, cac);
+  if (!category) {
     return null;
   }
+  const { tier, base, direction, cacNote } = category;
   const band = RISK_BANDS[outcome];
-  const provisional = !band.guidelineBased;
-  const caveat = provisional ? ' (provisional)' : '';
-  const tooltip = `${value}% · ${tier.label}${caveat} — ${band.source}`;
+  const caveat = band.guidelineBased ? '' : ' (provisional)';
+  const reclassified = direction !== 'none';
+  const marker = direction === 'up' ? ' ↑' : direction === 'down' ? ' ↓' : '';
+  const tooltip = reclassified
+    ? `${value}% · ${base.label} → ${tier.label} por CAC${caveat}. ${cacNote} — ${band.source}`
+    : `${value}% · ${tier.label}${caveat}${cacNote ? `. ${cacNote}` : ''} — ${band.source}`;
   // El badge solo muestra el nivel ("Limítrofe"); el aria-label le da al lector
-  // de pantalla el valor y la salvedad, que si no quedan solo en el tooltip.
-  const ariaLabel = `${value}% · ${tier.label}${caveat}`;
+  // de pantalla el valor, la salvedad y si fue reclasificado por CAC.
+  const ariaLabel = `${value}% · ${tier.label}${caveat}${reclassified ? ', reclasificado por CAC' : ''}`;
   return (
     <Tooltip label={tooltip} withArrow multiline maw={340} events={{ hover: true, focus: true, touch: true }}>
       <Badge
@@ -38,6 +44,7 @@ export function RiskBadge(props: RiskBadgeProps): JSX.Element | null {
         style={{ cursor: 'default' }}
       >
         {tier.label}
+        {marker}
       </Badge>
     </Tooltip>
   );

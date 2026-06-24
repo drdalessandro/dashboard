@@ -118,7 +118,7 @@ export function CKMDashboard(): JSX.Element {
                   </Text>
                 )}
               </Table.Td>
-              <RiskCell outcome="ascvd10y" value={row.ascvd10y} />
+              <RiskCell outcome="ascvd10y" value={row.ascvd10y} cac={row.cac} />
               <RiskCell outcome="hf10y" value={row.hf10y} />
               <RiskCell outcome="cvdTotal30y" value={row.cvdTotal30y} />
               <Table.Td>{row.riskUpdated ? formatDate(row.riskUpdated) : '—'}</Table.Td>
@@ -145,13 +145,13 @@ export function CKMDashboard(): JSX.Element {
   );
 }
 
-function RiskCell(props: { outcome: PreventOutcome; value?: number }): JSX.Element {
+function RiskCell(props: { outcome: PreventOutcome; value?: number; cac?: number }): JSX.Element {
   return (
     <Table.Td>
       {props.value !== undefined ? (
         <Group gap="xs" wrap="nowrap">
           <Text>{props.value}%</Text>
-          <RiskBadge outcome={props.outcome} value={props.value} />
+          <RiskBadge outcome={props.outcome} value={props.value} cac={props.cac} />
         </Group>
       ) : (
         <Text c="dimmed" span>

@@ -139,3 +139,77 @@ export function isProvisional(outcome: PreventOutcome): boolean {
 
 /** Nota al pie para señalar los outcomes con bandas provisionales (marcados con *). */
 export const PROVISIONAL_NOTE = '* Bandas provisionales sin respaldo de guía; revisar con el equipo médico.';
+
+// ───────────────────────────────────────────────────────────────────────────
+// Reclasificación por score de calcio coronario (CAC, Agatston).
+//
+// El CAC es coronario-específico: reclasifica SOLO el riesgo ASCVD a 10 años
+// (no IC ni ECV total). NO modifica el porcentaje de PREVENT —que está
+// verificado—, solo la categoría mostrada. Reglas tipo MESA / ACC-AHA 2018:
+//   - CAC = 0:    baja un nivel (power of zero, fuerte predictor negativo).
+//   - CAC 1–99:   sin cambio (calcio leve).
+//   - CAC 100–299: sube un nivel.
+//   - CAC ≥ 300:  riesgo Alto (aterosclerosis coronaria establecida).
+// Revisar con el equipo médico.
+// ───────────────────────────────────────────────────────────────────────────
+
+/** Sentido del ajuste de categoría por CAC. */
+export type RiskDirection = 'up' | 'down' | 'none';
+
+/** Notas de reclasificación por CAC (se muestran en el tooltip). */
+export const CAC_RECLASS_NOTES = {
+  zero: 'CAC = 0 (sin calcio coronario): categoría bajada un nivel (power of zero; MESA/ACC-AHA).',
+  mild: 'CAC 1–99: calcio coronario leve, sin cambio de categoría.',
+  moderate: 'CAC 100–299: categoría subida un nivel.',
+  high: 'CAC ≥ 300: riesgo alto por aterosclerosis coronaria establecida.',
+} as const;
+
+export interface RiskCategory {
+  /** Tramo efectivo (ya reclasificado por CAC si correspondía). */
+  tier: RiskTier;
+  /** Tramo antes de aplicar el CAC. */
+  base: RiskTier;
+  direction: RiskDirection;
+  /** Explicación de la reclasificación; presente solo si se evaluó el CAC. */
+  cacNote?: string;
+}
+
+/**
+ * Categoriza un score y, si se provee CAC y el outcome es ASCVD a 10 años,
+ * reclasifica la categoría según las reglas MESA/ACC-AHA. Para el resto de los
+ * outcomes (o sin CAC) devuelve la categoría base sin cambios.
+ * Devuelve undefined si el valor falta o no es finito.
+ */
+export function categorizeRiskWithCac(
+  outcome: PreventOutcome,
+  value: number | undefined,
+  cac?: number
+): RiskCategory | undefined {
+  const base = categorizeRisk(outcome, value);
+  if (!base) {
+    return undefined;
+  }
+  if (outcome !== 'ascvd10y' || cac === undefined || !Number.isFinite(cac)) {
+    return { tier: base, base, direction: 'none' };
+  }
+  const tiers = RISK_BANDS.ascvd10y.tiers;
+  const baseIdx = tiers.findIndex((t) => t.level === base.level);
+  let targetIdx = baseIdx;
+  let cacNote: string;
+  if (cac <= 0) {
+    targetIdx = baseIdx - 1;
+    cacNote = CAC_RECLASS_NOTES.zero;
+  } else if (cac >= 300) {
+    targetIdx = tiers.length - 1;
+    cacNote = CAC_RECLASS_NOTES.high;
+  } else if (cac >= 100) {
+    targetIdx = baseIdx + 1;
+    cacNote = CAC_RECLASS_NOTES.moderate;
+  } else {
+    cacNote = CAC_RECLASS_NOTES.mild;
+  }
+  targetIdx = Math.max(0, Math.min(tiers.length - 1, targetIdx));
+  const tier = tiers[targetIdx];
+  const direction: RiskDirection = targetIdx > baseIdx ? 'up' : targetIdx < baseIdx ? 'down' : 'none';
+  return { tier, base, direction, cacNote };
+}

@@ -1,4 +1,4 @@
-import { categorizeRisk, RISK_BANDS } from './risk';
+import { categorizeRisk, categorizeRiskWithCac, RISK_BANDS } from './risk';
 import type { PreventOutcome } from './risk';
 
 describe('categorizeRisk — ASCVD 10a (tramos de guía ACC/AHA)', () => {
@@ -75,5 +75,61 @@ describe('RISK_BANDS — metadatos', () => {
       expect(mins).toStrictEqual([...mins].sort((a, b) => a - b));
       expect(mins[0]).toBe(0);
     }
+  });
+});
+
+describe('categorizeRiskWithCac — reclasificación de ASCVD por CAC', () => {
+  // ASCVD 9.2% es 'intermediate' de base.
+  test('CAC = 0 baja un nivel (intermedio -> limítrofe)', () => {
+    const r = categorizeRiskWithCac('ascvd10y', 9.2, 0);
+    expect(r).toMatchObject({ base: { level: 'intermediate' }, tier: { level: 'borderline' }, direction: 'down' });
+  });
+
+  test('CAC 1–99 no cambia la categoría', () => {
+    const r = categorizeRiskWithCac('ascvd10y', 9.2, 50);
+    expect(r).toMatchObject({ tier: { level: 'intermediate' }, direction: 'none' });
+    expect(r?.cacNote).toMatch(/1–99/);
+  });
+
+  test('CAC 100–299 sube un nivel (intermedio -> alto)', () => {
+    expect(categorizeRiskWithCac('ascvd10y', 9.2, 150)).toMatchObject({ tier: { level: 'high' }, direction: 'up' });
+  });
+
+  test('CAC ≥ 300 lleva a Alto desde cualquier base (bajo -> alto)', () => {
+    expect(categorizeRiskWithCac('ascvd10y', 3, 400)).toMatchObject({
+      base: { level: 'low' },
+      tier: { level: 'high' },
+      direction: 'up',
+    });
+  });
+
+  test('CAC = 0 en base "bajo" no baja más (clamp, sin cambio)', () => {
+    expect(categorizeRiskWithCac('ascvd10y', 3, 0)).toMatchObject({ tier: { level: 'low' }, direction: 'none' });
+  });
+
+  test('CAC alto en base "alto" no sube más (clamp, sin cambio)', () => {
+    expect(categorizeRiskWithCac('ascvd10y', 25, 150)).toMatchObject({ tier: { level: 'high' }, direction: 'none' });
+  });
+
+  test('el CAC NO reclasifica IC ni ECV (solo ASCVD)', () => {
+    expect(categorizeRiskWithCac('hf10y', 8.1, 400)).toMatchObject({ tier: { level: 'borderline' }, direction: 'none' });
+    expect(categorizeRiskWithCac('cvdTotal30y', 15, 400)).toMatchObject({
+      tier: { level: 'borderline' },
+      direction: 'none',
+    });
+  });
+
+  test('sin CAC devuelve la categoría base sin nota', () => {
+    const r = categorizeRiskWithCac('ascvd10y', 9.2);
+    expect(r).toMatchObject({ tier: { level: 'intermediate' }, direction: 'none' });
+    expect(r?.cacNote).toBeUndefined();
+  });
+
+  test('CAC no finito se ignora', () => {
+    expect(categorizeRiskWithCac('ascvd10y', 9.2, NaN)).toMatchObject({ direction: 'none' });
+  });
+
+  test('sin valor de score devuelve undefined aunque haya CAC', () => {
+    expect(categorizeRiskWithCac('ascvd10y', undefined, 0)).toBeUndefined();
   });
 });
