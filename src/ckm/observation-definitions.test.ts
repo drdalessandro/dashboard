@@ -1,9 +1,12 @@
-import type { Bundle, ObservationDefinition } from '@medplum/fhirtypes';
+import type { Bundle, Observation, ObservationDefinition } from '@medplum/fhirtypes';
 import bundleJson from '../../data/ckm/biomarker-definitions.json';
 import {
+  classifyBiomarkerValue,
   getBiomarkerDefinitions,
+  groupByPanel,
   indexByBiomarcador,
   indexByLoinc,
+  latestValueByCode,
   parseObservationDefinition,
   rangeForGender,
 } from './observation-definitions';
@@ -93,5 +96,68 @@ describe('getBiomarkerDefinitions', () => {
     const result = await getBiomarkerDefinitions(fakeMedplum);
     expect(result).toHaveLength(3);
     expect(result[0].label).toBeTruthy();
+  });
+});
+
+describe('classifyBiomarkerValue', () => {
+  test('cota superior (glucosa: óptimo 75–85, convencional 70–100)', () => {
+    const glu = byId.get('glucosa-en-ayunas')!;
+    expect(classifyBiomarkerValue(glu, 80).status).toBe('optimal');
+    expect(classifyBiomarkerValue(glu, 92).status).toBe('normal');
+    expect(classifyBiomarkerValue(glu, 120).status).toBe('high');
+    expect(classifyBiomarkerValue(glu, 65).status).toBe('low');
+  });
+
+  test('cota inferior por género (HDL: óptimo ≥60, convencional ≥40 H)', () => {
+    const hdl = byId.get('hdl-colesterol')!;
+    expect(classifyBiomarkerValue(hdl, 70, 'male').status).toBe('optimal');
+    expect(classifyBiomarkerValue(hdl, 45, 'male').status).toBe('normal');
+    expect(classifyBiomarkerValue(hdl, 35, 'male').status).toBe('low');
+  });
+
+  test('doble cola con rango por género (ácido úrico)', () => {
+    const au = byId.get('acido-urico')!;
+    expect(classifyBiomarkerValue(au, 4, 'male').status).toBe('optimal'); // óptimo 3.5–5.5
+    expect(classifyBiomarkerValue(au, 6.8, 'male').status).toBe('normal'); // convencional H ≤7.2
+    expect(classifyBiomarkerValue(au, 8, 'male').status).toBe('high');
+    expect(classifyBiomarkerValue(au, 6.5, 'female').status).toBe('high'); // convencional M ≤6
+  });
+
+  test('valor ausente -> unknown con etiqueta —', () => {
+    const glu = byId.get('glucosa-en-ayunas')!;
+    expect(classifyBiomarkerValue(glu, undefined)).toMatchObject({ status: 'unknown', label: '—' });
+  });
+});
+
+function obs(code: string, value: number | undefined, date: string, status: Observation['status'] = 'final'): Observation {
+  return {
+    resourceType: 'Observation',
+    status,
+    code: { coding: [{ system: 'http://loinc.org', code }] },
+    effectiveDateTime: date,
+    ...(value !== undefined ? { valueQuantity: { value, unit: 'mg/dL' } } : {}),
+  };
+}
+
+describe('latestValueByCode', () => {
+  test('toma el último valor por código, ignora entered-in-error y sin valor', () => {
+    const map = latestValueByCode([
+      obs('1558-6', 90, '2026-01-01'),
+      obs('1558-6', 84, '2026-06-01'), // más nuevo gana
+      obs('2085-9', 200, '2026-06-10', 'entered-in-error'),
+      obs('2085-9', undefined, '2026-06-09'),
+      obs('2085-9', 58, '2026-06-08'),
+    ]);
+    expect(map.get('1558-6')?.value).toBe(84);
+    expect(map.get('2085-9')?.value).toBe(58);
+  });
+});
+
+describe('groupByPanel', () => {
+  test('agrupa por panel con el orden CV primero', () => {
+    const groups = groupByPanel(defs);
+    expect(groups.slice(0, 3).map((g) => g.panelCode)).toStrictEqual(['metabolico', 'lipidico', 'inflamacion']);
+    expect(groups.every((g) => g.panelDisplay && g.defs.length > 0)).toBe(true);
+    expect(groups.reduce((n, g) => n + g.defs.length, 0)).toBe(50);
   });
 });

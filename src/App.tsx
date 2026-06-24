@@ -15,6 +15,7 @@ import {
 import { Suspense } from 'react';
 import type { JSX } from 'react';
 import { Route, Routes } from 'react-router';
+import { BiomarkerPanelPage } from './pages/BiomarkerPanelPage';
 import { CKMDashboard } from './pages/CKMDashboard';
 import { EncounterPage } from './pages/EncounterPage';
 import { SDOHForm } from './pages/SDOHForm';
@@ -75,6 +76,7 @@ export function App(): JSX.Element | null {
             <Route path="/" element={profile ? <SearchPage /> : <LandingPage />} />
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/ckm" element={<CKMDashboard />} />
+            <Route path="/ckm/biomarkers/:patientId" element={<BiomarkerPanelPage />} />
             <Route path="/ckm/sdoh/:patientId" element={<SDOHForm />} />
             <Route path="/ckm/simulator/:patientId" element={<SimulatorPage />} />
             <Route path="/Patient/:id">
