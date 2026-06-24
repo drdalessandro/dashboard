@@ -14,8 +14,13 @@ if (!existsSync(path.join(__dirname, '.env'))) {
 export default defineConfig({
   envPrefix: ['MEDPLUM_', 'GOOGLE_'],
   plugins: [react()],
+  preview: {
+    host: 'dashboard.medplum.com.ar',
+    port: 3006,
+    allowedHosts: true,
+  },
   server: {
     host: 'localhost',
-    port: 3000,
+    port: 3006,
   },
 });
