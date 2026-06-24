@@ -3,7 +3,8 @@ import { readJson, SEARCH_PARAMETER_BUNDLE_FILES } from '@medplum/definitions';
 import type { Bundle, Patient, SearchParameter } from '@medplum/fhirtypes';
 import { MockClient } from '@medplum/mock';
 import { CKM_STAGE_URL, HGRAPH_DATA_URL } from './constants';
-import { loadDashboardRows } from './dashboard';
+import { compareRows, loadDashboardRows } from './dashboard';
+import type { DashboardRow, DashboardSortField } from './dashboard';
 
 describe('Carga del panel CKM', () => {
   beforeAll(() => {
@@ -87,5 +88,54 @@ describe('Carga del panel CKM', () => {
 
     const rows = await loadDashboardRows(medplum);
     expect(rows.find((r) => r.patient.id === patient.id)?.hasAlert).toBe(false);
+  });
+});
+
+describe('compareRows — orden del panel', () => {
+  function row(overrides: Partial<DashboardRow> & { name: string }): DashboardRow {
+    return { patient: { resourceType: 'Patient' }, hasAlert: false, ...overrides };
+  }
+
+  // A y B tienen todos los datos; C no tiene ninguno. Para cada outcome se
+  // eligen valores que cambian quién va primero, así un test detecta si el
+  // comparador usa la clave equivocada.
+  const A = row({ name: 'A', stage: 1, ascvd10y: 5, hf10y: 30, cvdTotal30y: 10 });
+  const B = row({ name: 'B', stage: 3, ascvd10y: 20, hf10y: 10, cvdTotal30y: 40 });
+  const C = row({ name: 'C' });
+
+  function order(field: DashboardSortField, descending: boolean): string[] {
+    return [A, C, B]
+      .slice()
+      .sort((x, y) => compareRows({ field, descending }, x, y))
+      .map((r) => r.name);
+  }
+
+  test('desc por ASCVD: mayor primero, sin dato al final', () => {
+    expect(order('ascvd10y', true)).toStrictEqual(['B', 'A', 'C']);
+  });
+
+  test('asc por ASCVD: menor primero, sin dato igual al final', () => {
+    expect(order('ascvd10y', false)).toStrictEqual(['A', 'B', 'C']);
+  });
+
+  test('desc por estadío', () => {
+    expect(order('stage', true)).toStrictEqual(['B', 'A', 'C']);
+  });
+
+  test('desc por IC usa la clave hf10y (A>B), no ascvd10y', () => {
+    expect(order('hf10y', true)).toStrictEqual(['A', 'B', 'C']);
+  });
+
+  test('desc por ECV usa la clave cvdTotal30y (B>A)', () => {
+    expect(order('cvdTotal30y', true)).toStrictEqual(['B', 'A', 'C']);
+  });
+
+  test('sin dato va SIEMPRE al final, en ambas direcciones', () => {
+    expect(order('ascvd10y', true).at(-1)).toBe('C');
+    expect(order('ascvd10y', false).at(-1)).toBe('C');
+  });
+
+  test('dos filas sin dato son equivalentes (devuelve 0)', () => {
+    expect(compareRows({ field: 'ascvd10y', descending: true }, C, row({ name: 'C2' }))).toBe(0);
   });
 });

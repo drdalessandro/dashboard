@@ -10,6 +10,11 @@
 // IC a 10 años y ECV total a 30 años NO tienen tiers consensuados en guías:
 // son PROVISIONALES (guidelineBased: false) y deben calibrarse con el equipo
 // médico. Misma convención que los umbrales heurísticos de scoring.ts.
+//
+// SALVEDAD ASCVD: los cortes 5/7.5/20 se derivaron sobre las Pooled Cohort
+// Equations (PCE), pero el score que categorizamos es PREVENT, que estima más
+// bajo que las PCE. La categoría sirve para triage; NO es intercambiable con la
+// elegibilidad de tratamiento basada en PCE. Detalle en RISK_BANDS.ascvd10y.source.
 import type { PREVENTScores } from './types';
 
 /** Nivel cualitativo de riesgo, de menor a mayor. */
@@ -70,9 +75,10 @@ function tiersFromCutpoints(borderline: number, intermediate: number, high: numb
 /**
  * Tramos de riesgo por outcome PREVENT.
  *
- * - ascvd10y: tramos canónicos de las guías ACC/AHA (bajo <5, limítrofe
- *   5–<7.5, intermedio 7.5–<20, alto ≥20). Mismos cortes que usa la decisión
- *   de estatinas en prevención primaria.
+ * - ascvd10y: cortes de las guías ACC/AHA (bajo <5, limítrofe 5–<7.5,
+ *   intermedio 7.5–<20, alto ≥20), derivados sobre las PCE. El score que se
+ *   categoriza es PREVENT (estima más bajo): la categoría es para triage, no
+ *   equivale a la elegibilidad de tratamiento de la guía. Ver .source.
  * - hf10y / cvdTotal30y: PROVISIONALES. PREVENT no define categorías de riesgo
  *   para estos outcomes; las bandas son heurísticas para triage y deben
  *   revisarse con el equipo médico.
@@ -82,8 +88,11 @@ export const RISK_BANDS: Record<PreventOutcome, RiskBands> = {
     outcome: 'ascvd10y',
     guidelineBased: true,
     source:
-      'ACC/AHA 2018 Cholesterol / 2019 Prevención Primaria: bajo <5%, limítrofe 5–<7.5%, ' +
-      'intermedio 7.5–<20%, alto ≥20% (riesgo ASCVD a 10 años).',
+      'Cortes ACC/AHA 2018 Cholesterol / 2019 Prevención Primaria: bajo <5%, limítrofe 5–<7.5%, ' +
+      'intermedio 7.5–<20%, alto ≥20% (riesgo ASCVD a 10 años). Atención: estos cortes se derivaron ' +
+      'sobre las Pooled Cohort Equations (PCE); el valor mostrado es PREVENT, que tiende a estimar ' +
+      'más bajo que las PCE, por lo que la categoría no es intercambiable con la elegibilidad de ' +
+      'tratamiento basada en PCE.',
     tiers: tiersFromCutpoints(5, 7.5, 20),
   },
   hf10y: {
@@ -122,3 +131,11 @@ export function categorizeRisk(outcome: PreventOutcome, value: number | undefine
   }
   return match;
 }
+
+/** true si el outcome usa bandas provisionales (sin tramos de guía). */
+export function isProvisional(outcome: PreventOutcome): boolean {
+  return !RISK_BANDS[outcome].guidelineBased;
+}
+
+/** Nota al pie para señalar los outcomes con bandas provisionales (marcados con *). */
+export const PROVISIONAL_NOTE = '* Bandas provisionales sin respaldo de guía; revisar con el equipo médico.';
