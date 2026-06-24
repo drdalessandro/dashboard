@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { JSX } from 'react';
 import { Link } from 'react-router';
 import { CKMStageBadge } from '../ckm/components/CKMStageBadge';
+import { RiskBadge } from '../ckm/components/RiskBadge';
 import { CKM_STAGES } from '../ckm/constants';
 import { loadDashboardRows } from '../ckm/dashboard';
 import type { DashboardRow } from '../ckm/dashboard';
@@ -125,7 +126,16 @@ export function CKMDashboard(): JSX.Element {
                   </Text>
                 )}
               </Table.Td>
-              <Table.Td>{row.ascvd10y !== undefined ? `${row.ascvd10y}%` : '—'}</Table.Td>
+              <Table.Td>
+                {row.ascvd10y !== undefined ? (
+                  <Group gap="xs" wrap="nowrap">
+                    <Text>{row.ascvd10y}%</Text>
+                    <RiskBadge outcome="ascvd10y" value={row.ascvd10y} />
+                  </Group>
+                ) : (
+                  '—'
+                )}
+              </Table.Td>
               <Table.Td>{row.riskUpdated ? formatDate(row.riskUpdated) : '—'}</Table.Td>
               <Table.Td>
                 {row.hasAlert && (
