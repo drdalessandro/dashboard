@@ -179,20 +179,28 @@ export function classifyBiomarkerValue(
   }
   const optimal = rangeForGender(def.optimal, gender);
   const conventional = rangeForGender(def.conventional, gender);
+  // El rango convencional es la referencia dura: salir de él es alto/bajo, aunque
+  // el óptimo sea de una sola cola (ej. Hb óptima ≥14) y el valor lo "cumpla".
+  if (conventional?.high !== undefined && value > conventional.high) {
+    return STATUS_INFO.high;
+  }
+  if (conventional?.low !== undefined && value < conventional.low) {
+    return STATUS_INFO.low;
+  }
   if (inRange(value, optimal)) {
     return STATUS_INFO.optimal;
   }
   if (inRange(value, conventional)) {
     return STATUS_INFO.normal;
   }
-  const ref = conventional ?? optimal;
-  if (ref?.high !== undefined && value > ref.high) {
+  // Sin convencional: ubicar la dirección con el óptimo.
+  if (optimal?.high !== undefined && value > optimal.high) {
     return STATUS_INFO.high;
   }
-  if (ref?.low !== undefined && value < ref.low) {
+  if (optimal?.low !== undefined && value < optimal.low) {
     return STATUS_INFO.low;
   }
-  return STATUS_INFO.unknown;
+  return conventional ? STATUS_INFO.normal : STATUS_INFO.unknown;
 }
 
 /** Último valor observado de un biomarcador. */
