@@ -5,6 +5,7 @@ import type { MedplumClient } from '@medplum/core';
 import { formatHumanName } from '@medplum/core';
 import type { HumanName, Patient } from '@medplum/fhirtypes';
 import { getCKMStage, getHGraphData } from './extensions';
+import type { PreventOutcome } from './risk';
 import type { CKMStage } from './types';
 
 export interface DashboardRow {
@@ -12,8 +13,41 @@ export interface DashboardRow {
   name: string;
   stage?: CKMStage;
   ascvd10y?: number;
+  hf10y?: number;
+  cvdTotal30y?: number;
+  /** Score de calcio coronario (Agatston), si está entre las métricas. Reclasifica ASCVD. */
+  cac?: number;
   riskUpdated?: string;
   hasAlert: boolean;
+}
+
+/** Campo por el que se ordena el panel: estadío o cualquiera de los scores PREVENT. */
+export type DashboardSortField = 'stage' | PreventOutcome;
+
+export interface DashboardSort {
+  field: DashboardSortField;
+  descending: boolean;
+}
+
+/**
+ * Comparador puro para ordenar filas del panel (estadío o cualquier score
+ * PREVENT). Las filas sin dato (undefined) van SIEMPRE al final, en ambas
+ * direcciones — así "sin score" nunca se ordena como si fuera "score bajo".
+ * Pensado para usarse con Array.prototype.sort.
+ */
+export function compareRows(sort: DashboardSort, a: DashboardRow, b: DashboardRow): number {
+  const aValue = sort.field === 'stage' ? a.stage : a[sort.field];
+  const bValue = sort.field === 'stage' ? b.stage : b[sort.field];
+  if (aValue === undefined && bValue === undefined) {
+    return 0;
+  }
+  if (aValue === undefined) {
+    return 1;
+  }
+  if (bValue === undefined) {
+    return -1;
+  }
+  return (aValue - bValue) * (sort.descending ? -1 : 1);
 }
 
 export async function loadDashboardRows(medplum: MedplumClient): Promise<DashboardRow[]> {
@@ -52,12 +86,19 @@ export async function loadDashboardRows(medplum: MedplumClient): Promise<Dashboa
   }
   const alertedPatients = new Set(alerts.map((a) => a.subject?.reference));
 
-  return patients.map((patient) => ({
-    patient,
-    name: patient.name ? formatHumanName(patient.name[0] as HumanName) : '',
-    stage: getCKMStage(patient),
-    ascvd10y: getHGraphData(patient).prevent?.ascvd10y,
-    riskUpdated: riskUpdatedByPatient.get(`Patient/${patient.id}`),
-    hasAlert: alertedPatients.has(`Patient/${patient.id}`),
-  }));
+  return patients.map((patient) => {
+    const hGraph = getHGraphData(patient);
+    const prevent = hGraph.prevent;
+    return {
+      patient,
+      name: patient.name ? formatHumanName(patient.name[0] as HumanName) : '',
+      stage: getCKMStage(patient),
+      ascvd10y: prevent?.ascvd10y,
+      hf10y: prevent?.hf10y,
+      cvdTotal30y: prevent?.cvdTotal30y,
+      cac: hGraph.metrics?.find((m) => m.id === 'cac')?.value,
+      riskUpdated: riskUpdatedByPatient.get(`Patient/${patient.id}`),
+      hasAlert: alertedPatients.has(`Patient/${patient.id}`),
+    };
+  });
 }

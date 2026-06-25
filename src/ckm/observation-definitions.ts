@@ -1,0 +1,326 @@
+// Lector del panel de biomarcadores BioWellness desde sus ObservationDefinitions
+// (fuente de verdad FHIR cargada con upload-biomarker-definitions).
+//
+// Cada ObservationDefinition trae: identifier (slug del biomarcador), code
+// (LOINC o código local), category (panel: metabolico/lipidico/inflamacion/…),
+// unidad, rangos por contexto ('normal' = convencional, 'funcional-optimo' =
+// óptimo, opcionalmente por género) y extensiones de texto (rango convencional/
+// óptimo, interpretación, fuente). Este módulo las normaliza a una forma plana
+// y fácil de consumir. Sin dependencias de UI.
+import type { MedplumClient } from '@medplum/core';
+import type { Observation, ObservationDefinition } from '@medplum/fhirtypes';
+
+export const BIOMARCADOR_IDENTIFIER_SYSTEM = 'https://bio.medplum.com.ar/fhir/sid/biomarcador';
+export const PANEL_SYSTEM = 'https://bio.medplum.com.ar/fhir/CodeSystem/panel-biomarcador';
+export const CONTEXTO_RANGO_SYSTEM = 'https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango';
+const EXT_BASE = 'https://bio.medplum.com.ar/fhir/StructureDefinition/';
+export const EXT_RANGO_CONVENCIONAL_TEXTO = EXT_BASE + 'rango-convencional-texto';
+export const EXT_RANGO_OPTIMO_TEXTO = EXT_BASE + 'rango-optimo-texto';
+export const EXT_INTERPRETACION = EXT_BASE + 'interpretacion';
+export const EXT_FUENTE = EXT_BASE + 'fuente';
+export const LOINC_SYSTEM = 'http://loinc.org';
+
+/** Contexto de un rango: convencional ('normal') u óptimo ('funcional-optimo'). */
+export type RangeContext = 'normal' | 'funcional-optimo';
+
+export interface BiomarkerRange {
+  low?: number;
+  high?: number;
+  /** 'male' | 'female' si el rango es específico por género; ausente si aplica a ambos. */
+  gender?: string;
+}
+
+/** Forma normalizada de una ObservationDefinition de biomarcador. */
+export interface BiomarkerDefinition {
+  /** Slug del biomarcador (identifier en BIOMARCADOR_IDENTIFIER_SYSTEM). */
+  biomarcadorId?: string;
+  /** Nombre para mostrar (code.text). */
+  label: string;
+  /** Código (LOINC o local). */
+  code?: string;
+  system?: string;
+  /** Código del panel (metabolico, lipidico, inflamacion, …). */
+  panelCode?: string;
+  panelDisplay?: string;
+  unit?: string;
+  conventionalText?: string;
+  optimalText?: string;
+  interpretation?: string;
+  source?: string;
+  /** Rangos convencionales (contexto 'normal'); puede haber uno por género. */
+  conventional: BiomarkerRange[];
+  /** Rangos óptimos (contexto 'funcional-optimo'). */
+  optimal: BiomarkerRange[];
+}
+
+function extString(od: ObservationDefinition, url: string): string | undefined {
+  return od.extension?.find((e) => e.url === url)?.valueString;
+}
+
+function intervalsForContext(od: ObservationDefinition, context: RangeContext): BiomarkerRange[] {
+  return (od.qualifiedInterval ?? [])
+    .filter((q) => q.context?.coding?.some((c) => c.code === context))
+    .map((q) => ({ low: q.range?.low?.value, high: q.range?.high?.value, gender: q.gender }));
+}
+
+/** Normaliza una ObservationDefinition de biomarcador a BiomarkerDefinition. */
+export function parseObservationDefinition(od: ObservationDefinition): BiomarkerDefinition {
+  const coding = od.code?.coding?.[0];
+  const unit = od.quantitativeDetails?.unit;
+  return {
+    biomarcadorId: od.identifier?.find((i) => i.system === BIOMARCADOR_IDENTIFIER_SYSTEM)?.value,
+    label: od.code?.text ?? coding?.display ?? coding?.code ?? '(sin nombre)',
+    code: coding?.code,
+    system: coding?.system,
+    panelCode: od.category?.[0]?.coding?.[0]?.code,
+    panelDisplay: od.category?.[0]?.coding?.[0]?.display,
+    unit: unit?.text ?? unit?.coding?.[0]?.code,
+    conventionalText: extString(od, EXT_RANGO_CONVENCIONAL_TEXTO),
+    optimalText: extString(od, EXT_RANGO_OPTIMO_TEXTO),
+    interpretation: extString(od, EXT_INTERPRETACION),
+    source: extString(od, EXT_FUENTE),
+    conventional: intervalsForContext(od, 'normal'),
+    optimal: intervalsForContext(od, 'funcional-optimo'),
+  };
+}
+
+/**
+ * Elige el rango aplicable a un género: el específico si existe, si no el no
+ * especificado, y como último recurso el primero. Devuelve undefined si la
+ * lista está vacía.
+ */
+export function rangeForGender(ranges: BiomarkerRange[], gender?: string): BiomarkerRange | undefined {
+  if (ranges.length === 0) {
+    return undefined;
+  }
+  if (gender) {
+    const specific = ranges.find((r) => r.gender === gender);
+    if (specific) {
+      return specific;
+    }
+  }
+  return ranges.find((r) => !r.gender) ?? ranges[0];
+}
+
+/** Indexa las definiciones por código LOINC (solo las que tienen system LOINC). */
+export function indexByLoinc(defs: BiomarkerDefinition[]): Map<string, BiomarkerDefinition> {
+  const map = new Map<string, BiomarkerDefinition>();
+  for (const def of defs) {
+    if (def.code && def.system === LOINC_SYSTEM) {
+      map.set(def.code, def);
+    }
+  }
+  return map;
+}
+
+/** Indexa las definiciones por slug de biomarcador. */
+export function indexByBiomarcador(defs: BiomarkerDefinition[]): Map<string, BiomarkerDefinition> {
+  const map = new Map<string, BiomarkerDefinition>();
+  for (const def of defs) {
+    if (def.biomarcadorId) {
+      map.set(def.biomarcadorId, def);
+    }
+  }
+  return map;
+}
+
+/**
+ * Trae las ObservationDefinitions de biomarcadores del servidor y las normaliza.
+ * Acota la búsqueda al sistema de identifier de biomarcador para no traer ODs
+ * ajenas de otros equipos ni quedar limitada por una sola página.
+ */
+export async function getBiomarkerDefinitions(medplum: MedplumClient): Promise<BiomarkerDefinition[]> {
+  const ods = await medplum.searchResources('ObservationDefinition', {
+    identifier: `${BIOMARCADOR_IDENTIFIER_SYSTEM}|`,
+    _count: '1000',
+  });
+  return ods.map(parseObservationDefinition);
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// Clasificación de un valor contra los rangos de su biomarcador, agnóstica a la
+// dirección: usa los límites low/high de cada rango, así sirve igual para
+// marcadores "más bajo mejor" (ApoB), "más alto mejor" (HDL) o con doble cola
+// (ácido úrico, potasio).
+// ───────────────────────────────────────────────────────────────────────────
+
+/** Estado de un valor respecto de sus rangos. */
+export type BiomarkerStatus = 'optimal' | 'normal' | 'high' | 'low' | 'unknown';
+
+export interface BiomarkerStatusInfo {
+  status: BiomarkerStatus;
+  /** Etiqueta para mostrar, en español. */
+  label: string;
+  /** Color de la paleta de Mantine. */
+  color: string;
+}
+
+const STATUS_INFO: Record<BiomarkerStatus, BiomarkerStatusInfo> = {
+  optimal: { status: 'optimal', label: 'Óptimo', color: 'green' },
+  normal: { status: 'normal', label: 'Normal', color: 'yellow' },
+  high: { status: 'high', label: 'Alto', color: 'red' },
+  low: { status: 'low', label: 'Bajo', color: 'red' },
+  unknown: { status: 'unknown', label: '—', color: 'gray' },
+};
+
+function inRange(value: number, r: BiomarkerRange | undefined): boolean {
+  if (!r) {
+    return false;
+  }
+  return (r.low === undefined || value >= r.low) && (r.high === undefined || value <= r.high);
+}
+
+/**
+ * Clasifica un valor: óptimo si cae en el rango funcional/óptimo; normal si cae
+ * en el convencional pero no en el óptimo; alto/bajo si queda fuera del
+ * convencional (o del óptimo si no hay convencional). Respeta el rango por
+ * género cuando existe.
+ */
+export function classifyBiomarkerValue(
+  def: BiomarkerDefinition,
+  value: number | undefined,
+  gender?: string
+): BiomarkerStatusInfo {
+  if (value === undefined || !Number.isFinite(value)) {
+    return STATUS_INFO.unknown;
+  }
+  const optimal = rangeForGender(def.optimal, gender);
+  const conventional = rangeForGender(def.conventional, gender);
+  const aboveConventional = conventional?.high !== undefined && value > conventional.high;
+  const belowConventional = conventional?.low !== undefined && value < conventional.low;
+  // Dentro del óptimo es Óptimo, AUNQUE el óptimo se extienda más allá del
+  // convencional a propósito (T3 Libre, DHEA-S, Testosterona: óptimo > tope
+  // convencional). Excepción: un óptimo de UNA sola cola (Hb óptima ≥14, sin
+  // tope) no debe tapar el tope convencional — si el valor lo supera y el óptimo
+  // no acota esa cola, es alto/bajo.
+  if (optimal && inRange(value, optimal)) {
+    if (aboveConventional && optimal.high === undefined) {
+      return STATUS_INFO.high;
+    }
+    if (belowConventional && optimal.low === undefined) {
+      return STATUS_INFO.low;
+    }
+    return STATUS_INFO.optimal;
+  }
+  // Fuera del óptimo: el convencional es la referencia dura.
+  if (aboveConventional) {
+    return STATUS_INFO.high;
+  }
+  if (belowConventional) {
+    return STATUS_INFO.low;
+  }
+  if (inRange(value, conventional)) {
+    return STATUS_INFO.normal;
+  }
+  // Sin convencional: ubicar la dirección con el óptimo.
+  if (optimal?.high !== undefined && value > optimal.high) {
+    return STATUS_INFO.high;
+  }
+  if (optimal?.low !== undefined && value < optimal.low) {
+    return STATUS_INFO.low;
+  }
+  return conventional ? STATUS_INFO.normal : STATUS_INFO.unknown;
+}
+
+/** Último valor observado de un biomarcador. */
+export interface CodedValue {
+  value: number;
+  unit?: string;
+  date?: string;
+}
+
+function observationDate(observation: Observation): string {
+  return observation.effectiveDateTime ?? observation.issued ?? observation.meta?.lastUpdated ?? '';
+}
+
+/**
+ * Indexa el último valor por código de Observation (cualquier coding). Procesa
+ * de más nueva a más vieja; la primera por código gana. Descarta
+ * entered-in-error y las que no tienen valueQuantity.
+ */
+export function latestValueByCode(observations: Observation[]): Map<string, CodedValue> {
+  const newestFirst = [...observations].sort((a, b) => observationDate(b).localeCompare(observationDate(a)));
+  const map = new Map<string, CodedValue>();
+  for (const o of newestFirst) {
+    if (o.status === 'entered-in-error' || o.valueQuantity?.value === undefined) {
+      continue;
+    }
+    for (const coding of o.code?.coding ?? []) {
+      if (coding.code && !map.has(coding.code)) {
+        map.set(coding.code, {
+          value: o.valueQuantity.value,
+          unit: o.valueQuantity.unit,
+          date: observationDate(o) || undefined,
+        });
+      }
+    }
+  }
+  return map;
+}
+
+/**
+ * Agrupa el historial completo por código de Observation, de más vieja a más
+ * nueva (orden natural para una sparkline). Descarta entered-in-error y las que
+ * no tienen valueQuantity.
+ */
+export function valuesByCodeHistory(observations: Observation[]): Map<string, CodedValue[]> {
+  const oldestFirst = [...observations].sort((a, b) => observationDate(a).localeCompare(observationDate(b)));
+  const map = new Map<string, CodedValue[]>();
+  for (const o of oldestFirst) {
+    if (o.status === 'entered-in-error' || o.valueQuantity?.value === undefined) {
+      continue;
+    }
+    for (const coding of o.code?.coding ?? []) {
+      if (!coding.code) {
+        continue;
+      }
+      const entry: CodedValue = {
+        value: o.valueQuantity.value,
+        unit: o.valueQuantity.unit,
+        date: observationDate(o) || undefined,
+      };
+      const list = map.get(coding.code) ?? [];
+      list.push(entry);
+      map.set(coding.code, list);
+    }
+  }
+  return map;
+}
+
+// Orden de los paneles (foco cardiovascular primero, luego el resto BioHacking).
+const PANEL_ORDER = [
+  'metabolico',
+  'lipidico',
+  'inflamacion',
+  'renal-hepatico',
+  'hormonal',
+  'micronutrientes',
+  'longevidad',
+  'microbiota',
+  'toxicos',
+  'autonomico',
+];
+
+export interface BiomarkerPanelGroup {
+  panelCode: string;
+  panelDisplay: string;
+  defs: BiomarkerDefinition[];
+}
+
+/** Agrupa las definiciones por panel, en el orden de PANEL_ORDER (resto al final). */
+export function groupByPanel(defs: BiomarkerDefinition[]): BiomarkerPanelGroup[] {
+  const groups = new Map<string, BiomarkerDefinition[]>();
+  for (const def of defs) {
+    const code = def.panelCode ?? 'otros';
+    const list = groups.get(code) ?? [];
+    list.push(def);
+    groups.set(code, list);
+  }
+  const rank = (code: string): number => {
+    const i = PANEL_ORDER.indexOf(code);
+    return i === -1 ? PANEL_ORDER.length : i;
+  };
+  return [...groups.entries()]
+    .sort(([a], [b]) => rank(a) - rank(b) || a.localeCompare(b))
+    .map(([panelCode, list]) => ({ panelCode, panelDisplay: list[0].panelDisplay ?? panelCode, defs: list }));
+}

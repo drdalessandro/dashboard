@@ -17,7 +17,7 @@ export function CKMStageBadge(props: CKMStageBadgeProps): JSX.Element {
   if (size === 'sm') {
     return (
       <Tooltip label={`Estadío ${stage}: ${info.label}`} withArrow>
-        <Badge circle variant="filled" color={info.color} size="lg" style={{ cursor: 'default' }}>
+        <Badge circle variant="filled" autoContrast color={info.color} size="lg" style={{ cursor: 'default' }}>
           {stage}
         </Badge>
       </Tooltip>
@@ -26,7 +26,7 @@ export function CKMStageBadge(props: CKMStageBadgeProps): JSX.Element {
 
   return (
     <Tooltip label={info.description} withArrow maw={320} multiline>
-      <Badge variant="filled" color={info.color} size="lg" leftSection={stage} style={{ cursor: 'default' }}>
+      <Badge variant="filled" autoContrast color={info.color} size="lg" leftSection={stage} style={{ cursor: 'default' }}>
         {info.label}
       </Badge>
     </Tooltip>

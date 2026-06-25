@@ -10,6 +10,7 @@ import { IconCircleCheck, IconCircleOff } from '@tabler/icons-react';
 import { useCallback, useState } from 'react';
 import type { JSX } from 'react';
 import { useNavigate, useParams } from 'react-router';
+import biomarkerDefinitions from '../../data/ckm/biomarker-definitions.json';
 import questionnaireBundle from '../../data/core/encounter-note-questionnaires.json';
 import coreData from '../../data/core/encounter-types.json';
 import exampleBotData from '../../data/core/example-bots.json';
@@ -45,6 +46,9 @@ export function UploadDataPage(): JSX.Element {
       case 'questionnaire':
         uploadFunction = uploadQuestionnaires;
         break;
+      case 'biomarkers':
+        uploadFunction = uploadBiomarkerDefinitions;
+        break;
       default:
         throw new Error(`Invalid upload type: ${dataType}`);
     }
@@ -70,6 +74,20 @@ export function UploadDataPage(): JSX.Element {
       </Button>
     </Document>
   );
+}
+
+async function uploadBiomarkerDefinitions(medplum: MedplumClient): Promise<void> {
+  const bundle = biomarkerDefinitions as unknown as Bundle;
+  const result = await medplum.executeBatch(bundle);
+  const ok = result.entry?.every((entry) => entry.response?.outcome && isOk(entry.response.outcome));
+  if (!ok) {
+    throw new Error('Error subiendo las definiciones de biomarcadores');
+  }
+  showNotification({
+    icon: <IconCircleCheck />,
+    title: 'Listo',
+    message: `Subidas ${result.entry?.length ?? 0} definiciones de biomarcadores`,
+  });
 }
 
 async function uploadQuestionnaires(medplum: MedplumClient): Promise<void> {

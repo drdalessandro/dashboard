@@ -8,17 +8,13 @@ import { useEffect, useMemo, useState } from 'react';
 import type { JSX } from 'react';
 import { Link } from 'react-router';
 import { CKMStageBadge } from '../ckm/components/CKMStageBadge';
+import { RiskBadge } from '../ckm/components/RiskBadge';
 import { CKM_STAGES } from '../ckm/constants';
-import { loadDashboardRows } from '../ckm/dashboard';
-import type { DashboardRow } from '../ckm/dashboard';
+import { compareRows, loadDashboardRows } from '../ckm/dashboard';
+import type { DashboardRow, DashboardSort, DashboardSortField } from '../ckm/dashboard';
+import { CAC_RECLASS_LEGEND, isProvisional, PROVISIONAL_NOTE } from '../ckm/risk';
+import type { PreventOutcome } from '../ckm/risk';
 import type { CKMStage } from '../ckm/types';
-
-type SortField = 'stage' | 'risk';
-
-interface SortState {
-  field: SortField;
-  descending: boolean;
-}
 
 const STAGE_OPTIONS = (Object.keys(CKM_STAGES) as unknown as CKMStage[]).map((stage) => ({
   value: String(stage),
@@ -30,7 +26,7 @@ export function CKMDashboard(): JSX.Element {
   const [rows, setRows] = useState<DashboardRow[]>();
   const [stageFilter, setStageFilter] = useState<string[]>([]);
   const [nameFilter, setNameFilter] = useState('');
-  const [sort, setSort] = useState<SortState>();
+  const [sort, setSort] = useState<DashboardSort>();
 
   useEffect(() => {
     loadDashboardRows(medplum).then(setRows).catch(console.error);
@@ -49,27 +45,12 @@ export function CKMDashboard(): JSX.Element {
       result = result.filter((row) => row.name.toLowerCase().includes(query));
     }
     if (sort) {
-      const direction = sort.descending ? -1 : 1;
-      result = [...result].sort((a, b) => {
-        // Sin dato va siempre al final, sin importar la dirección
-        const aValue = sort.field === 'stage' ? a.stage : a.ascvd10y;
-        const bValue = sort.field === 'stage' ? b.stage : b.ascvd10y;
-        if (aValue === undefined && bValue === undefined) {
-          return 0;
-        }
-        if (aValue === undefined) {
-          return 1;
-        }
-        if (bValue === undefined) {
-          return -1;
-        }
-        return (aValue - bValue) * direction;
-      });
+      result = [...result].sort((a, b) => compareRows(sort, a, b));
     }
     return result;
   }, [rows, stageFilter, nameFilter, sort]);
 
-  function toggleSort(field: SortField): void {
+  function toggleSort(field: DashboardSortField): void {
     setSort((current) =>
       current?.field === field ? { field, descending: !current.descending } : { field, descending: true }
     );
@@ -103,7 +84,19 @@ export function CKMDashboard(): JSX.Element {
           <Table.Tr>
             <Table.Th>Paciente</Table.Th>
             <SortableTh label="Estadío" field="stage" sort={sort} onSort={toggleSort} />
-            <SortableTh label="PREVENT-CVD 10a" field="risk" sort={sort} onSort={toggleSort} />
+            <SortableTh label="ASCVD 10a" field="ascvd10y" sort={sort} onSort={toggleSort} />
+            <SortableTh
+              label={`IC 10a${isProvisional('hf10y') ? ' *' : ''}`}
+              field="hf10y"
+              sort={sort}
+              onSort={toggleSort}
+            />
+            <SortableTh
+              label={`ECV 30a${isProvisional('cvdTotal30y') ? ' *' : ''}`}
+              field="cvdTotal30y"
+              sort={sort}
+              onSort={toggleSort}
+            />
             <Table.Th>RiskAssessment</Table.Th>
             <Table.Th>Alertas</Table.Th>
           </Table.Tr>
@@ -112,7 +105,7 @@ export function CKMDashboard(): JSX.Element {
           {visibleRows.map((row) => (
             <Table.Tr key={row.patient.id}>
               <Table.Td>
-                <Text component={Link} to={`/Patient/${row.patient.id}`} fw={500} c="blue">
+                <Text component={Link} to={`/Patient/${row.patient.id}`} fw={500} c="copper.7">
                   {row.name}
                 </Text>
               </Table.Td>
@@ -125,7 +118,9 @@ export function CKMDashboard(): JSX.Element {
                   </Text>
                 )}
               </Table.Td>
-              <Table.Td>{row.ascvd10y !== undefined ? `${row.ascvd10y}%` : '—'}</Table.Td>
+              <RiskCell outcome="ascvd10y" value={row.ascvd10y} cac={row.cac} />
+              <RiskCell outcome="hf10y" value={row.hf10y} />
+              <RiskCell outcome="cvdTotal30y" value={row.cvdTotal30y} />
               <Table.Td>{row.riskUpdated ? formatDate(row.riskUpdated) : '—'}</Table.Td>
               <Table.Td>
                 {row.hasAlert && (
@@ -143,15 +138,40 @@ export function CKMDashboard(): JSX.Element {
           No hay pacientes que coincidan con los filtros.
         </Text>
       )}
+      <Text size="xs" c="dimmed" mt="xs">
+        {PROVISIONAL_NOTE}
+      </Text>
+      {visibleRows.some((row) => row.cac !== undefined) && (
+        <Text size="xs" c="dimmed">
+          {CAC_RECLASS_LEGEND}
+        </Text>
+      )}
     </Paper>
+  );
+}
+
+function RiskCell(props: { outcome: PreventOutcome; value?: number; cac?: number }): JSX.Element {
+  return (
+    <Table.Td>
+      {props.value !== undefined ? (
+        <Group gap="xs" wrap="nowrap">
+          <Text>{props.value}%</Text>
+          <RiskBadge outcome={props.outcome} value={props.value} cac={props.cac} />
+        </Group>
+      ) : (
+        <Text c="dimmed" span>
+          —
+        </Text>
+      )}
+    </Table.Td>
   );
 }
 
 function SortableTh(props: {
   label: string;
-  field: SortField;
-  sort?: SortState;
-  onSort: (field: SortField) => void;
+  field: DashboardSortField;
+  sort?: DashboardSort;
+  onSort: (field: DashboardSortField) => void;
 }): JSX.Element {
   const active = props.sort?.field === props.field;
   const Icon = active ? (props.sort?.descending ? IconChevronDown : IconChevronUp) : IconSelector;

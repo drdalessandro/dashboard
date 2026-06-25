@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: Copyright Orangebot, Inc. and Medplum contributors
 // SPDX-License-Identifier: Apache-2.0
-import { AppShell, ErrorBoundary, Loading, Logo, useMedplum, useMedplumProfile } from '@medplum/react';
+import { AppShell, ErrorBoundary, Loading, useMedplum, useMedplumProfile } from '@medplum/react';
 import {
   IconClipboardHeart,
   IconClipboardList,
   IconDatabaseImport,
+  IconFlask,
   IconHeartRateMonitor,
   IconHealthRecognition,
   IconQuestionMark,
@@ -14,6 +15,8 @@ import {
 import { Suspense } from 'react';
 import type { JSX } from 'react';
 import { Route, Routes } from 'react-router';
+import { BioWellnessLogo } from './components/BioWellnessLogo';
+import { BiomarkerPanelPage } from './pages/BiomarkerPanelPage';
 import { CKMDashboard } from './pages/CKMDashboard';
 import { EncounterPage } from './pages/EncounterPage';
 import { SDOHForm } from './pages/SDOHForm';
@@ -35,7 +38,7 @@ export function App(): JSX.Element | null {
 
   return (
     <AppShell
-      logo={<Logo size={24} />}
+      logo={<BioWellnessLogo height={26} />}
       menus={[
         {
           title: 'CKM',
@@ -63,6 +66,7 @@ export function App(): JSX.Element | null {
             { icon: <IconQuestionMark />, label: 'Upload Questionnaires', href: '/upload/questionnaire' },
             { icon: <IconRobot />, label: 'Upload Example Bots', href: '/upload/bots' },
             { icon: <IconHealthRecognition />, label: 'Upload Example Patient Data', href: '/upload/example' },
+            { icon: <IconFlask />, label: 'Upload Biomarker Definitions', href: '/upload/biomarkers' },
           ],
         },
       ]}
@@ -73,6 +77,7 @@ export function App(): JSX.Element | null {
             <Route path="/" element={profile ? <SearchPage /> : <LandingPage />} />
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/ckm" element={<CKMDashboard />} />
+            <Route path="/ckm/biomarkers/:patientId" element={<BiomarkerPanelPage />} />
             <Route path="/ckm/sdoh/:patientId" element={<SDOHForm />} />
             <Route path="/ckm/simulator/:patientId" element={<SimulatorPage />} />
             <Route path="/Patient/:id">

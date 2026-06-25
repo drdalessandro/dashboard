@@ -4,13 +4,17 @@ import { Button, Group, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/c
 import { formatDate } from '@medplum/core';
 import type { Patient, Reference } from '@medplum/fhirtypes';
 import { Loading } from '@medplum/react';
-import { IconAdjustments, IconClipboardText } from '@tabler/icons-react';
+import { IconAdjustments, IconClipboardText, IconFlask } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { Link } from 'react-router';
 import { getPREVENTInputs } from '../extensions';
 import { useCKMData } from '../hooks/useCKMData';
+import { CAC_RECLASS_LEGEND, isProvisional, PROVISIONAL_NOTE } from '../risk';
+import type { PreventOutcome } from '../risk';
 import { CKMStageBadge } from './CKMStageBadge';
 import { HGraph } from './HGraph';
+import { RiskBadge } from './RiskBadge';
+import { RiskEnhancers } from './RiskEnhancers';
 
 export interface PREVENTPanelProps {
   patient: Patient | Reference<Patient> | string;
@@ -24,6 +28,8 @@ export function PREVENTPanel(props: PREVENTPanelProps): JSX.Element {
   }
 
   const sdoh = getPREVENTInputs(patient).sdoh;
+  // El CAC (si existe entre las métricas) reclasifica la categoría de ASCVD.
+  const cac = hGraphMetrics?.find((m) => m.id === 'cac')?.value;
 
   return (
     <Paper withBorder p="md">
@@ -34,10 +40,29 @@ export function PREVENTPanel(props: PREVENTPanelProps): JSX.Element {
         </Group>
         <HGraph metrics={hGraphMetrics ?? []} />
         <SimpleGrid cols={3}>
-          <ScoreStat label="ASCVD 10 años" value={preventScores?.ascvd10y} />
-          <ScoreStat label="IC 10 años" value={preventScores?.hf10y} />
-          <ScoreStat label="ECV total 30 años" value={preventScores?.cvdTotal30y} />
+          <ScoreStat label="ASCVD 10 años" outcome="ascvd10y" value={preventScores?.ascvd10y} cac={cac} />
+          <ScoreStat label="IC 10 años" outcome="hf10y" value={preventScores?.hf10y} />
+          <ScoreStat label="ECV total 30 años" outcome="cvdTotal30y" value={preventScores?.cvdTotal30y} />
         </SimpleGrid>
+        <Text size="xs" c="dimmed">
+          {PROVISIONAL_NOTE}
+        </Text>
+        {cac !== undefined && (
+          <Text size="xs" c="dimmed">
+            {CAC_RECLASS_LEGEND}
+          </Text>
+        )}
+        <RiskEnhancers patientId={patient?.id} />
+        <Button
+          component={Link}
+          to={`/ckm/biomarkers/${patient?.id}`}
+          variant="light"
+          size="xs"
+          fullWidth
+          leftSection={<IconFlask size={16} />}
+        >
+          Panel de biomarcadores
+        </Button>
         <Button
           component={Link}
           to={`/ckm/simulator/${patient?.id}`}
@@ -70,14 +95,16 @@ export function PREVENTPanel(props: PREVENTPanelProps): JSX.Element {
   );
 }
 
-function ScoreStat(props: { label: string; value?: number }): JSX.Element {
+function ScoreStat(props: { label: string; outcome: PreventOutcome; value?: number; cac?: number }): JSX.Element {
+  const label = isProvisional(props.outcome) ? `${props.label} *` : props.label;
   return (
-    <Stack gap={0} align="center">
+    <Stack gap={4} align="center">
       <Text fz={28} fw={700} lh={1.2}>
         {props.value !== undefined ? `${props.value}%` : '—'}
       </Text>
+      <RiskBadge outcome={props.outcome} value={props.value} cac={props.cac} />
       <Text size="xs" c="dimmed" ta="center">
-        {props.label}
+        {label}
       </Text>
     </Stack>
   );
