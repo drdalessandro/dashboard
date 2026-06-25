@@ -4,12 +4,7 @@ import { AppShell, ErrorBoundary, Loading, useMedplum, useMedplumProfile } from 
 import {
   IconClipboardHeart,
   IconClipboardList,
-  IconDatabaseImport,
-  IconFlask,
   IconHeartRateMonitor,
-  IconHealthRecognition,
-  IconQuestionMark,
-  IconRobot,
   IconUser,
 } from '@tabler/icons-react';
 import { Suspense } from 'react';
@@ -45,28 +40,18 @@ export function App(): JSX.Element | null {
           links: [{ icon: <IconHeartRateMonitor />, label: 'Panel CKM', href: '/ckm' }],
         },
         {
-          title: 'Charts',
-          links: [{ icon: <IconUser />, label: 'Patients', href: '/Patient' }],
+          title: 'Historias clínicas',
+          links: [{ icon: <IconUser />, label: 'Pacientes', href: '/Patient' }],
         },
         {
-          title: 'Encounters',
+          title: 'Evoluciones',
           links: [
-            { icon: <IconClipboardList />, label: 'All Encounters', href: '/Encounter' },
+            { icon: <IconClipboardList />, label: 'Todas las evoluciones', href: '/Encounter' },
             {
               icon: <IconClipboardHeart />,
-              label: 'My Encounters',
+              label: 'Mis evoluciones',
               href: `/Encounter?participant=Practitioner/${profile?.id}`,
             },
-          ],
-        },
-                {
-          title: 'Upload Data',
-          links: [
-            { icon: <IconDatabaseImport />, label: 'Upload Core ValueSets', href: '/upload/core' },
-            { icon: <IconQuestionMark />, label: 'Upload Questionnaires', href: '/upload/questionnaire' },
-            { icon: <IconRobot />, label: 'Upload Example Bots', href: '/upload/bots' },
-            { icon: <IconHealthRecognition />, label: 'Upload Example Patient Data', href: '/upload/example' },
-            { icon: <IconFlask />, label: 'Upload Biomarker Definitions', href: '/upload/biomarkers' },
           ],
         },
       ]}
