@@ -18,6 +18,9 @@ export interface BiomarkerPanelData {
 }
 
 const EMPTY_OBSERVATIONS: Observation[] = [];
+// Tope de seguridad: cubre con holgura el historial real de un paciente sin
+// arriesgar una descarga ilimitada.
+const MAX_OBSERVATIONS = 3000;
 
 export function useBiomarkerPanel(patientId: string | undefined): BiomarkerPanelData {
   const medplum = useMedplum();
@@ -36,24 +39,33 @@ export function useBiomarkerPanel(patientId: string | undefined): BiomarkerPanel
       return;
     }
     let cancelled = false;
-    medplum
-      .searchResources('Observation', {
-        subject: `Patient/${patientId}`,
-        code: codes.join(','),
-        _sort: '-date',
-        _count: '500',
-      })
-      .then((result) => {
-        if (!cancelled) {
-          setObservations(result);
+    void (async () => {
+      try {
+        const all: Observation[] = [];
+        for await (const page of medplum.searchResourcePages('Observation', {
+          subject: `Patient/${patientId}`,
+          code: codes.join(','),
+          _sort: '-date',
+          _count: '500',
+        })) {
+          if (cancelled) {
+            return;
+          }
+          all.push(...page);
+          if (all.length >= MAX_OBSERVATIONS) {
+            break;
+          }
         }
-      })
-      .catch((err) => {
+        if (!cancelled) {
+          setObservations(all);
+        }
+      } catch (err) {
         console.error('Panel de biomarcadores: error buscando Observations', err);
         if (!cancelled) {
           setObservations(EMPTY_OBSERVATIONS);
         }
-      });
+      }
+    })();
     return () => {
       cancelled = true;
     };

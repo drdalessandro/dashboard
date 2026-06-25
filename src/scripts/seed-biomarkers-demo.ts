@@ -128,7 +128,10 @@ async function main(): Promise<void> {
   if (explicitId) {
     patients = [await medplum.readResource('Patient', explicitId)];
   } else {
-    patients = await medplum.searchResources('Patient', { _count: '100' });
+    patients = [];
+    for await (const page of medplum.searchResourcePages('Patient', { _count: '100' })) {
+      patients.push(...page);
+    }
     if (!seedAll) {
       patients = patients.filter(isDemoPatient);
     }

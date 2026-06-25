@@ -12,7 +12,7 @@ import { RiskBadge } from '../ckm/components/RiskBadge';
 import { CKM_STAGES } from '../ckm/constants';
 import { compareRows, loadDashboardRows } from '../ckm/dashboard';
 import type { DashboardRow, DashboardSort, DashboardSortField } from '../ckm/dashboard';
-import { isProvisional, PROVISIONAL_NOTE } from '../ckm/risk';
+import { CAC_RECLASS_LEGEND, isProvisional, PROVISIONAL_NOTE } from '../ckm/risk';
 import type { PreventOutcome } from '../ckm/risk';
 import type { CKMStage } from '../ckm/types';
 
@@ -141,6 +141,11 @@ export function CKMDashboard(): JSX.Element {
       <Text size="xs" c="dimmed" mt="xs">
         {PROVISIONAL_NOTE}
       </Text>
+      {visibleRows.some((row) => row.cac !== undefined) && (
+        <Text size="xs" c="dimmed">
+          {CAC_RECLASS_LEGEND}
+        </Text>
+      )}
     </Paper>
   );
 }

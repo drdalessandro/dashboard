@@ -10,10 +10,12 @@ export interface SparklineProps {
   color?: string;
   /** Color del punto del último valor (por defecto, el de la línea). */
   dotColor?: string;
+  /** Nombre accesible del gráfico (lo lee el lector de pantalla). */
+  label?: string;
 }
 
 export function Sparkline(props: SparklineProps): JSX.Element | null {
-  const { values, width = 84, height = 24, color = 'var(--mantine-color-gray-5)', dotColor } = props;
+  const { values, width = 84, height = 24, color = 'var(--mantine-color-gray-5)', dotColor, label = 'Tendencia' } = props;
   if (values.length < 2) {
     return null;
   }
@@ -26,7 +28,7 @@ export function Sparkline(props: SparklineProps): JSX.Element | null {
   const points = values.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
 
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Tendencia">
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img" aria-label={label}>
       <polyline
         points={points}
         fill="none"
