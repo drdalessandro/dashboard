@@ -98,6 +98,24 @@ describe('getBiomarkerDefinitions', () => {
     expect(result).toHaveLength(3);
     expect(result[0].label).toBeTruthy();
   });
+
+  test('filtra por sistema en el cliente: descarta ODs ajenas / sin identifier de biomarcador', async () => {
+    const propias = (bundle.entry ?? []).map((e) => e.resource as ObservationDefinition).slice(0, 3);
+    const ajena: ObservationDefinition = {
+      resourceType: 'ObservationDefinition',
+      identifier: [{ system: 'https://otro-equipo.example/fhir/sid/marcador', value: 'x' }],
+      code: { text: 'Marcador ajeno' },
+    };
+    const sinIdentifier: ObservationDefinition = { resourceType: 'ObservationDefinition', code: { text: 'Sin id' } };
+    // El server devuelve un mix (la query no acota por identifier); el filtro de
+    // cliente debe quedarse solo con las 3 ODs del sistema de biomarcador.
+    const fakeMedplum = {
+      searchResources: async () => [ajena, ...propias, sinIdentifier],
+    } as unknown as Parameters<typeof getBiomarkerDefinitions>[0];
+    const result = await getBiomarkerDefinitions(fakeMedplum);
+    expect(result).toHaveLength(3);
+    expect(result.every((d) => d.biomarcadorId)).toBe(true);
+  });
 });
 
 describe('classifyBiomarkerValue', () => {

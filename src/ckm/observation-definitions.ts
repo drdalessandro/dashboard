@@ -126,15 +126,20 @@ export function indexByBiomarcador(defs: BiomarkerDefinition[]): Map<string, Bio
 
 /**
  * Trae las ObservationDefinitions de biomarcadores del servidor y las normaliza.
- * Acota la búsqueda al sistema de identifier de biomarcador para no traer ODs
- * ajenas de otros equipos ni quedar limitada por una sola página.
+ *
+ * El filtrado por sistema de identifier se hace en el CLIENTE, no en la query:
+ * `ObservationDefinition` no expone `identifier` como search param estándar en
+ * FHIR R4, y la forma de token `system|` (valor vacío) no es portable —Medplum
+ * no la matchea contra identifiers de valor no vacío, así que devolvía 0
+ * definiciones y el panel quedaba "sin definiciones cargadas". Traer todas y
+ * filtrar acá es robusto y conserva el objetivo de excluir ODs ajenas de otros
+ * equipos. _count alto cubre el panel (50 defs) en una sola página.
  */
 export async function getBiomarkerDefinitions(medplum: MedplumClient): Promise<BiomarkerDefinition[]> {
-  const ods = await medplum.searchResources('ObservationDefinition', {
-    identifier: `${BIOMARCADOR_IDENTIFIER_SYSTEM}|`,
-    _count: '1000',
-  });
-  return ods.map(parseObservationDefinition);
+  const ods = await medplum.searchResources('ObservationDefinition', { _count: '1000' });
+  return ods
+    .filter((od) => od.identifier?.some((i) => i.system === BIOMARCADOR_IDENTIFIER_SYSTEM))
+    .map(parseObservationDefinition);
 }
 
 // ───────────────────────────────────────────────────────────────────────────
