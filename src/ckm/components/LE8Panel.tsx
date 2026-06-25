@@ -3,9 +3,8 @@
 // del paciente, Etapa C) y calcula Life's Essential 8 (Etapa A). El compuesto
 // solo se muestra con los 8 componentes; con datos parciales quedan los
 // sub-scores y la lista de faltantes. Solo lectura.
-import { Alert, Badge, Group, Loader, Paper, RingProgress, Stack, Table, Text, Title } from '@mantine/core';
+import { Badge, Group, Loader, Paper, RingProgress, Stack, Table, Text, Title } from '@mantine/core';
 import type { Patient } from '@medplum/fhirtypes';
-import { IconInfoCircle } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useLE8ClinicalInputs } from '../hooks/useLE8ClinicalInputs';
 import { useLE8QuestionnaireInputs } from '../hooks/useLE8QuestionnaireInputs';
@@ -46,41 +45,69 @@ export function LE8Panel(props: { patient: Patient }): JSX.Element {
         </Text>
       </Stack>
 
-      {result.complete && result.composite !== undefined ? (
-        <Group gap="lg" align="center">
-          <RingProgress
-            size={140}
-            thickness={14}
-            roundCaps
-            sections={[{ value: result.composite, color: result.compositeCategory?.color ?? 'gray' }]}
-            label={
-              <Stack gap={0} align="center">
-                <Text fw={700} size="xl">
-                  {result.composite}
-                </Text>
-                <Text size="xs" c="dimmed">
-                  / 100
-                </Text>
-              </Stack>
-            }
-          />
+      <Group gap="xl" align="center">
+        {/* Rueda estilo AHA: 8 sectores iguales, uno por componente, coloreado
+            por su estado (gris si falta). El centro muestra el compuesto (si 8/8)
+            o cuántos componentes hay. */}
+        <RingProgress
+          size={170}
+          thickness={16}
+          sections={LE8_ORDER.map((key) => {
+            const component = byKey.get(key);
+            return {
+              value: 12.5,
+              color: component ? le8Category(component.score).color : 'gray.3',
+              tooltip: `${LE8_LABELS[key]}: ${component ? `${component.score}/100` : 'sin dato'}`,
+            };
+          })}
+          label={
+            <Stack gap={0} align="center">
+              {result.complete && result.composite !== undefined ? (
+                <>
+                  <Text fw={700} size="xl">
+                    {result.composite}
+                  </Text>
+                  <Text size="xs" c="dimmed">
+                    / 100
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Text fw={700} size="lg">
+                    {result.components.length}/8
+                  </Text>
+                  <Text size="xs" c="dimmed">
+                    componentes
+                  </Text>
+                </>
+              )}
+            </Stack>
+          }
+        />
+        {result.complete && result.compositeCategory ? (
           <Stack gap={4}>
-            <Badge color={result.compositeCategory?.color} variant="light" size="lg">
-              {result.compositeCategory?.label}
+            <Badge color={result.compositeCategory.color} variant="light" size="lg">
+              {result.compositeCategory.label}
             </Badge>
             <Text size="sm" c="dimmed">
               Salud cardiovascular global
             </Text>
+            <Text size="xs" c="dimmed">
+              Cada sector es uno de los 8 componentes.
+            </Text>
           </Stack>
-        </Group>
-      ) : (
-        <Alert color="blue" icon={<IconInfoCircle size={18} />} title="Compuesto incompleto">
-          <Text size="sm">
-            El puntaje compuesto se calcula con los 8 componentes. Disponibles: {result.components.length}/8. Faltan:{' '}
-            {result.missing.map((k) => LE8_LABELS[k]).join(', ')}.
-          </Text>
-        </Alert>
-      )}
+        ) : (
+          <Stack gap={4} maw={360}>
+            <Text size="sm" fw={600}>
+              Compuesto incompleto
+            </Text>
+            <Text size="sm" c="dimmed">
+              El puntaje global se calcula con los 8 componentes. Faltan:{' '}
+              {result.missing.map((k) => LE8_LABELS[k]).join(', ')}.
+            </Text>
+          </Stack>
+        )}
+      </Group>
 
       <Table verticalSpacing="xs" highlightOnHover>
         <Table.Thead>

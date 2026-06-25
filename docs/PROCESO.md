@@ -189,6 +189,50 @@ queries, caveats clínicos, a11y.
 Logo, theme cobre sobrio/clínico, login y landing rebrandeados (ver
 `public/README.md` para subir el logo).
 
+### Life's Essential 8 (LE8) — Etapas A–E
+
+Puntaje de salud cardiovascular de la AHA (Lloyd-Jones DM, et al. *Circulation*
+2022;146:e18–e43). 8 componentes, cada uno 0–100; el **compuesto** es el
+promedio simple de los 8 y **solo se calcula si están los 8** (decisión de
+producto). Categoría por componente y compuesto: Alto ≥80 · Moderado 50–79 ·
+Bajo <50.
+
+**Arquitectura (separación motor / datos / UI):**
+
+- **A — Motor (`src/ckm/le8.ts`).** Puro y agnóstico de UI: las 8 tablas
+  oficiales (dieta, actividad física, tabaco, sueño, IMC, lípidos no-HDL,
+  glucosa, presión). `computeLE8(inputs)` devuelve sub-scores + faltantes, y el
+  compuesto solo si están los 8. Glucosa: diabético por `Condition` **o** HbA1c
+  ≥6.5 / glucemia ≥126; diabético sin HbA1c → dato insuficiente. Presión: −20 si
+  hay antihipertensivo.
+- **B — Componentes clínicos (`le8-clinical.ts` + `useLE8ClinicalInputs`).**
+  Presión, IMC, no-HDL (directo o total−HDL) y glucosa salen de los
+  `Observation` reusando `observations.ts` y `clinical.ts` (mismo criterio de
+  diabetes/medicación que PREVENT → coherencia).
+- **C — Cuestionarios del paciente (`le8-questionnaires.ts` + hook + bundle).**
+  El paciente carga 4 `Questionnaire` en bio.medplum.com.ar; el dashboard
+  **interpreta** las respuestas (no muestra el formulario en blanco):
+  - **Sueño/PSQI** (`le8-sleep-psqi-v1`): scoring estándar de Buysse 1989 →
+    índice global 0–21 (dato clínico) + horas reales (ítem 4) → score LE8 por
+    duración.
+  - **Dieta/MEPA** (`le8-diet-mepa-v1`): 16 ítems binarios → 0–16 → nivel 1–5.
+    Crosswalk **provisional** (a calibrar con el equipo médico).
+  - **Actividad/Exercise Vital Sign** (`le8-activity-evs-v1`): días × min/día.
+  - **Tabaco** (`le8-tobacco-v1`): status/años/vapeo/humo de segunda mano.
+
+  Los `linkId` de `le8-questionnaires.ts` son el contrato que respetan los
+  recursos FHIR de `data/ckm/le8-questionnaires.json`. Carga: `npm run upload-le8`
+  o `/upload/le8`.
+- **D — UI (`LE8Panel`, tab "Salud CV · LE8").** Combina B + C → `computeLE8`.
+  Rueda estilo AHA de 8 sectores (uno por componente, color por estado, gris si
+  falta) con el compuesto al centro; desglose con la **fuente** de cada dato
+  (laboratorio vs cuestionario); PSQI global y MEPA como extras.
+- **E — Esta documentación** (+ la rueda AHA).
+
+**Caveats** (marcados en la UI): crosswalk MEPA→nivel provisional; ajuste de
+presión por medicación solo si hay antihipertensivos registrados; el compuesto
+exige los 8 (sin los conductuales del paciente, queda parcial).
+
 ---
 
 ## 7. Principios de "herramienta médica"
@@ -233,6 +277,7 @@ Convenciones que atraviesan todo el código y conviene mantener:
 | `ckm-doctor` / `ckm-bots-doctor` | diagnóstico del panel y de los bots/subscriptions |
 | `import-vsac` / `upload-med-valueset` / `upload-condition-valueset` | terminología |
 | `upload-biomarker-defs` | subir las 50 ObservationDefinitions BioWellness |
+| `upload-le8` | subir los 4 Questionnaire de Life's Essential 8 |
 | `seed-ckm-demo` / `seed-biomarkers-demo` | datos de demostración |
 | `verify-prevent` / `verify-alerts` / `verify-careplan` | validaciones end-to-end |
 | `upload-access-policy` / `upload-sdoh` / `localize-argentina` | operación |
