@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright Orangebot, Inc. and Medplum contributors
 // SPDX-License-Identifier: Apache-2.0
 import { MantineProvider, createTheme } from '@mantine/core';
+import type { MantineColorsTuple } from '@mantine/core';
 import '@mantine/core/styles.css';
 import { Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
@@ -18,12 +19,35 @@ const medplum = new MedplumClient({
   baseUrl: getConfig().baseUrl,
 });
 
+// Paleta de marca BioWellness: cobre como acento sobre una base neutra/clínica.
+// Escala de 10 tonos (claro -> oscuro) para Mantine.
+const copper: MantineColorsTuple = [
+  '#fdf4ec',
+  '#f1e0d1',
+  '#e3c4a6',
+  '#d5a677',
+  '#ca8b4f',
+  '#c37a35',
+  '#bf7029',
+  '#a85f21',
+  '#934f1a',
+  '#7d4111',
+];
+
 const theme = createTheme({
+  primaryColor: 'copper',
+  // Tono más profundo en claro: mejor contraste del texto blanco en botones.
+  primaryShade: { light: 7, dark: 5 },
+  colors: { copper },
+  defaultRadius: 'md',
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif',
   headings: {
+    fontWeight: '600',
     sizes: {
       h1: {
         fontSize: '1.125rem',
-        fontWeight: '500',
+        fontWeight: '600',
         lineHeight: '2.0',
       },
     },
