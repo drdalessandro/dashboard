@@ -23,13 +23,15 @@ export function PatientDetails(props: PatientDetailsProps): JSX.Element {
   const navigate = useNavigate();
   const id = props.patient.id;
 
+  // [clave de ruta/panel, etiqueta visible]. Las claves NO se traducen (manejan
+  // el ruteo y los Tabs.Panel); solo se traduce la etiqueta que ve el usuario.
   const tabs = [
-    ['details', 'Details'],
-    ['edit', 'Edit'],
-    ['history', 'History'],
-    ['encounter', 'Encounters'],
-    ['clinical', 'Clinical Impressions'],
-    ['observations', 'Observations'],
+    ['details', 'Detalles'],
+    ['edit', 'Editar'],
+    ['history', 'Historial'],
+    ['encounter', 'Evoluciones'],
+    ['clinical', 'Impresiones clínicas'],
+    ['observations', 'Observaciones'],
   ];
   // Get the current tab
   const tab = window.location.pathname.split('/').pop();
