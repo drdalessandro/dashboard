@@ -105,7 +105,7 @@ export function CKMDashboard(): JSX.Element {
           {visibleRows.map((row) => (
             <Table.Tr key={row.patient.id}>
               <Table.Td>
-                <Text component={Link} to={`/Patient/${row.patient.id}`} fw={500} c="blue">
+                <Text component={Link} to={`/Patient/${row.patient.id}`} fw={500} c="copper.7">
                   {row.name}
                 </Text>
               </Table.Td>
