@@ -1,0 +1,695 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:le8-questionnaire-1",
+      "resource": {
+        "resourceType": "Questionnaire",
+        "url": "https://bio.medplum.com.ar/fhir/Questionnaire/le8-sleep-psqi-v1",
+        "name": "LE8SleepPSQI",
+        "title": "Calidad del sueño (PSQI) — Life's Essential 8",
+        "status": "active",
+        "subjectType": [
+          "Patient"
+        ],
+        "description": "Índice de Calidad de Sueño de Pittsburgh (PSQI). El equipo lo interpreta para el componente Sueño de Life's Essential 8 (puntaje por horas de sueño) y el índice global de calidad.",
+        "item": [
+          {
+            "linkId": "psqi-1-bedtime",
+            "type": "time",
+            "text": "Durante el último mes, ¿a qué hora se acostó habitualmente por la noche?"
+          },
+          {
+            "linkId": "psqi-2-latency-min",
+            "type": "integer",
+            "text": "Durante el último mes, ¿cuántos minutos tardó en dormirse cada noche, habitualmente?"
+          },
+          {
+            "linkId": "psqi-3-waketime",
+            "type": "time",
+            "text": "Durante el último mes, ¿a qué hora se levantó habitualmente por la mañana?"
+          },
+          {
+            "linkId": "psqi-4-hours",
+            "type": "decimal",
+            "text": "Durante el último mes, ¿cuántas horas de sueño real tuvo por noche? (puede diferir de las horas en la cama)"
+          },
+          {
+            "linkId": "psqi-5",
+            "type": "group",
+            "text": "Durante el último mes, ¿con qué frecuencia tuvo problemas para dormir porque...",
+            "item": [
+              {
+                "linkId": "psqi-5a",
+                "type": "choice",
+                "text": "...no pudo dormirse en los primeros 30 minutos",
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "0",
+                      "display": "Nunca en el último mes"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Menos de una vez por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "2",
+                      "display": "Una o dos veces por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "3",
+                      "display": "Tres o más veces por semana"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "psqi-5b",
+                "type": "choice",
+                "text": "...se despertó en la noche o de madrugada",
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "0",
+                      "display": "Nunca en el último mes"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Menos de una vez por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "2",
+                      "display": "Una o dos veces por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "3",
+                      "display": "Tres o más veces por semana"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "psqi-5c",
+                "type": "choice",
+                "text": "...tuvo que levantarse para ir al baño",
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "0",
+                      "display": "Nunca en el último mes"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Menos de una vez por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "2",
+                      "display": "Una o dos veces por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "3",
+                      "display": "Tres o más veces por semana"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "psqi-5d",
+                "type": "choice",
+                "text": "...no pudo respirar bien",
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "0",
+                      "display": "Nunca en el último mes"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Menos de una vez por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "2",
+                      "display": "Una o dos veces por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "3",
+                      "display": "Tres o más veces por semana"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "psqi-5e",
+                "type": "choice",
+                "text": "...tosió o roncó fuerte",
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "0",
+                      "display": "Nunca en el último mes"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Menos de una vez por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "2",
+                      "display": "Una o dos veces por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "3",
+                      "display": "Tres o más veces por semana"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "psqi-5f",
+                "type": "choice",
+                "text": "...sintió frío",
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "0",
+                      "display": "Nunca en el último mes"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Menos de una vez por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "2",
+                      "display": "Una o dos veces por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "3",
+                      "display": "Tres o más veces por semana"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "psqi-5g",
+                "type": "choice",
+                "text": "...sintió calor",
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "0",
+                      "display": "Nunca en el último mes"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Menos de una vez por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "2",
+                      "display": "Una o dos veces por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "3",
+                      "display": "Tres o más veces por semana"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "psqi-5h",
+                "type": "choice",
+                "text": "...tuvo pesadillas",
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "0",
+                      "display": "Nunca en el último mes"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Menos de una vez por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "2",
+                      "display": "Una o dos veces por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "3",
+                      "display": "Tres o más veces por semana"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "psqi-5i",
+                "type": "choice",
+                "text": "...tuvo dolores",
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "0",
+                      "display": "Nunca en el último mes"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Menos de una vez por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "2",
+                      "display": "Una o dos veces por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "3",
+                      "display": "Tres o más veces por semana"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "psqi-5j",
+                "type": "choice",
+                "text": "...otras razones",
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "0",
+                      "display": "Nunca en el último mes"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Menos de una vez por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "2",
+                      "display": "Una o dos veces por semana"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "3",
+                      "display": "Tres o más veces por semana"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "psqi-6-quality",
+            "type": "choice",
+            "text": "Durante el último mes, ¿cómo calificaría la calidad general de su sueño?",
+            "answerOption": [
+              {
+                "valueCoding": {
+                  "code": "0",
+                  "display": "Muy buena"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "1",
+                  "display": "Bastante buena"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "2",
+                  "display": "Bastante mala"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "3",
+                  "display": "Muy mala"
+                }
+              }
+            ]
+          },
+          {
+            "linkId": "psqi-7-medication",
+            "type": "choice",
+            "text": "Durante el último mes, ¿con qué frecuencia tomó medicación (recetada o de venta libre) para dormir?",
+            "answerOption": [
+              {
+                "valueCoding": {
+                  "code": "0",
+                  "display": "Nunca en el último mes"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "1",
+                  "display": "Menos de una vez por semana"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "2",
+                  "display": "Una o dos veces por semana"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "3",
+                  "display": "Tres o más veces por semana"
+                }
+              }
+            ]
+          },
+          {
+            "linkId": "psqi-8-staying-awake",
+            "type": "choice",
+            "text": "Durante el último mes, ¿con qué frecuencia le costó mantenerse despierto/a mientras conducía, comía o realizaba actividades sociales?",
+            "answerOption": [
+              {
+                "valueCoding": {
+                  "code": "0",
+                  "display": "Nunca en el último mes"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "1",
+                  "display": "Menos de una vez por semana"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "2",
+                  "display": "Una o dos veces por semana"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "3",
+                  "display": "Tres o más veces por semana"
+                }
+              }
+            ]
+          },
+          {
+            "linkId": "psqi-9-enthusiasm",
+            "type": "choice",
+            "text": "Durante el último mes, ¿cuánto le costó mantener el entusiasmo para hacer las cosas?",
+            "answerOption": [
+              {
+                "valueCoding": {
+                  "code": "0",
+                  "display": "Ningún problema"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "1",
+                  "display": "Un problema leve"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "2",
+                  "display": "Algo de problema"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "3",
+                  "display": "Un gran problema"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Questionnaire?url=https%3A%2F%2Fbio.medplum.com.ar%2Ffhir%2FQuestionnaire%2Fle8-sleep-psqi-v1"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:le8-questionnaire-2",
+      "resource": {
+        "resourceType": "Questionnaire",
+        "url": "https://bio.medplum.com.ar/fhir/Questionnaire/le8-diet-mepa-v1",
+        "name": "LE8DietMEPA",
+        "title": "Patrón alimentario mediterráneo (MEPA) — Life's Essential 8",
+        "status": "active",
+        "subjectType": [
+          "Patient"
+        ],
+        "description": "Screener de adherencia al patrón mediterráneo (MEPA, 16 ítems). Alimenta el componente Dieta de Life's Essential 8. El crosswalk a nivel es provisional y se calibra con el equipo médico.",
+        "item": [
+          {
+            "linkId": "mepa-1",
+            "type": "boolean",
+            "text": "¿Usa aceite de oliva como principal grasa para cocinar?"
+          },
+          {
+            "linkId": "mepa-2",
+            "type": "boolean",
+            "text": "¿Consume 4 o más cucharadas de aceite de oliva por día (para cocinar y aderezar)?"
+          },
+          {
+            "linkId": "mepa-3",
+            "type": "boolean",
+            "text": "¿Come 2 o más porciones de verduras o ensalada por día?"
+          },
+          {
+            "linkId": "mepa-4",
+            "type": "boolean",
+            "text": "¿Come 3 o más porciones de fruta por día?"
+          },
+          {
+            "linkId": "mepa-5",
+            "type": "boolean",
+            "text": "¿Limita la carne roja o procesada (hamburguesas, embutidos) a menos de una vez por día?"
+          },
+          {
+            "linkId": "mepa-6",
+            "type": "boolean",
+            "text": "¿Limita la manteca, margarina o crema a menos de una vez por día?"
+          },
+          {
+            "linkId": "mepa-7",
+            "type": "boolean",
+            "text": "¿Limita las bebidas azucaradas (gaseosas o jugos) a menos de una por día?"
+          },
+          {
+            "linkId": "mepa-8",
+            "type": "boolean",
+            "text": "¿Come 3 o más porciones de legumbres (lentejas, garbanzos, porotos) por semana?"
+          },
+          {
+            "linkId": "mepa-9",
+            "type": "boolean",
+            "text": "¿Come 3 o más porciones de pescado o mariscos por semana?"
+          },
+          {
+            "linkId": "mepa-10",
+            "type": "boolean",
+            "text": "¿Limita los dulces, facturas o repostería a menos de 3 veces por semana?"
+          },
+          {
+            "linkId": "mepa-11",
+            "type": "boolean",
+            "text": "¿Come frutos secos (nueces, almendras, maní sin sal) 3 o más veces por semana?"
+          },
+          {
+            "linkId": "mepa-12",
+            "type": "boolean",
+            "text": "¿Elige carnes blancas (pollo, pavo) en lugar de carnes rojas habitualmente?"
+          },
+          {
+            "linkId": "mepa-13",
+            "type": "boolean",
+            "text": "¿Cocina con sofrito de tomate, cebolla y ajo 2 o más veces por semana?"
+          },
+          {
+            "linkId": "mepa-14",
+            "type": "boolean",
+            "text": "¿Elige cereales o panes integrales en lugar de los refinados (blancos)?"
+          },
+          {
+            "linkId": "mepa-15",
+            "type": "boolean",
+            "text": "¿Limita los alimentos ultraprocesados (snacks, comida rápida) a menos de una vez por día?"
+          },
+          {
+            "linkId": "mepa-16",
+            "type": "boolean",
+            "text": "¿Bebe principalmente agua como bebida diaria (en lugar de bebidas azucaradas o alcohol)?"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Questionnaire?url=https%3A%2F%2Fbio.medplum.com.ar%2Ffhir%2FQuestionnaire%2Fle8-diet-mepa-v1"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:le8-questionnaire-3",
+      "resource": {
+        "resourceType": "Questionnaire",
+        "url": "https://bio.medplum.com.ar/fhir/Questionnaire/le8-activity-evs-v1",
+        "name": "LE8ActivityEVS",
+        "title": "Actividad física (Exercise Vital Sign) — Life's Essential 8",
+        "status": "active",
+        "subjectType": [
+          "Patient"
+        ],
+        "description": "Exercise Vital Sign (2 ítems). Días por semana × minutos = minutos/semana de actividad moderada-vigorosa para el componente Actividad física de Life's Essential 8.",
+        "item": [
+          {
+            "linkId": "evs-days",
+            "type": "integer",
+            "text": "En una semana típica, ¿cuántos días hace actividad física moderada a vigorosa (como caminar rápido, o más intensa)?"
+          },
+          {
+            "linkId": "evs-minutes",
+            "type": "integer",
+            "text": "En esos días, ¿cuántos minutos en promedio dedica a esa actividad?"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Questionnaire?url=https%3A%2F%2Fbio.medplum.com.ar%2Ffhir%2FQuestionnaire%2Fle8-activity-evs-v1"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:le8-questionnaire-4",
+      "resource": {
+        "resourceType": "Questionnaire",
+        "url": "https://bio.medplum.com.ar/fhir/Questionnaire/le8-tobacco-v1",
+        "name": "LE8Tobacco",
+        "title": "Tabaco y nicotina — Life's Essential 8",
+        "status": "active",
+        "subjectType": [
+          "Patient"
+        ],
+        "description": "Situación tabáquica para el componente Tabaco/nicotina de Life's Essential 8.",
+        "item": [
+          {
+            "linkId": "tobacco-status",
+            "type": "choice",
+            "text": "¿Fuma o usa productos con nicotina?",
+            "answerOption": [
+              {
+                "valueCoding": {
+                  "code": "never",
+                  "display": "Nunca fumé"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "former",
+                  "display": "Soy ex fumador/a"
+                }
+              },
+              {
+                "valueCoding": {
+                  "code": "current",
+                  "display": "Fumo o vapeo actualmente"
+                }
+              }
+            ]
+          },
+          {
+            "linkId": "tobacco-quit-years",
+            "type": "decimal",
+            "text": "¿Hace cuántos años dejó de fumar?",
+            "enableWhen": [
+              {
+                "question": "tobacco-status",
+                "operator": "=",
+                "answerCoding": {
+                  "code": "former"
+                }
+              }
+            ]
+          },
+          {
+            "linkId": "tobacco-inhaled-only",
+            "type": "boolean",
+            "text": "¿Usa solamente vapeo o cigarrillo electrónico (sin cigarrillos comunes)?",
+            "enableWhen": [
+              {
+                "question": "tobacco-status",
+                "operator": "=",
+                "answerCoding": {
+                  "code": "current"
+                }
+              }
+            ]
+          },
+          {
+            "linkId": "tobacco-secondhand",
+            "type": "boolean",
+            "text": "¿Convive con alguien que fuma dentro de su casa?"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Questionnaire?url=https%3A%2F%2Fbio.medplum.com.ar%2Ffhir%2FQuestionnaire%2Fle8-tobacco-v1"
+      }
+    }
+  ]
+}

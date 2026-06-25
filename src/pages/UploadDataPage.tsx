@@ -11,6 +11,7 @@ import { useCallback, useState } from 'react';
 import type { JSX } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import biomarkerDefinitions from '../../data/ckm/biomarker-definitions.json';
+import le8Questionnaires from '../../data/ckm/le8-questionnaires.json';
 import questionnaireBundle from '../../data/core/encounter-note-questionnaires.json';
 import coreData from '../../data/core/encounter-types.json';
 import exampleBotData from '../../data/core/example-bots.json';
@@ -48,6 +49,9 @@ export function UploadDataPage(): JSX.Element {
         break;
       case 'biomarkers':
         uploadFunction = uploadBiomarkerDefinitions;
+        break;
+      case 'le8':
+        uploadFunction = uploadLE8Questionnaires;
         break;
       default:
         throw new Error(`Invalid upload type: ${dataType}`);
@@ -87,6 +91,20 @@ async function uploadBiomarkerDefinitions(medplum: MedplumClient): Promise<void>
     icon: <IconCircleCheck />,
     title: 'Listo',
     message: `Subidas ${result.entry?.length ?? 0} definiciones de biomarcadores`,
+  });
+}
+
+async function uploadLE8Questionnaires(medplum: MedplumClient): Promise<void> {
+  const bundle = le8Questionnaires as unknown as Bundle;
+  const result = await medplum.executeBatch(bundle);
+  const ok = result.entry?.every((entry) => entry.response?.outcome && isOk(entry.response.outcome));
+  if (!ok) {
+    throw new Error('Error subiendo los cuestionarios de Life’s Essential 8');
+  }
+  showNotification({
+    icon: <IconCircleCheck />,
+    title: 'Listo',
+    message: `Subidos ${result.entry?.length ?? 0} cuestionarios de Life’s Essential 8`,
   });
 }
 

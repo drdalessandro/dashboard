@@ -115,6 +115,22 @@ describe('interpretSleep', () => {
     expect(sleepHoursPerNight).toBe(7.5);
     expect(psqi.components.duration).toBe(0);
   });
+
+  test('lee los ítems de frecuencia por valueCoding con code numérico (como el cuestionario real)', () => {
+    const response = resp(LE8_SLEEP_QUESTIONNAIRE_URL, {
+      'psqi-1-bedtime': { valueTime: '23:00:00' },
+      'psqi-3-waketime': { valueTime: '07:00:00' },
+      'psqi-2-latency-min': { valueInteger: 10 },
+      'psqi-4-hours': { valueDecimal: 7.5 },
+      'psqi-5a': { valueCoding: { code: '0', display: 'Nunca en el último mes' } },
+      'psqi-6-quality': { valueCoding: { code: '0', display: 'Muy buena' } },
+      'psqi-7-medication': { valueCoding: { code: '0', display: 'Nunca en el último mes' } },
+      'psqi-8-staying-awake': { valueCoding: { code: '0', display: 'Nunca en el último mes' } },
+      'psqi-9-enthusiasm': { valueCoding: { code: '0', display: 'Ningún problema' } },
+    });
+    const { psqi } = interpretSleep(response);
+    expect(psqi.global).toBe(0);
+  });
 });
 
 describe('mepaLevel (0–16 → 1–5)', () => {

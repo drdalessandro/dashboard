@@ -52,7 +52,20 @@ function numberAt(answers: Answers, linkId: string): number | undefined {
     return undefined;
   }
   const n = a.valueInteger ?? a.valueDecimal;
-  return typeof n === 'number' && Number.isFinite(n) ? n : undefined;
+  if (typeof n === 'number' && Number.isFinite(n)) {
+    return n;
+  }
+  // Ítems choice cuyo code es el valor numérico (ej. PSQI: code "0".."3" con
+  // display en español). Se parsea el code; los codes no numéricos (ej. el
+  // status de tabaco) caen a undefined y se leen con codeAt.
+  const code = a.valueCoding?.code;
+  if (code !== undefined && code.trim() !== '') {
+    const parsed = Number(code);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+  return undefined;
 }
 
 function boolAt(answers: Answers, linkId: string): boolean | undefined {
