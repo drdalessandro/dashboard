@@ -15,12 +15,12 @@ export default defineConfig({
   envPrefix: ['MEDPLUM_', 'GOOGLE_'],
   plugins: [react()],
   preview: {
-    port: 3008,
+    port: 3003,
     allowedHosts: true,
-    host: 'dashboard.medplum.com.ar',
+    host: 'dashboard.segundaopinionmedica.org',
   },
   server: {
     host: 'localhost',
-    port: 3008,
+    port: 3003,
   },
 });
