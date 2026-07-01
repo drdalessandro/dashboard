@@ -1,4 +1,4 @@
-# BioWellness · Seguimiento — Proceso y evolución del proyecto
+# Segunda Opinión Médica · Seguimiento — Proceso y evolución del proyecto
 
 > Documento integral de **todo lo construido** en el repositorio `dashboard`,
 > desde su creación hasta hoy. Pensado para que un colega o institución nueva
@@ -11,7 +11,7 @@
 
 ## 1. Qué es
 
-**BioWellness · Seguimiento** es una aplicación clínica construida sobre
+**Segunda Opinión Médica · Seguimiento** es una aplicación clínica construida sobre
 **Medplum** (EHR open-source, API-first, basado en **FHIR R4**). Acompaña a un
 paciente a lo largo del tiempo con foco **Cardio-Reno-Metabólico (CKM)** y, de a
 poco, hacia **medicina de optimización / BioHacking**:
@@ -20,7 +20,7 @@ poco, hacia **medicina de optimización / BioHacking**:
   Insuficiencia Cardíaca 10a y ECV total 30a.
 - **Estadío CKM** (0–4) según la guía AHA/ACC/ADA/ASN.
 - **hGraph** (GoInvo): visualización radial del estado metabólico del paciente.
-- **Panel de biomarcadores BioWellness** (50 marcadores en 10 paneles) con rangos
+- **Panel de biomarcadores** (50 marcadores en 10 paneles) con rangos
   convencional y óptimo (Medicina 3.0), leídos como fuente de verdad FHIR.
 - **Bots** (backend serverless de Medplum) que recalculan todo al llegar datos,
   generan alertas y planes de cuidado con IA.
@@ -42,7 +42,7 @@ vida de Encounters y notas clínicas). Sobre esa base se construyó toda la suit
 | **2. IA y estudios** | jun 17 | CarePlan IA (Plan Bienestar 100 días), add-on "¿Qué estudios solicitar?". | PRs #44–#49 |
 | **3. Scores de riesgo** | jun 24 | Etapas 1–4: categorización clínica de los scores, los 3 scores en el listado, ApoB/Lp(a) como potenciadores, CAC como reclasificador. | Commits `f4b8fe3`…`7b0cf82` |
 | **4. Biomarcadores** | jun 24 | Etapas 5–8: bundle de ObservationDefinitions como fuente de verdad FHIR, panel por categoría, seed demo, tendencias (sparklines). | `afb5c2c`…`71262ac` |
-| **5. Calidad y marca** | jun 24–25 | Etapa 9: fixes de la revisión adversarial 3–8. Etapa 10: marca BioWellness (logo + theme cobre + login). | `5f0b388`, `89be7da` |
+| **5. Calidad y marca** | jun 24–25 | Etapa 9: fixes de la revisión adversarial 3–8. Etapa 10: marca Segunda Opinión Médica (logo + theme azul + login). | `5f0b388`, `89be7da` |
 
 ---
 
@@ -159,7 +159,7 @@ El score de calcio coronario **ajusta la categoría** de ASCVD (nunca el % de
 PREVENT): power of zero (CAC=0 baja), ≥300 a Alto. Solo ASCVD.
 
 ### Etapa 5 — Biomarcadores como fuente de verdad FHIR (`afb5c2c`)
-Carga las **50 ObservationDefinitions** del panel BioWellness (metabólico,
+Carga las **50 ObservationDefinitions** del panel (metabólico,
 lipídico, inflamación, micronutrientes, hormonal, renal-hepático, longevidad,
 microbiota, tóxicos, autonómico) a Medplum (uploader CLI + UI) y lee sus rangos
 **dinámicamente** (`observation-definitions.ts`).
@@ -185,8 +185,8 @@ relevante: el clasificador marcaba "Alto" valores **dentro del óptimo** cuando 
 corregido sin reintroducir el caso Hb. Además: CAC negativo/clamp, paginación de
 queries, caveats clínicos, a11y.
 
-### Etapa 10 — Marca BioWellness (`89be7da`)
-Logo, theme cobre sobrio/clínico, login y landing rebrandeados (ver
+### Etapa 10 — Marca Segunda Opinión Médica (`89be7da`)
+Logo, theme azul sobrio/clínico (color principal #007ce8), login y landing rebrandeados (ver
 `public/README.md` para subir el logo).
 
 ### Life's Essential 8 (LE8) — Etapas A–E
@@ -276,7 +276,7 @@ Convenciones que atraviesan todo el código y conviene mantener:
 | `build:bots` / `deploy-bots-server` | compilar y desplegar los bots al self-hosted |
 | `ckm-doctor` / `ckm-bots-doctor` | diagnóstico del panel y de los bots/subscriptions |
 | `import-vsac` / `upload-med-valueset` / `upload-condition-valueset` | terminología |
-| `upload-biomarker-defs` | subir las 50 ObservationDefinitions BioWellness |
+| `upload-biomarker-defs` | subir las 50 ObservationDefinitions del panel |
 | `upload-le8` | subir los 4 Questionnaire de Life's Essential 8 |
 | `seed-ckm-demo` / `seed-biomarkers-demo` | datos de demostración |
 | `verify-prevent` / `verify-alerts` / `verify-careplan` | validaciones end-to-end |
@@ -306,7 +306,7 @@ src/
     core/               # Bots de nota de encuentro (base chart-demo)
     ckm/                # ckm-recalculate, sdoh-response, careplan-generate
   pages/                # CKMDashboard, BiomarkerPanelPage, SimulatorPage, SDOHForm, SignIn, Landing
-  components/           # Componentes de chart + BioWellnessLogo
+  components/           # Componentes de chart + BrandLogo
   scripts/              # Operación, seed, verificación, terminología, diagnóstico
 data/
   ckm/                  # biomarker-definitions.json, AccessPolicies, SDOH questionnaire
@@ -320,7 +320,7 @@ docs/                   # Esta documentación + integración con Control
 
 **Listo y verificado** (PR #1): scores de riesgo legibles, biomarcadores como
 fuente de verdad FHIR con panel y tendencias, dos revisiones adversariales
-aplicadas, marca BioWellness.
+aplicadas, marca Segunda Opinión Médica.
 
 **Candidatos a futuro:**
 - Renderizar más biomarcadores en el hGraph (HOMA-IR, hs-CRP, etc.).

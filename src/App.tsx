@@ -10,7 +10,7 @@ import {
 import { Suspense } from 'react';
 import type { JSX } from 'react';
 import { Route, Routes } from 'react-router';
-import { BioWellnessLogo } from './components/BioWellnessLogo';
+import { BrandLogo } from './components/BrandLogo';
 import { BiomarkerPanelPage } from './pages/BiomarkerPanelPage';
 import { CKMDashboard } from './pages/CKMDashboard';
 import { EncounterPage } from './pages/EncounterPage';
@@ -33,7 +33,7 @@ export function App(): JSX.Element | null {
 
   return (
     <AppShell
-      logo={<BioWellnessLogo height={26} />}
+      logo={<BrandLogo height={26} />}
       menus={[
         {
           title: 'CKM',

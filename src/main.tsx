@@ -19,26 +19,28 @@ const medplum = new MedplumClient({
   baseUrl: getConfig().baseUrl,
 });
 
-// Paleta de marca BioWellness: cobre como acento sobre una base neutra/clínica.
-// Escala de 10 tonos (claro -> oscuro) para Mantine.
-const copper: MantineColorsTuple = [
-  '#fdf4ec',
-  '#f1e0d1',
-  '#e3c4a6',
-  '#d5a677',
-  '#ca8b4f',
-  '#c37a35',
-  '#bf7029',
-  '#a85f21',
-  '#934f1a',
-  '#7d4111',
+// Paleta de marca Segunda Opinión Médica: azul como acento sobre una base
+// neutra/clínica. Escala de 10 tonos (claro -> oscuro) para Mantine.
+// El tono 6 (#007ce8) es el color principal de marca.
+const brand: MantineColorsTuple = [
+  '#eaf5fd',
+  '#d1e7fb',
+  '#a6d1f7',
+  '#73b7f2',
+  '#459fee',
+  '#218deb',
+  '#007ce8',
+  '#0068c3',
+  '#005299',
+  '#003c6f',
 ];
 
 const theme = createTheme({
-  primaryColor: 'copper',
-  // Tono más profundo en claro: mejor contraste del texto blanco en botones.
-  primaryShade: { light: 7, dark: 5 },
-  colors: { copper },
+  primaryColor: 'brand',
+  // El tono 6 (#007ce8) es el color principal de marca; en oscuro se usa un
+  // tono algo más claro para mejor lectura sobre fondos profundos.
+  primaryShade: { light: 6, dark: 5 },
+  colors: { brand },
   defaultRadius: 'md',
   fontFamily:
     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif',

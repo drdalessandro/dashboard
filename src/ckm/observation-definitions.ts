@@ -1,4 +1,4 @@
-// Lector del panel de biomarcadores BioWellness desde sus ObservationDefinitions
+// Lector del panel de biomarcadores desde sus ObservationDefinitions
 // (fuente de verdad FHIR cargada con upload-biomarker-definitions).
 //
 // Cada ObservationDefinition trae: identifier (slug del biomarcador), code
