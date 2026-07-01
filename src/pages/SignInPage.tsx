@@ -4,7 +4,7 @@ import { Group, Text, Title } from '@mantine/core';
 import { SignInForm } from '@medplum/react';
 import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
-import { BioWellnessLogo } from '../components/BioWellnessLogo';
+import { BrandLogo } from '../components/BrandLogo';
 import { getConfig } from '../config';
 
 export function SignInPage(): JSX.Element {
@@ -16,13 +16,13 @@ export function SignInPage(): JSX.Element {
       clientId={getConfig().clientId}
     >
       <Group justify="center">
-        <BioWellnessLogo height={56} />
+        <BrandLogo height={56} />
       </Group>
       <Title ta="center" order={2} mt="sm">
-        BioWellness
+        Segunda Opinión Médica
       </Title>
       <Text ta="center" size="sm" c="dimmed">
-        Optimización biológica · Seguimiento clínico
+        Seguimiento clínico cardiovascular
       </Text>
       <Text ta="center" size="xs" c="dimmed" mt="xl">
         Favaloro · Medplum Argentina
