@@ -43,6 +43,9 @@ export const measurementStyles: Record<string, ObservationType> = {
       'La presión arterial es la fuerza que ejerce la sangre sobre las paredes de las arterias. ' +
       'Valores altos sostenidos (hipertensión) aumentan el riesgo cardiovascular.',
     chartDatasets: [
+      // Orden alineado al component[] canónico US Core del panel 85354-9: sistólica primero,
+      // diastólica segundo. getObservationValues (ObservationGraph.tsx) mapea por índice.
+      { label: 'Sistólica', code: LOINC.sbp, unit: 'mm[Hg]', backgroundColor, borderColor },
       {
         label: 'Diastólica',
         code: LOINC.dbp,
@@ -50,7 +53,6 @@ export const measurementStyles: Record<string, ObservationType> = {
         backgroundColor: secondBackgroundColor,
         borderColor: secondBorderColor,
       },
-      { label: 'Sistólica', code: LOINC.sbp, unit: 'mm[Hg]', backgroundColor, borderColor },
     ],
   },
   bmi: single('bmi', LOINC.bmi, 'Índice de masa corporal (IMC)', 'kg/m^2'),
