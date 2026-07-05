@@ -11,9 +11,6 @@ export function LandingPage(): JSX.Element {
     <Document width={520}>
       <Stack align="center" gap="md">
         <BrandLogo height={72} />
-        <Title order={1} fz={32} ta="center">
-          Segunda Opinión Médica
-        </Title>
         <Text ta="center" c="dimmed" maw={440}>
           Plataforma de seguimiento clínico cardiovascular: riesgo cardiovascular (ecuaciones PREVENT), estadío
           Cardio-Reno-Metabólico (CKM) y panel de biomarcadores, sobre una base FHIR (Medplum).
