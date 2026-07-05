@@ -15,7 +15,15 @@
 //   MEDPLUM_CLIENT_ID=xxx MEDPLUM_CLIENT_SECRET=xxx npm run verify-alerts
 import { MedplumClient } from '@medplum/core';
 import type { Observation, Patient } from '@medplum/fhirtypes';
-import { CKM_STAGE_URL, HGRAPH_DATA_URL, LOINC, LOINC_BP_PANEL, LOINC_SYSTEM, PREVENT_INPUTS_URL } from '../ckm/constants';
+import {
+  BOT_NAMES,
+  CKM_STAGE_URL,
+  HGRAPH_DATA_URL,
+  LOINC,
+  LOINC_BP_PANEL,
+  LOINC_SYSTEM,
+  PREVENT_INPUTS_URL,
+} from '../ckm/constants';
 import { ALERT_RULE_SYSTEM } from '../ckm/alert-rules';
 
 const TEST_IDENTIFIER_SYSTEM = 'https://seguimiento.medplum.com.ar/fhir/test';
@@ -168,13 +176,13 @@ async function diagnose(medplum: MedplumClient, patientId: string): Promise<void
 
   // 2. AuditEvents recientes del bot: ¿corrió?, ¿con qué error?
   try {
-    const bot = await medplum.searchOne('Bot', 'name=ckm-recalculate');
+    const bot = await medplum.searchOne('Bot', `name=${BOT_NAMES.ckmRecalculate}`);
     if (!bot) {
-      console.log('  Bot ckm-recalculate: NO existe en este proyecto.');
+      console.log(`  Bot ${BOT_NAMES.ckmRecalculate}: NO existe en este proyecto.`);
       return;
     }
     console.log(
-      `  Bot ckm-recalculate: Bot/${bot.id} — código ejecutable ${bot.executableCode?.url ? 'presente' : 'AUSENTE (no desplegado)'}`
+      `  Bot ${BOT_NAMES.ckmRecalculate}: Bot/${bot.id} — código ejecutable ${bot.executableCode?.url ? 'presente' : 'AUSENTE (no desplegado)'}`
     );
 
     // Chequeo DEFINITIVO de versión: bajar el código desplegado y ver si tiene
@@ -189,7 +197,9 @@ async function diagnose(medplum: MedplumClient, patientId: string): Promise<void
           `  Código DESPLEGADO tiene la regla 3 strikes: ${hasRule ? 'SÍ ✓' : 'NO ✗  → es código VIEJO, redesplegá'}`
         );
         if (!hasRule) {
-          console.log('      npm run build:bots && npm run deploy-bots-server   (y verificá "✓ ckm-recalculate desplegado")');
+          console.log(
+            `      npm run build:bots && npm run deploy-bots-server   (y verificá "✓ ${BOT_NAMES.ckmRecalculate} desplegado")`
+          );
         }
       } catch (err) {
         console.log(`  (no pude bajar el código desplegado para verificar versión: ${(err as Error).message})`);

@@ -15,10 +15,10 @@
 // Requiere MEDPLUM_CLIENT_ID / MEDPLUM_CLIENT_SECRET (admin de proyecto).
 import { MedplumClient } from '@medplum/core';
 import type { Observation, QuestionnaireResponse } from '@medplum/fhirtypes';
-import { SDOH_QUESTIONNAIRE_URL } from '../ckm/constants';
+import { BOT_NAMES, SDOH_QUESTIONNAIRE_URL } from '../ckm/constants';
 import { CKM_OBSERVATION_CODES } from '../ckm/observations';
 
-const CKM_BOT_NAMES = ['ckm-recalculate', 'sdoh-response'];
+const CKM_BOT_NAMES: string[] = [BOT_NAMES.ckmRecalculate, BOT_NAMES.sdohResponse];
 
 async function main(): Promise<void> {
   const baseUrl = process.env.MEDPLUM_BASE_URL ?? 'https://api.medplum.com.ar';
@@ -109,8 +109,8 @@ async function status(medplum: MedplumClient): Promise<void> {
     console.log(`     criteria=${JSON.stringify(s.criteria)}`);
   }
   console.log('\n  Esperadas (criteria limpia):');
-  console.log(`   ckm-recalculate: Observation?code=${CKM_OBSERVATION_CODES.join(',')}`);
-  console.log(`   sdoh-response:   QuestionnaireResponse?questionnaire=${SDOH_QUESTIONNAIRE_URL}`);
+  console.log(`   ${BOT_NAMES.ckmRecalculate}: Observation?code=${CKM_OBSERVATION_CODES.join(',')}`);
+  console.log(`   ${BOT_NAMES.sdohResponse}:   QuestionnaireResponse?questionnaire=${SDOH_QUESTIONNAIRE_URL}`);
 
   console.log('\n── AUDITEVENTS recientes de los bots (¿corrió?, ¿error?) ──');
   for (const name of CKM_BOT_NAMES) {
@@ -159,8 +159,8 @@ async function recreateSubscriptions(medplum: MedplumClient): Promise<void> {
     }
   }
   const specs = [
-    { name: 'ckm-recalculate', criteria: `Observation?code=${CKM_OBSERVATION_CODES.join(',')}` },
-    { name: 'sdoh-response', criteria: `QuestionnaireResponse?questionnaire=${SDOH_QUESTIONNAIRE_URL}` },
+    { name: BOT_NAMES.ckmRecalculate, criteria: `Observation?code=${CKM_OBSERVATION_CODES.join(',')}` },
+    { name: BOT_NAMES.sdohResponse, criteria: `QuestionnaireResponse?questionnaire=${SDOH_QUESTIONNAIRE_URL}` },
   ];
   for (const spec of specs) {
     const bot = await medplum.searchOne('Bot', `name=${spec.name}`);
@@ -209,7 +209,7 @@ async function reprocess(medplum: MedplumClient, patientId: string): Promise<voi
   }
 
   // SDOH: última respuesta del cuestionario canónico
-  const sdohBot = await medplum.searchOne('Bot', 'name=sdoh-response');
+  const sdohBot = await medplum.searchOne('Bot', `name=${BOT_NAMES.sdohResponse}`);
   const responses = await medplum.searchResources('QuestionnaireResponse', {
     subject: `Patient/${patientId}`,
     questionnaire: SDOH_QUESTIONNAIRE_URL,
@@ -218,7 +218,7 @@ async function reprocess(medplum: MedplumClient, patientId: string): Promise<voi
   });
   if (sdohBot && responses.length > 0) {
     await medplum.post(medplum.fhirUrl('Bot', sdohBot.id as string, '$execute'), responses[0] as QuestionnaireResponse);
-    console.log(`  ✓ sdoh-response ejecutado sobre QuestionnaireResponse/${responses[0].id}`);
+    console.log(`  ✓ ${BOT_NAMES.sdohResponse} ejecutado sobre QuestionnaireResponse/${responses[0].id}`);
   } else {
     console.log(
       `  · SDOH: ${sdohBot ? 'sin QuestionnaireResponse del canónico para este paciente' : 'bot no encontrado'}`
@@ -226,7 +226,7 @@ async function reprocess(medplum: MedplumClient, patientId: string): Promise<voi
   }
 
   // CKM: última Observation CKM (dispara el recálculo de hGraph/estadío/PREVENT)
-  const ckmBot = await medplum.searchOne('Bot', 'name=ckm-recalculate');
+  const ckmBot = await medplum.searchOne('Bot', `name=${BOT_NAMES.ckmRecalculate}`);
   const obs = await medplum.searchResources('Observation', {
     subject: `Patient/${patientId}`,
     code: CKM_OBSERVATION_CODES.join(','),
@@ -235,7 +235,7 @@ async function reprocess(medplum: MedplumClient, patientId: string): Promise<voi
   });
   if (ckmBot && obs.length > 0) {
     await medplum.post(medplum.fhirUrl('Bot', ckmBot.id as string, '$execute'), obs[0] as Observation);
-    console.log(`  ✓ ckm-recalculate ejecutado sobre Observation/${obs[0].id}`);
+    console.log(`  ✓ ${BOT_NAMES.ckmRecalculate} ejecutado sobre Observation/${obs[0].id}`);
   } else {
     console.log(`  · CKM: ${ckmBot ? 'sin Observation CKM para este paciente' : 'bot no encontrado'}`);
   }
@@ -247,7 +247,7 @@ async function reprocess(medplum: MedplumClient, patientId: string): Promise<voi
  *  paciente. Devuelve cuántos $execute hizo. Silencioso salvo errores. */
 async function runBotsForPatient(medplum: MedplumClient, patientId: string): Promise<number> {
   let ran = 0;
-  const sdohBot = await medplum.searchOne('Bot', 'name=sdoh-response');
+  const sdohBot = await medplum.searchOne('Bot', `name=${BOT_NAMES.sdohResponse}`);
   const responses = await medplum.searchResources('QuestionnaireResponse', {
     subject: `Patient/${patientId}`,
     questionnaire: SDOH_QUESTIONNAIRE_URL,
@@ -258,7 +258,7 @@ async function runBotsForPatient(medplum: MedplumClient, patientId: string): Pro
     await medplum.post(medplum.fhirUrl('Bot', sdohBot.id as string, '$execute'), responses[0] as QuestionnaireResponse);
     ran++;
   }
-  const ckmBot = await medplum.searchOne('Bot', 'name=ckm-recalculate');
+  const ckmBot = await medplum.searchOne('Bot', `name=${BOT_NAMES.ckmRecalculate}`);
   const obs = await medplum.searchResources('Observation', {
     subject: `Patient/${patientId}`,
     code: CKM_OBSERVATION_CODES.join(','),

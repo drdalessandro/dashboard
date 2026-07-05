@@ -71,6 +71,25 @@ export const CKM_SCORES_SYSTEM = 'https://seguimiento.medplum.com.ar/fhir/CodeSy
 // Canónico del cuestionario SDOH (el Questionnaire vive en el BackEnd)
 export const SDOH_QUESTIONNAIRE_URL = 'https://seguimiento.medplum.com.ar/fhir/Questionnaire/ckm-sdoh-screening-v1';
 
+/**
+ * Nombres de los Bots en el servidor Medplum (recurso Bot.name), única fuente
+ * de verdad para deploy, doctores y lookups en runtime. Convención del proyecto
+ * de Segunda Opinión: prefijo `som-*` (como som-validar-turno, som-alta-paciente).
+ *
+ * OJO: el deploy es idempotente POR NOMBRE (searchOne Bot?name=...). Cambiar un
+ * nombre acá con bots ya desplegados crea un bot nuevo y deja el viejo huérfano
+ * con su Subscription activa (doble ejecución). Renombrar exige limpiar el
+ * proyecto o migrar a mano.
+ */
+export const BOT_NAMES = {
+  ckmRecalculate: 'som-recalcular-ckm',
+  sdohResponse: 'som-respuesta-sdoh',
+  careplanGenerate: 'som-generar-plan-cuidado',
+  generalEncounterNote: 'som-nota-encuentro-general',
+  obstetricEncounterNote: 'som-nota-encuentro-obstetrico',
+  gynecologyEncounterNote: 'som-nota-encuentro-ginecologico',
+} as const;
+
 export interface CKMStageInfo {
   label: string;
   description: string;

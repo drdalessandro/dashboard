@@ -11,6 +11,7 @@ import { IconCheck, IconRobot, IconSparkles, IconTrash } from '@tabler/icons-rea
 import { useCallback, useEffect, useState } from 'react';
 import type { JSX } from 'react';
 import { AI_GENERATED_TAG } from '../careplan';
+import { BOT_NAMES } from '../constants';
 
 export interface CarePlanPanelProps {
   patient: Patient;
@@ -45,11 +46,11 @@ export function CarePlanPanel(props: CarePlanPanelProps): JSX.Element {
   async function generate(): Promise<void> {
     setBusy(true);
     try {
-      const bot = await medplum.searchOne('Bot', 'name=careplan-generate');
+      const bot = await medplum.searchOne('Bot', `name=${BOT_NAMES.careplanGenerate}`);
       if (!bot?.id) {
         showNotification({
           color: 'red',
-          message: 'El bot careplan-generate no está desplegado en el proyecto.',
+          message: `El bot ${BOT_NAMES.careplanGenerate} no está desplegado en el proyecto.`,
         });
         return;
       }
