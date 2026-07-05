@@ -4,18 +4,21 @@
 import type { Observation, Patient } from '@medplum/fhirtypes';
 import { useMedplum, useResource } from '@medplum/react';
 import { useEffect, useMemo, useState } from 'react';
-import { groupByPanel, latestValueByCode, valuesByCodeHistory } from '../observation-definitions';
-import type { BiomarkerPanelGroup, CodedValue } from '../observation-definitions';
+import { latestValueByCode, splitByTier, valuesByCodeHistory } from '../observation-definitions';
+import type { BiomarkerTierGroups, CodedValue } from '../observation-definitions';
 import { useObservationDefinitions } from './useObservationDefinitions';
 
 export interface BiomarkerPanelData {
   patient?: Patient;
-  groups: BiomarkerPanelGroup[];
+  /** Definiciones separadas en núcleo cardiovascular (guía) y complementario. */
+  tiers: BiomarkerTierGroups;
   valuesByCode: Map<string, CodedValue>;
   historyByCode: Map<string, CodedValue[]>;
   gender?: string;
   loading: boolean;
 }
+
+const EMPTY_TIERS: BiomarkerTierGroups = { core: [], complementary: [] };
 
 const EMPTY_OBSERVATIONS: Observation[] = [];
 // Tope de seguridad: cubre con holgura el historial real de un paciente sin
@@ -71,13 +74,13 @@ export function useBiomarkerPanel(patientId: string | undefined): BiomarkerPanel
     };
   }, [medplum, patientId, codes]);
 
-  const groups = useMemo(() => groupByPanel(definitions), [definitions]);
+  const tiers = useMemo(() => (definitions.length ? splitByTier(definitions) : EMPTY_TIERS), [definitions]);
   const valuesByCode = useMemo(() => latestValueByCode(observations ?? EMPTY_OBSERVATIONS), [observations]);
   const historyByCode = useMemo(() => valuesByCodeHistory(observations ?? EMPTY_OBSERVATIONS), [observations]);
 
   return {
     patient,
-    groups,
+    tiers,
     valuesByCode,
     historyByCode,
     gender: patient?.gender,

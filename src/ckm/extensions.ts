@@ -3,10 +3,17 @@
 import type { Extension, Patient } from '@medplum/fhirtypes';
 import { CKM_STAGE_URL, HGRAPH_DATA_URL, PREVENT_INPUTS_URL } from './constants';
 import type { CKMStage, HGraphMetric, PREVENTInputsData, PREVENTScores } from './types';
+import { formatUnit } from './units';
 
 export interface HGraphData {
   metrics?: HGraphMetric[];
   prevent?: PREVENTScores;
+}
+
+// Los datos ya persistidos por corridas anteriores del bot pueden traer la
+// unidad como código UCUM crudo; se normaliza al leer.
+function normalizeMetricUnits(metrics: HGraphMetric[] | undefined): HGraphMetric[] | undefined {
+  return metrics?.map((m) => (m.unit ? { ...m, unit: formatUnit(m.unit) } : m));
 }
 
 /** Lee el estadío CKM desde la extensión del recurso Patient. */
@@ -34,9 +41,9 @@ export function getHGraphData(patient: Patient | undefined): HGraphData {
   try {
     const parsed = JSON.parse(extension.valueString) as HGraphMetric[] | HGraphData;
     if (Array.isArray(parsed)) {
-      return { metrics: parsed };
+      return { metrics: normalizeMetricUnits(parsed) };
     }
-    return { metrics: parsed.metrics, prevent: parsed.prevent };
+    return { metrics: normalizeMetricUnits(parsed.metrics), prevent: parsed.prevent };
   } catch (err) {
     console.error('hGraphData inválido en Patient/' + patient?.id, err);
     return {};

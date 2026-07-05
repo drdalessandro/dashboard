@@ -7,6 +7,7 @@
 import type { CKMParameterId } from './constants';
 import type { CKMObservationMap } from './observations';
 import type { CKMStage, HGraphMetric, HGraphMetricStatus } from './types';
+import { formatUnit } from './units';
 
 interface MetricDefinition {
   label: string;
@@ -100,11 +101,11 @@ export function detectCriticalValues(values: CKMObservationMap): CriticalValue[]
       (limits.min !== undefined && observed.value < limits.min);
     if (critical) {
       const label = METRIC_DEFINITIONS[param]?.label ?? param;
-      const unit = observed.unit ?? METRIC_DEFINITIONS[param]?.defaultUnit ?? '';
+      const unit = formatUnit(observed.unit) ?? METRIC_DEFINITIONS[param]?.defaultUnit ?? '';
       result.push({
         param,
         value: observed.value,
-        unit: observed.unit,
+        unit: formatUnit(observed.unit),
         message: `Valor crítico: ${label} ${observed.value} ${unit}`.trim(),
       });
     }
@@ -125,7 +126,7 @@ export function computeMetrics(values: CKMObservationMap): HGraphMetric[] {
       id: param,
       label: def.label,
       value: observed.value,
-      unit: observed.unit ?? def.defaultUnit,
+      unit: formatUnit(observed.unit) ?? def.defaultUnit,
       score,
       status: statusForScore(score),
     });
@@ -144,7 +145,7 @@ export interface StageContext {
  * Heurística (revisar con el equipo médico):
  * - 4: ECV clínica (requiere Conditions codificadas, viene en el contexto)
  * - 3: ECV subclínica: CAC > 0, NT-proBNP >= 125 o troponina us >= percentil 99
- * - 2: HTA (>=130/80), DM2 (HbA1c >= 6.5 o glucemia >= 126), TG >= 135,
+ * - 2: HTA (>=130/80), DM2 (HbA1c >= 6.5 o glucemia >= 126), TG >= 150,
  *      o ERC (TFGe < 60 o UACR >= 30)
  * - 1: exceso de adiposidad (IMC >= 25, cintura elevada según sexo) o
  *      prediabetes (HbA1c 5.7-6.4 o glucemia 100-125)
@@ -169,7 +170,9 @@ export function deriveStage(values: CKMObservationMap, context: StageContext = {
 
   const hypertension = (v('sbp') ?? 0) >= 130 || (v('dbp') ?? 0) >= 80;
   const diabetes = (v('hba1c') ?? 0) >= 6.5 || (v('glucoseFasting') ?? 0) >= 126;
-  const hypertriglyceridemia = (v('triglycerides') ?? 0) >= 135;
+  // Hipertrigliceridemia ≥150 mg/dL (guía 2026 AHA/ACC/ADA/ASN CKM, componente
+  // metabólico del estadío 2).
+  const hypertriglyceridemia = (v('triglycerides') ?? 0) >= 150;
   const egfr = v('egfr');
   const ckd = (egfr !== undefined && egfr < 60) || (v('uacr') ?? 0) >= 30;
   if (hypertension || diabetes || hypertriglyceridemia || ckd) {

@@ -41,8 +41,17 @@ import type {
 } from '@medplum/fhirtypes';
 import type { CKMObservationMap } from '../../ckm/observations';
 import type { PREVENTScores } from '../../ckm/types';
-import type { TriggeredAlert } from '../../ckm/alert-rules';
 import { ALERT_RULE_SYSTEM, DEFAULT_ALERT_CONFIG, evaluateThresholdRules } from '../../ckm/alert-rules';
+import { CKM_SCORES_SYSTEM } from '../../ckm/constants';
+import type { PreventOutcome } from '../../ckm/risk';
+import {
+  buildScoreObservation,
+  detectScoreRise,
+  SCORE_CODES,
+  scorePointsFromObservations,
+  shouldPersistScorePoint,
+} from '../../ckm/score-history';
+import type { ScorePoint } from '../../ckm/score-history';
 import {
   ageFromBirthDate,
   deriveMedicationFlags,
@@ -131,7 +140,8 @@ export async function handler(medplum: MedplumClient, event: BotEvent<Observatio
 
   // Scores PREVENT: se recalculan sólo si los coeficientes están verificados
   // (computePrevent devuelve undefined si no). Si no, se preservan los previos.
-  const prevent = (await computePreventScores(medplum, patient, values, active)) ?? previous.prevent;
+  const computedPrevent = await computePreventScores(medplum, patient, values, active);
+  const prevent = computedPrevent ?? previous.prevent;
 
   const updated = await medplum.updateResource({
     ...patient,
@@ -169,7 +179,78 @@ export async function handler(medplum: MedplumClient, event: BotEvent<Observatio
     console.error(`Patient/${patient.id}: error evaluando alertas de tendencia`, err);
   }
 
+  // Serie histórica de scores PREVENT (Observations consultables) + alerta si
+  // un score subió de forma significativa (docs/propuesta-serie-scores.md).
+  // Solo con scores recién calculados: los preservados de corridas anteriores
+  // no generan puntos nuevos (serían constancias falsas de recálculo).
+  try {
+    await persistScoreSeries(medplum, event, patient, computedPrevent);
+  } catch (err) {
+    console.error(`Patient/${patient.id}: error persistiendo la serie de scores`, err);
+  }
+
   return updated;
+}
+
+/**
+ * Persiste los scores de esta corrida como Observations del CodeSystem
+ * ckm-scores (con regla anti-inflado: solo si el valor cambió o el último
+ * punto tiene 24 h o más) y alerta la suba significativa respecto del último
+ * punto, reutilizando el ancla anti-spam (DetectedIssue + cooldown) de las
+ * alertas de tendencia.
+ */
+async function persistScoreSeries(
+  medplum: MedplumClient,
+  event: BotEvent<Observation>,
+  patient: Patient,
+  scores: PREVENTScores | undefined
+): Promise<void> {
+  if (!scores) {
+    return;
+  }
+  const patientId = patient.id as string;
+  const nowIso = new Date().toISOString();
+
+  for (const outcome of Object.keys(SCORE_CODES) as PreventOutcome[]) {
+    const value = scores[outcome];
+    if (value === undefined || !Number.isFinite(value)) {
+      continue;
+    }
+    const previous = await lastScorePoint(medplum, patientId, outcome);
+
+    const rise = detectScoreRise(outcome, previous, value);
+    if (rise && !(await hasRecentDetectedIssue(medplum, patientId, rise.ruleId))) {
+      await createDetectedIssue(medplum, patient, rise);
+      await createAlertCommunication(medplum, patient, [rise.message]);
+      await createReviewTask(medplum, patient, rise);
+      await sendAlertEmail(medplum, event, patient, 1);
+      console.log(`Patient/${patientId}: alerta de suba de score "${rise.ruleId}" (${previous?.value}% -> ${value}%)`);
+    }
+
+    if (shouldPersistScorePoint(previous, value, nowIso)) {
+      await medplum.createResource(
+        buildScoreObservation(patientId, outcome, value, nowIso, {
+          derivedFrom: event.input.id ? [{ reference: `Observation/${event.input.id}` }] : undefined,
+        })
+      );
+    }
+  }
+}
+
+/** Último punto persistido de la serie de un outcome (undefined si no hay). */
+async function lastScorePoint(
+  medplum: MedplumClient,
+  patientId: string,
+  outcome: PreventOutcome
+): Promise<ScorePoint | undefined> {
+  const results = await medplum.searchResources('Observation', {
+    subject: `Patient/${patientId}`,
+    code: `${CKM_SCORES_SYSTEM}|${SCORE_CODES[outcome].code}`,
+    _sort: '-date',
+    _count: '1',
+  });
+  const series = scorePointsFromObservations(results)[outcome];
+  return series?.[series.length - 1];
 }
 
 /**
@@ -220,8 +301,15 @@ async function hasRecentDetectedIssue(medplum: MedplumClient, patientId: string,
   return Date.now() - new Date(when).getTime() < ALERT_COOLDOWN_DAYS * 24 * 3600 * 1000;
 }
 
+/** Lo mínimo que necesitan los helpers de alerta (tendencia o suba de score). */
+interface AlertInfo {
+  ruleId: string;
+  label: string;
+  message: string;
+}
+
 /** Registra el problema detectado por la regla (ancla del anti-spam). */
-async function createDetectedIssue(medplum: MedplumClient, patient: Patient, alert: TriggeredAlert): Promise<void> {
+async function createDetectedIssue(medplum: MedplumClient, patient: Patient, alert: AlertInfo): Promise<void> {
   const issue: DetectedIssue = {
     resourceType: 'DetectedIssue',
     status: 'final',
@@ -235,7 +323,7 @@ async function createDetectedIssue(medplum: MedplumClient, patient: Patient, ale
 }
 
 /** Crea una tarea de revisión asignada al médico de cabecera (si lo hay). */
-async function createReviewTask(medplum: MedplumClient, patient: Patient, alert: TriggeredAlert): Promise<void> {
+async function createReviewTask(medplum: MedplumClient, patient: Patient, alert: AlertInfo): Promise<void> {
   const owner = patient.generalPractitioner?.find((r) => r.reference?.startsWith('Practitioner/'));
   const task: Task = {
     resourceType: 'Task',

@@ -33,7 +33,7 @@ export function StudiesPanel(props: StudiesPanelProps): JSX.Element {
   return (
     <Paper withBorder p="md">
       <Stack gap="sm">
-        <Group justify="space-between" gap="xs">
+        <Group justify="space-between" gap="xs" align="flex-start">
           <Group gap="xs" wrap="nowrap">
             <IconFlask size={18} />
             <Title order={4}>¿Estudios a solicitar?</Title>
