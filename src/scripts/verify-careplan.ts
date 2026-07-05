@@ -12,11 +12,11 @@
 //   MEDPLUM_CLIENT_ID=xxx MEDPLUM_CLIENT_SECRET=xxx npm run verify-careplan
 import { MedplumClient } from '@medplum/core';
 import type { Patient } from '@medplum/fhirtypes';
-import { CKM_STAGE_URL, HGRAPH_DATA_URL } from '../ckm/constants';
+import { BOT_NAMES, CKM_STAGE_URL, HGRAPH_DATA_URL } from '../ckm/constants';
 
 const TEST_IDENTIFIER_SYSTEM = 'https://seguimiento.medplum.com.ar/fhir/test';
 const TEST_IDENTIFIER_VALUE = 'ckm-careplan-test';
-const BOT_NAME = 'careplan-generate';
+const BOT_NAME = BOT_NAMES.careplanGenerate;
 
 /** Borra los recursos de un tipo que matcheen una búsqueda (limpieza previa). */
 async function deleteWhere(

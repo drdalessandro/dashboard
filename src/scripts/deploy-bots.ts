@@ -5,12 +5,17 @@ import type { Bundle, BundleEntry } from '@medplum/fhirtypes';
 import { randomUUID } from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import { SDOH_QUESTIONNAIRE_URL } from '../ckm/constants';
+import { BOT_NAMES, SDOH_QUESTIONNAIRE_URL } from '../ckm/constants';
 import { CKM_OBSERVATION_CODES } from '../ckm/observations';
 
 interface BotDescription {
   src: string;
   dist: string;
+  /**
+   * Nombre del Bot en el servidor (Bot.name). Si se omite, cae al nombre del
+   * archivo fuente. Es la clave de idempotencia del deploy: mantenerlo estable.
+   */
+  name?: string;
   criteria?: string;
   /** 'vmcontext' para servidores self-hosted sin AWS Lambda. */
   runtimeVersion?: 'awslambda' | 'vmcontext';
@@ -25,27 +30,32 @@ const Bots: BotDescription[] = [
   {
     src: 'src/bots/core/general-encounter-note.ts',
     dist: 'dist/bots/core/general-encounter-note.js',
+    name: BOT_NAMES.generalEncounterNote,
     criteria: 'QuestionnaireResponse?questionnaire=$encounter-note',
   },
   {
     src: 'src/bots/core/obstetric-encounter-note.ts',
     dist: 'dist/bots/core/obstetric-encounter-note.js',
+    name: BOT_NAMES.obstetricEncounterNote,
     criteria: 'QuestionnaireResponse?questionnaire=$obstetric-visit',
   },
   {
     src: 'src/bots/core/gynecology-encounter-note.ts',
     dist: 'dist/bots/core/gynecology-encounter-note.js',
+    name: BOT_NAMES.gynecologyEncounterNote,
     criteria: 'QuestionnaireResponse?questionnaire=$gynecology-visit',
   },
   {
     src: 'src/bots/ckm/ckm-recalculate.ts',
     dist: 'dist/bots/ckm/ckm-recalculate.js',
+    name: BOT_NAMES.ckmRecalculate,
     criteria: `Observation?code=${CKM_OBSERVATION_CODES.join(',')}`,
     runtimeVersion: CKM_RUNTIME,
   },
   {
     src: 'src/bots/ckm/sdoh-response.ts',
     dist: 'dist/bots/ckm/sdoh-response.js',
+    name: BOT_NAMES.sdohResponse,
     criteria: `QuestionnaireResponse?questionnaire=${SDOH_QUESTIONNAIRE_URL}`,
     runtimeVersion: CKM_RUNTIME,
   },
@@ -53,6 +63,7 @@ const Bots: BotDescription[] = [
     // Disparo MANUAL (medplum.executeBot desde el chart): sin criteria, no crea Subscription.
     src: 'src/bots/ckm/careplan-generate.ts',
     dist: 'dist/bots/ckm/careplan-generate.js',
+    name: BOT_NAMES.careplanGenerate,
     runtimeVersion: CKM_RUNTIME,
   },
 ];
@@ -62,7 +73,7 @@ async function main(): Promise<void> {
     resourceType: 'Bundle',
     type: 'transaction',
     entry: Bots.flatMap((botDescription): BundleEntry[] => {
-      const botName = path.parse(botDescription.src).name;
+      const botName = botDescription.name ?? path.parse(botDescription.src).name;
       const botUrlPlaceholder = `$bot-${botName}-reference`;
       const botIdPlaceholder = `$bot-${botName}-id`;
       const results: BundleEntry[] = [];
