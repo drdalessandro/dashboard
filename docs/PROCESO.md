@@ -96,9 +96,10 @@ frontend y bots) + `src/bots/ckm/` (backend) + `src/scripts/` (operación).
   factores modificables y muestra el impacto estimado sobre el riesgo a 10 y 30 años.
 
 ### 4.4 Backend (bots) y operación
-- **Bot `ckm-recalculate`**: al llegar Observations, recalcula hGraph + estadío +
-  scores PREVENT y los persiste como extensiones del `Patient`. Corre en el
-  servidor self-hosted (AWS Lambda / vmcontext).
+- **Bot `ckm-recalculate`** (se despliega como `som-recalcular-ckm`; ver "Deploy
+  de los bots" para el mapa de nombres): al llegar Observations, recalcula
+  hGraph + estadío + scores PREVENT y los persiste como extensiones del
+  `Patient`. Corre en el servidor self-hosted (AWS Lambda / vmcontext).
 - **Alertas por email (SES)**: empeoramiento de estadío, valores críticos y
   **tendencia "3 strikes"** (`alert-rules.ts` + `verify-alerts`).
 - **AccessPolicies**: paciente v1.2 (para Control) y clínico v1.2, con scripts de
@@ -298,6 +299,46 @@ cambia lo que se ve hasta **re-subir las definiciones**: (a) en la app, ir a
 `npm run upload-biomarker-defs` con `MEDPLUM_CLIENT_ID/SECRET`. El bundle es
 idempotente (PUT por id): actualiza sin duplicar.
 
+### Deploy de los bots (nombres `som-*`)
+
+Los Bots se despliegan al servidor con el recurso `Bot.name`, definido en
+`ckm/constants.ts` (`BOT_NAMES`) como **única fuente de verdad**. Siguen la
+convención `som-*` del proyecto de Segunda Opinión:
+
+| Archivo fuente (`src/bots/`) | `Bot.name` en el servidor | Disparo |
+|---|---|---|
+| `ckm/ckm-recalculate.ts` | `som-recalcular-ckm` | Subscription `Observation?code=…` |
+| `ckm/sdoh-response.ts` | `som-respuesta-sdoh` | Subscription `QuestionnaireResponse?questionnaire=…` |
+| `ckm/careplan-generate.ts` | `som-generar-plan-cuidado` | manual (`executeBot` desde el chart) |
+| `core/general-encounter-note.ts` | `som-nota-encuentro-general` | Subscription `QuestionnaireResponse?…` |
+| `core/obstetric-encounter-note.ts` | `som-nota-encuentro-obstetrico` | Subscription |
+| `core/gynecology-encounter-note.ts` | `som-nota-encuentro-ginecologico` | Subscription |
+
+Comando:
+
+```bash
+MEDPLUM_BASE_URL=<backend de Segunda Opinión> \
+MEDPLUM_CLIENT_ID=<client del proyecto> \
+MEDPLUM_CLIENT_SECRET=<secret> \
+MEDPLUM_EXPECTED_PROJECT=<Project ID donde viven los pacientes> \
+npm run build:bots && npm run deploy-bots-server
+```
+
+- **El proyecto lo determina el `ClientApplication`, no el nombre del bot.** Un
+  bot cae en el Project al que pertenece el `MEDPLUM_CLIENT_ID` usado para
+  desplegar; el prefijo `som-*` es sólo convención. `MEDPLUM_EXPECTED_PROJECT`
+  aborta el deploy si el client resultó ser de otro proyecto (red de seguridad).
+- El client necesita **rol admin de proyecto** (crear/desplegar Bots); si no,
+  `Forbidden`.
+- **El nombre es la clave de idempotencia** (`searchOne Bot?name=…`): cambiarlo
+  con bots ya desplegados crea duplicados con Subscriptions vivas (doble
+  ejecución). Por eso se fija en `BOT_NAMES` de una vez.
+- Sólo la serie histórica de scores requiere `som-recalcular-ckm`; desplegá los
+  demás según qué features use el proyecto. Setear el secret `CKM_APP_URL` para
+  que los links de los emails de alerta sean válidos.
+- Diagnóstico y reparación: `npm run ckm-bots-doctor` (status, `--recreate-subs`,
+  `--fix-bot-membership`, `--reprocess <PatientId>`).
+
 ---
 
 ## 7. Principios de "herramienta médica"
@@ -320,9 +361,10 @@ Convenciones que atraviesan todo el código y conviene mantener:
 
 ## 8. Testing y calidad
 
-- **191 tests** (Vitest, en Node) cubriendo la lógica pura: PREVENT vs vector
+- **318 tests** (Vitest, en Node) cubriendo la lógica pura: PREVENT vs vector
   oficial, categorización de riesgo, reclasificación CAC, clasificación de
-  biomarcadores (incluidos los bordes que la revisión descubrió), parser de
+  biomarcadores (incluidos los bordes que la revisión descubrió), objetivos
+  lipídicos por riesgo, normalización de unidades de entrada, parser de
   ObservationDefinitions, seed, comparador del listado, etc.
 - El proyecto **no** testea componentes por render (no hay jsdom/testing-library):
   la lógica relevante vive en funciones puras testeadas; los componentes son
@@ -341,7 +383,7 @@ Convenciones que atraviesan todo el código y conviene mantener:
 | `build:bots` / `deploy-bots-server` | compilar y desplegar los bots al self-hosted |
 | `ckm-doctor` / `ckm-bots-doctor` | diagnóstico del panel y de los bots/subscriptions |
 | `import-vsac` / `upload-med-valueset` / `upload-condition-valueset` | terminología |
-| `upload-biomarker-defs` | subir las 50 ObservationDefinitions del panel |
+| `upload-biomarker-defs` | subir las 54 ObservationDefinitions del panel (14 en el núcleo CV) |
 | `upload-le8` | subir los 4 Questionnaire de Life's Essential 8 |
 | `seed-ckm-demo` / `seed-biomarkers-demo` | datos de demostración |
 | `verify-prevent` / `verify-alerts` / `verify-careplan` | validaciones end-to-end |
