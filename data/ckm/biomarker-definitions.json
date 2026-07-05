@@ -51,19 +51,23 @@
         "extension": [
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-convencional-texto",
-            "valueString": "70 – 100"
+            "valueString": "70 – 99 (normal ADA)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "75 – 85"
+            "valueString": "< 100 (ideal · LE8)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Resistencia insulínica subclínica ya a partir de >90. El rango convencional incluye pre-diabéticos. Óptimo refleja flexibilidad metabólica real."
+            "valueString": "Glucemia en ayunas (ADA): normal <100; prediabetes 100–125; diabetes ≥126 mg/dL. Ideal LE8 <100."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025; Attia Outlive"
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., DOI 10.1161/CIR.0000000000001453); ADA Standards of Care; AHA Life's Essential 8"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
           }
         ],
         "qualifiedInterval": [
@@ -85,7 +89,7 @@
                 "code": "mg/dL"
               },
               "high": {
-                "value": 100.0,
+                "value": 99.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "mg/dL"
               }
@@ -98,7 +102,7 @@
                 {
                   "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
                   "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
+                  "display": "Óptimo"
                 }
               ]
             },
@@ -109,7 +113,7 @@
                 "code": "mg/dL"
               },
               "high": {
-                "value": 85.0,
+                "value": 99.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "mg/dL"
               }
@@ -171,19 +175,23 @@
         "extension": [
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-convencional-texto",
-            "valueString": "< 25"
+            "valueString": "< 25 µUI/mL (referencia de laboratorio)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 5"
+            "valueString": "Sin objetivo ADA/AHA"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "El hiperinsulinismo precede a la hiperglucemia en años. Una insulina de 12 es 'normal' pero indica disfunción metabólica activa. Objetivo < 5 para longevidad."
+            "valueString": "La insulina en ayunas NO es un criterio diagnóstico de ADA/AHA; se usa como referencia de resistencia insulínica. El diagnóstico de disglucemia se basa en glucemia y HbA1c."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025; Attia Outlive"
+            "valueString": "Referencia de laboratorio (sin objetivo diagnóstico ADA/AHA)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -201,25 +209,6 @@
             "range": {
               "high": {
                 "value": 25.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "u[IU]/mL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 5.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "u[IU]/mL"
               }
@@ -281,19 +270,23 @@
         "extension": [
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-convencional-texto",
-            "valueString": "< 2.5"
+            "valueString": "< 2.5 (referencia; sin umbral ADA/AHA)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 1.5"
+            "valueString": "Sin objetivo ADA/AHA"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Fórmula: Glucosa × Insulina ÷ 405. HOMA-IR > 2 bloquea protocolos regenerativos. > 3 indica resistencia insulínica severa."
+            "valueString": "HOMA-IR estima resistencia insulínica a partir de glucosa e insulina en ayunas. No es un criterio diagnóstico ADA/AHA; referencia orientativa."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025; Attia Outlive"
+            "valueString": "Referencia (sin umbral diagnóstico ADA/AHA)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -311,25 +304,6 @@
             "range": {
               "high": {
                 "value": 2.5,
-                "system": "http://unitsofmeasure.org",
-                "code": "{index}"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 1.5,
                 "system": "http://unitsofmeasure.org",
                 "code": "{index}"
               }
@@ -391,19 +365,23 @@
         "extension": [
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-convencional-texto",
-            "valueString": "< 5.7%"
+            "valueString": "< 5.7 % (normal ADA)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 5.2%"
+            "valueString": "< 5.7 % (ideal · LE8)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Refleja glucemia promedio de 3 meses. Diabetogénico si > 5.5%. Bryan Johnson apunta a 5.0%. Predictor de riesgo CV, cognitivo y renal."
+            "valueString": "HbA1c (ADA): normal <5.7 %; prediabetes 5.7–6.4 %; diabetes ≥6.5 %. Ideal LE8 <5.7 %."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Bryan Johnson Blueprint; Lapreire"
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., DOI 10.1161/CIR.0000000000001453); ADA Standards of Care; AHA Life's Essential 8"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
           }
         ],
         "qualifiedInterval": [
@@ -433,13 +411,13 @@
                 {
                   "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
                   "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
+                  "display": "Óptimo"
                 }
               ]
             },
             "range": {
               "high": {
-                "value": 5.2,
+                "value": 5.7,
                 "system": "http://unitsofmeasure.org",
                 "code": "%"
               }
@@ -501,19 +479,23 @@
         "extension": [
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-convencional-texto",
-            "valueString": "< 285"
+            "valueString": "< 285 µmol/L (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 200"
+            "valueString": "Sin objetivo diagnóstico ADA/AHA"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Glucemia de las últimas 2-3 semanas. Clave cuando hay variabilidad glucémica alta o para monitoreo rápido de cambios."
+            "valueString": "Refleja la glucemia de ~2–3 semanas. ADA la considera alternativa a la HbA1c cuando ésta no es fiable (hemoglobinopatías, embarazo, transfusión reciente); sin corte diagnóstico propio."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "ADA (alternativa a la HbA1c cuando ésta no es fiable)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -531,25 +513,6 @@
             "range": {
               "high": {
                 "value": 285.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "umol/L"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 200.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "umol/L"
               }
@@ -611,19 +574,23 @@
         "extension": [
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-convencional-texto",
-            "valueString": "3.5 – 7.2 (H) / 2.5-6.0 (M)"
+            "valueString": "3.5 – 7.0 (H) / 2.5 – 6.0 (M) · referencia"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "3.5 – 5.5"
+            "valueString": "Sin objetivo CV de guía; meta en gota < 6 (ACR)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "> 6 indica riesgo metabólico (sínd. metabólico, HTA, resistencia insulínica, gota). Marcador de fructosa y procesados."
+            "valueString": "Ácido úrico: la hiperuricemia se asocia a hipertensión, síndrome metabólico, ERC y gota, pero la guía 2026 CKM no lo incluye como objetivo cardiovascular. Referencia orientativa; meta terapéutica en gota <6 mg/dL (ACR)."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio; meta de gota <6 mg/dL (ACR). Fuera de la guía 2026 CKM (sin objetivo CV)."
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -645,7 +612,7 @@
                 "code": "mg/dL"
               },
               "high": {
-                "value": 7.2,
+                "value": 7.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "mg/dL"
               }
@@ -676,30 +643,6 @@
               }
             },
             "gender": "female"
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 3.5,
-                "system": "http://unitsofmeasure.org",
-                "code": "mg/dL"
-              },
-              "high": {
-                "value": 5.5,
-                "system": "http://unitsofmeasure.org",
-                "code": "mg/dL"
-              }
-            }
           }
         ]
       },
@@ -761,15 +704,19 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 90 (riesgo bajo) / < 70 (alto riesgo)"
+            "valueString": "Según riesgo (ver Objetivo)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Mejor predictor de riesgo cardiovascular. Cuenta TODAS las partículas aterogénicas (LDL, IDL, VLDL, Lp(a)). Más preciso que LDL-C. Bryan Johnson apunta < 60 mg/dl."
+            "valueString": "ApoB cuenta TODAS las partículas aterogénicas (LDL, IDL, VLDL, Lp(a)); mejor predictor que LDL-C ante discordancia. Objetivo dependiente del riesgo CV (ver \"Objetivo según riesgo\")."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Bryan Johnson Blueprint; Attia"
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., Circulation; DOI 10.1161/CIR.0000000000001453); Sniderman 2024"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
           }
         ],
         "qualifiedInterval": [
@@ -799,7 +746,7 @@
                 {
                   "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
                   "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
+                  "display": "Óptimo"
                 }
               ]
             },
@@ -871,15 +818,19 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 100 (bajo riesgo) / < 70 (alto riesgo)"
+            "valueString": "Según riesgo (ver Objetivo)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Solo una fracción del riesgo real; ApoB es más relevante. Tamaño de partícula importa: LDL pequeño y denso es más aterogénico."
+            "valueString": "Colesterol LDL, motor causal de aterosclerosis. Dislipidemia si ≥130 mg/dL (guía 2026). El objetivo NO es fijo: baja a mayor riesgo CV (ver \"Objetivo según riesgo\")."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Attia Outlive; Bryan Johnson"
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., Circulation; DOI 10.1161/CIR.0000000000001453); ACC/AHA Colesterol"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
           }
         ],
         "qualifiedInterval": [
@@ -909,7 +860,7 @@
                 {
                   "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
                   "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
+                  "display": "Óptimo"
                 }
               ]
             },
@@ -981,7 +932,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 1000"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -989,11 +940,15 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Attia Outlive"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/loinc-revisar",
             "valueBoolean": true
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -1011,25 +966,6 @@
             "range": {
               "high": {
                 "value": 1300.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "nmol/L"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 1000.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "nmol/L"
               }
@@ -1099,11 +1035,15 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "HDL bajo = riesgo aumentado. Pero el HDL alto disfuncional (inflamación crónica) no protege. Evaluar ratio TG/HDL."
+            "valueString": "HDL bajo es dislipidemia (guía 2026): <40 mg/dL en hombres, <50 en mujeres. HDL alto no es objetivo terapéutico."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., Circulation; DOI 10.1161/CIR.0000000000001453)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
           }
         ],
         "qualifiedInterval": [
@@ -1154,7 +1094,7 @@
                 {
                   "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
                   "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
+                  "display": "Óptimo"
                 }
               ]
             },
@@ -1230,11 +1170,15 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "TG elevados = resistencia insulínica, dieta alta en carbohidratos/fructosa. Ratio TG/HDL > 3 es altamente predictivo de resistencia insulínica."
+            "valueString": "Triglicéridos ≥150 mg/dL = hipertrigliceridemia (guía 2026), potenciador de riesgo y componente del estadío CKM 2; ≥500 mg/dL agrega riesgo de pancreatitis."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025; Attia"
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., Circulation; DOI 10.1161/CIR.0000000000001453)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
           }
         ],
         "qualifiedInterval": [
@@ -1264,7 +1208,7 @@
                 {
                   "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
                   "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
+                  "display": "Óptimo"
                 }
               ]
             },
@@ -1340,11 +1284,15 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Factor de riesgo genéticamente determinado, no modificable por dieta. Su elevación requiere estrategia farmacológica. Attia lo mide de por vida desde el primer control."
+            "valueString": "Lipoproteína(a): potenciador de riesgo independiente y genético; refuerza las ecuaciones PREVENT. Se mide una vez en la vida; ≥50 mg/dL (≈125 nmol/L) eleva el riesgo."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Attia Outlive; Bryan Johnson"
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., Circulation; DOI 10.1161/CIR.0000000000001453); Bhatia 2025 (MESA/UK Biobank)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
           }
         ],
         "qualifiedInterval": [
@@ -1374,7 +1322,7 @@
                 {
                   "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
                   "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
+                  "display": "Óptimo"
                 }
               ]
             },
@@ -1442,7 +1390,7 @@
         "extension": [
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-convencional-texto",
-            "valueString": "< 3.0"
+            "valueString": "< 2.0 mg/L (≥2.0 = potenciador de riesgo, guía 2026)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
@@ -1450,11 +1398,15 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "El predictor de inflamación sistémica más accesible. > 1 mg/L bloquea terapias avanzadas. > 3 = riesgo CV alto. Objetivo longevidad < 0.5."
+            "valueString": "PCR ultrasensible: inflamación vascular. ≥2.0 mg/L es potenciador de riesgo CV (guía 2026). Descartar infección/inflamación aguda antes de interpretar."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025; Bryan Johnson"
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., Circulation; DOI 10.1161/CIR.0000000000001453); JUPITER; CANTOS (Ridker)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
           }
         ],
         "qualifiedInterval": [
@@ -1471,7 +1423,7 @@
             },
             "range": {
               "high": {
-                "value": 3.0,
+                "value": 2.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "mg/L"
               }
@@ -1484,7 +1436,7 @@
                 {
                   "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
                   "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
+                  "display": "Óptimo"
                 }
               ]
             },
@@ -1556,7 +1508,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 7"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -1564,7 +1516,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025; Bryan Johnson"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -1582,25 +1538,6 @@
             "range": {
               "high": {
                 "value": 15.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "umol/L"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 7.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "umol/L"
               }
@@ -1666,7 +1603,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 2"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -1674,7 +1611,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -1692,25 +1633,6 @@
             "range": {
               "high": {
                 "value": 7.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "pg/mL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 2.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "pg/mL"
               }
@@ -1776,7 +1698,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 20"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -1784,7 +1706,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -1827,25 +1753,6 @@
               }
             },
             "gender": "female"
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 20.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "U/L"
-              }
-            }
           }
         ]
       },
@@ -1907,7 +1814,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 10"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -1915,7 +1822,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -1958,25 +1869,6 @@
               }
             },
             "gender": "female"
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 10.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "mm/h"
-              }
-            }
           }
         ]
       },
@@ -2038,43 +1930,22 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "1.5 – 3.0 (óptimo longevidad)"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Mide el cociente entre Ácido Araquidónico (AA, Omega-6 proinflamatorio) y EPA (Omega-3 antiinflamatorio) en membrana de glóbulos rojos. Es el marcador más directo de inflamación silenciosa celular. Promedio occidental: >15. Óptimo zona Diet (Dr. Barry Sears): 1.5-3. Un ratio elevado predice riesgo cardiovascular, metabólico, articular y hormonal con años de anticipación. Se mejora con EPA+DHA ≥ 4 g/día y restricción de aceites vegetales refinados (soja, girasol, maíz)."
+            "valueString": "Mide el cociente entre Ácido Araquidónico (AA, Omega-6 proinflamatorio) y EPA (Omega-3 antiinflamatorio) en membrana de glóbulos rojos. Es el marcador más directo de inflamación silenciosa celular. Promedio occidental: >15. Óptimo zona Diet (Dr. ): 1.5-3. Un ratio elevado predice riesgo cardiovascular, metabólico, articular y hormonal con años de anticipación. Se mejora con EPA+DHA ≥ 4 g/día y restricción de aceites vegetales refinados (soja, girasol, maíz)."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Dr. Barry Sears (Zone Diet); Lapreire ISSCA 2025; Bryan Johnson Blueprint (mide AA, EPA, DHA individuales)"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
-        "qualifiedInterval": [
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 1.5,
-                "system": "http://unitsofmeasure.org",
-                "code": "{ratio}"
-              },
-              "high": {
-                "value": 3.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "{ratio}"
-              }
-            }
-          }
-        ]
+        "qualifiedInterval": []
       },
       "request": {
         "method": "PUT",
@@ -2134,7 +2005,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "60 – 80"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -2142,7 +2013,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025; Bryan Johnson"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -2165,30 +2040,6 @@
               },
               "high": {
                 "value": 100.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ng/mL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 60.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ng/mL"
-              },
-              "high": {
-                "value": 80.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "ng/mL"
               }
@@ -2254,7 +2105,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "5.5 – 6.5"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -2262,11 +2113,15 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/loinc-revisar",
             "valueBoolean": true
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -2289,30 +2144,6 @@
               },
               "high": {
                 "value": 6.8,
-                "system": "http://unitsofmeasure.org",
-                "code": "mg/dL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 5.5,
-                "system": "http://unitsofmeasure.org",
-                "code": "mg/dL"
-              },
-              "high": {
-                "value": 6.5,
                 "system": "http://unitsofmeasure.org",
                 "code": "mg/dL"
               }
@@ -2378,7 +2209,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "90 – 110"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -2386,7 +2217,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025; Bryan Johnson"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -2409,30 +2244,6 @@
               },
               "high": {
                 "value": 130.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ug/dL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 90.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ug/dL"
-              },
-              "high": {
-                "value": 110.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "ug/dL"
               }
@@ -2498,7 +2309,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "600 – 900"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -2506,7 +2317,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -2524,30 +2339,6 @@
             "range": {
               "low": {
                 "value": 200.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "pg/mL"
-              },
-              "high": {
-                "value": 900.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "pg/mL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 600.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "pg/mL"
               },
@@ -2618,7 +2409,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "50 – 100"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -2626,7 +2417,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025; Bryan Johnson"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -2679,30 +2474,6 @@
               }
             },
             "gender": "female"
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 50.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ng/mL"
-              },
-              "high": {
-                "value": 100.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ng/mL"
-              }
-            }
           }
         ]
       },
@@ -2764,7 +2535,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "≥ 14 (H) / ≥ 13 (M)"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -2772,7 +2543,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -2799,46 +2574,6 @@
                 "code": "g/dL"
               }
             }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 14.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "g/dL"
-              }
-            },
-            "gender": "male"
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 13.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "g/dL"
-              }
-            },
-            "gender": "female"
           }
         ]
       },
@@ -2900,7 +2635,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "150 – 300"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -2908,11 +2643,15 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/loinc-revisar",
             "valueBoolean": true
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -2930,30 +2669,6 @@
             "range": {
               "low": {
                 "value": 100.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ug/g{creat}"
-              },
-              "high": {
-                "value": 300.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ug/g{creat}"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 150.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "ug/g{creat}"
               },
@@ -3024,38 +2739,22 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "> 8%"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Índice omega-3 < 4% es deficiencia seria. Objetivo > 8% se asocia a menor riesgo CV y cognitivo. Bryan Johnson mide ratio Omega-6/Omega-3 (objetivo < 3:1)."
+            "valueString": "Índice omega-3 < 4% es deficiencia seria. Objetivo > 8% se asocia a menor riesgo CV y cognitivo. mide ratio Omega-6/Omega-3 (objetivo < 3:1)."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Bryan Johnson Blueprint"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
-        "qualifiedInterval": [
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 8.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "%{RBC}"
-              }
-            }
-          }
-        ]
+        "qualifiedInterval": []
       },
       "request": {
         "method": "PUT",
@@ -3115,7 +2814,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "0.5 – 2.0"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -3123,7 +2822,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -3146,30 +2849,6 @@
               },
               "high": {
                 "value": 4.5,
-                "system": "http://unitsofmeasure.org",
-                "code": "u[IU]/mL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 0.5,
-                "system": "http://unitsofmeasure.org",
-                "code": "u[IU]/mL"
-              },
-              "high": {
-                "value": 2.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "u[IU]/mL"
               }
@@ -3235,7 +2914,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "3.5 – 4.5"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -3243,7 +2922,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -3266,30 +2949,6 @@
               },
               "high": {
                 "value": 4.2,
-                "system": "http://unitsofmeasure.org",
-                "code": "pg/mL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 3.5,
-                "system": "http://unitsofmeasure.org",
-                "code": "pg/mL"
-              },
-              "high": {
-                "value": 4.5,
                 "system": "http://unitsofmeasure.org",
                 "code": "pg/mL"
               }
@@ -3355,7 +3014,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 15"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -3363,7 +3022,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -3381,25 +3044,6 @@
             "range": {
               "high": {
                 "value": 25.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ng/dL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 15.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "ng/dL"
               }
@@ -3465,7 +3109,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "10 – 18"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -3473,7 +3117,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -3496,30 +3144,6 @@
               },
               "high": {
                 "value": 23.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ug/dL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 10.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ug/dL"
-              },
-              "high": {
-                "value": 18.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "ug/dL"
               }
@@ -3585,7 +3209,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "350 – 500 (adultos activos)"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -3593,7 +3217,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025; Bryan Johnson"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -3616,30 +3244,6 @@
               },
               "high": {
                 "value": 450.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ug/dL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 350.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ug/dL"
-              },
-              "high": {
-                "value": 500.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "ug/dL"
               }
@@ -3705,7 +3309,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "15 – 25 (H) / 1.5 – 4.0 (M)"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -3713,7 +3317,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -3761,56 +3369,6 @@
               },
               "high": {
                 "value": 6.4,
-                "system": "http://unitsofmeasure.org",
-                "code": "ng/dL"
-              }
-            },
-            "gender": "female"
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 15.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ng/dL"
-              },
-              "high": {
-                "value": 25.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ng/dL"
-              }
-            },
-            "gender": "male"
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 1.5,
-                "system": "http://unitsofmeasure.org",
-                "code": "ng/dL"
-              },
-              "high": {
-                "value": 4.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "ng/dL"
               }
@@ -3877,7 +3435,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "20 – 40"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -3885,7 +3443,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -3908,30 +3470,6 @@
               },
               "high": {
                 "value": 80.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "nmol/L"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 20.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "nmol/L"
-              },
-              "high": {
-                "value": 40.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "nmol/L"
               }
@@ -3997,7 +3535,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "20 – 35 (H) / según fase (M)"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -4005,7 +3543,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025; Bryan Johnson"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -4023,31 +3565,6 @@
             "range": {
               "high": {
                 "value": 40.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "pg/mL"
-              }
-            },
-            "gender": "male"
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 20.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "pg/mL"
-              },
-              "high": {
-                "value": 35.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "pg/mL"
               }
@@ -4114,7 +3631,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "150 – 250"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -4122,7 +3639,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -4145,30 +3666,6 @@
               },
               "high": {
                 "value": 300.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ng/mL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 150.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ng/mL"
-              },
-              "high": {
-                "value": 250.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "ng/mL"
               }
@@ -4238,11 +3735,15 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Creatinina baja puede indicar sarcopenia (poca masa muscular). Elevada: deterioro renal. Siempre calcular eGFR."
+            "valueString": "Insumo del eGFR; el valor aislado depende de la masa muscular. eGFR con creatinina+cistatina C es más preciso."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., Circulation; DOI 10.1161/CIR.0000000000001453); KDIGO"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
           }
         ],
         "qualifiedInterval": [
@@ -4303,7 +3804,7 @@
                 {
                   "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
                   "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
+                  "display": "Óptimo"
                 }
               ]
             },
@@ -4384,15 +3885,19 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Filtrado glomerular. < 60 es lesión renal establecida. < 30 contraindica quelación EDTA y megadosis de vitamina C IV."
+            "valueString": "Filtrado glomerular estimado. <60 mL/min/1.73m² sostenido (≥2 medidas, 3 meses) = ERC; factor de riesgo CV y componente del estadío CKM. La guía recomienda evaluar eGFR Y UACR."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., Circulation; DOI 10.1161/CIR.0000000000001453); KDIGO"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/loinc-revisar",
             "valueBoolean": true
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
           }
         ],
         "qualifiedInterval": [
@@ -4422,7 +3927,7 @@
                 {
                   "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
                   "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
+                  "display": "Óptimo"
                 }
               ]
             },
@@ -4439,6 +3944,120 @@
       "request": {
         "method": "PUT",
         "url": "ObservationDefinition/f775946f-e323-5326-80b3-76b231033ca2"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:5efa66fe-7958-5b6b-9c12-85069bd319ec",
+      "resource": {
+        "id": "5efa66fe-7958-5b6b-9c12-85069bd319ec",
+        "resourceType": "ObservationDefinition",
+        "identifier": [
+          {
+            "system": "https://bio.medplum.com.ar/fhir/sid/biomarcador",
+            "value": "uacr-albumina-creatinina"
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "https://bio.medplum.com.ar/fhir/CodeSystem/panel-biomarcador",
+                "code": "renal-hepatico",
+                "display": "Función renal y hepática"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "9318-7",
+              "display": "UACR (albúmina/creatinina en orina)"
+            }
+          ],
+          "text": "UACR (albúmina/creatinina en orina)"
+        },
+        "permittedDataType": [
+          "Quantity"
+        ],
+        "quantitativeDetails": {
+          "unit": {
+            "coding": [
+              {
+                "system": "http://unitsofmeasure.org",
+                "code": "mg/g"
+              }
+            ],
+            "text": "mg/g"
+          }
+        },
+        "extension": [
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-convencional-texto",
+            "valueString": "< 30 (A1)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
+            "valueString": "< 10"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
+            "valueString": "Cociente albúmina/creatinina en orina. ≥30 mg/g (A2) sostenido = albuminuria y ERC aunque el eGFR sea normal; ≥300 mg/g (A3) = albuminuria severa. La guía 2026 recomienda evaluar eGFR Y UACR."
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., Circulation; DOI 10.1161/CIR.0000000000001453); KDIGO"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
+          }
+        ],
+        "qualifiedInterval": [
+          {
+            "category": "reference",
+            "context": {
+              "coding": [
+                {
+                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
+                  "code": "normal",
+                  "display": "Rango convencional"
+                }
+              ]
+            },
+            "range": {
+              "high": {
+                "value": 30.0,
+                "system": "http://unitsofmeasure.org",
+                "code": "mg/g"
+              }
+            }
+          },
+          {
+            "category": "reference",
+            "context": {
+              "coding": [
+                {
+                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
+                  "code": "funcional-optimo",
+                  "display": "Óptimo"
+                }
+              ]
+            },
+            "range": {
+              "high": {
+                "value": 10.0,
+                "system": "http://unitsofmeasure.org",
+                "code": "mg/g"
+              }
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "ObservationDefinition/5efa66fe-7958-5b6b-9c12-85069bd319ec"
       }
     },
     {
@@ -4494,15 +4113,19 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 25"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Enzima hepática. Elevada indica daño hepatocelular. Límite convencional demasiado alto. > 25 en Medicina 3.0 ya indica estrés hepático que requiere atención."
+            "valueString": "Enzima hepática. Elevada indica daño hepatocelular. Límite convencional demasiado alto. > 25 en rangos de optimización ya indica estrés hepático que requiere atención."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Attia Outlive"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -4520,25 +4143,6 @@
             "range": {
               "high": {
                 "value": 56.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "U/L"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 25.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "U/L"
               }
@@ -4604,7 +4208,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "0.3 – 0.8"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -4612,7 +4216,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -4635,30 +4243,6 @@
               },
               "high": {
                 "value": 1.2,
-                "system": "http://unitsofmeasure.org",
-                "code": "mg/dL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 0.3,
-                "system": "http://unitsofmeasure.org",
-                "code": "mg/dL"
-              },
-              "high": {
-                "value": 0.8,
                 "system": "http://unitsofmeasure.org",
                 "code": "mg/dL"
               }
@@ -4724,7 +4308,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "4.2 – 5.0"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -4732,7 +4316,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Bryan Johnson Blueprint"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -4750,30 +4338,6 @@
             "range": {
               "low": {
                 "value": 3.5,
-                "system": "http://unitsofmeasure.org",
-                "code": "g/dL"
-              },
-              "high": {
-                "value": 5.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "g/dL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "low": {
-                "value": 4.2,
                 "system": "http://unitsofmeasure.org",
                 "code": "g/dL"
               },
@@ -4848,13 +4412,18 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Reloj de Horvath: analiza 353 sitios CpG. Cada año de aceleración epigenética = mayor riesgo de ECV, cáncer, Alzheimer. Objetivo: retrasar o revertir el reloj."
+            "valueString": "Reloj epigenético (metilación del ADN): estima la edad biológica; la aceleración epigenética se asocia a mayor riesgo de ECV, cáncer y demencia. Marcador de longevidad, fuera de guía cardiovascular."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Horvath 2013; Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
-        ]
+        ],
+        "qualifiedInterval": []
       },
       "request": {
         "method": "PUT",
@@ -4914,38 +4483,22 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 0.8"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "El reloj más dinámico: mide VELOCIDAD actual de envejecimiento, no la edad. < 0.8 significa envejecer más lento que el promedio. Bryan Johnson: 0.48."
+            "valueString": "El reloj más dinámico: mide VELOCIDAD actual de envejecimiento, no la edad. < 0.8 significa envejecer más lento que el promedio. : 0.48."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Bryan Johnson Blueprint"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
-        "qualifiedInterval": [
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 0.8,
-                "system": "http://unitsofmeasure.org",
-                "code": "{pace}/a"
-              }
-            }
-          }
-        ]
+        "qualifiedInterval": []
       },
       "request": {
         "method": "PUT",
@@ -5013,9 +4566,14 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Efrati et al. 2020; Lapreire"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
-        ]
+        ],
+        "qualifiedInterval": []
       },
       "request": {
         "method": "PUT",
@@ -5083,9 +4641,14 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
-        ]
+        ],
+        "qualifiedInterval": []
       },
       "request": {
         "method": "PUT",
@@ -5145,7 +4708,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 80"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -5153,7 +4716,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -5171,25 +4738,6 @@
             "range": {
               "high": {
                 "value": 100.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ng/mL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 80.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "ng/mL"
               }
@@ -5255,7 +4803,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 25"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -5263,7 +4811,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -5281,25 +4833,6 @@
             "range": {
               "high": {
                 "value": 50.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ug/g"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 25.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "ug/g"
               }
@@ -5365,7 +4898,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 5"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -5373,11 +4906,15 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/loinc-revisar",
             "valueBoolean": true
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -5395,25 +4932,6 @@
             "range": {
               "high": {
                 "value": 10.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ug/L"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 5.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "ug/L"
               }
@@ -5479,7 +4997,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 3"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -5487,7 +5005,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -5505,25 +5027,6 @@
             "range": {
               "high": {
                 "value": 10.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ug/dL"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 3.0,
                 "system": "http://unitsofmeasure.org",
                 "code": "ug/dL"
               }
@@ -5589,7 +5092,7 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "< 0.5"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
@@ -5597,7 +5100,11 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
           }
         ],
         "qualifiedInterval": [
@@ -5615,25 +5122,6 @@
             "range": {
               "high": {
                 "value": 1.0,
-                "system": "http://unitsofmeasure.org",
-                "code": "ug/L"
-              }
-            }
-          },
-          {
-            "category": "reference",
-            "context": {
-              "coding": [
-                {
-                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
-                }
-              ]
-            },
-            "range": {
-              "high": {
-                "value": 0.5,
                 "system": "http://unitsofmeasure.org",
                 "code": "ug/L"
               }
@@ -5699,15 +5187,94 @@
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
-            "valueString": "Maximizar para edad (≥ 50 ms adultos)"
+            "valueString": "Sin objetivo de guía CV (referencia)"
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
-            "valueString": "Indicador de tolerancia autonómica y capacidad adaptativa. HRV baja: priorizar recuperación y sueño ANTES de añadir terapias de estrés (HIIT, HBOT, ayunos). Bryan Johnson monitorea diariamente."
+            "valueString": "Indicador de tolerancia autonómica y capacidad adaptativa. HRV baja: priorizar recuperación y sueño ANTES de añadir terapias de estrés (HIIT, HBOT, ayunos). monitorea diariamente."
           },
           {
             "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
-            "valueString": "Lapreire 2025; Bryan Johnson"
+            "valueString": "Referencia de laboratorio (fuera de guía CV)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "complementario"
+          }
+        ],
+        "qualifiedInterval": []
+      },
+      "request": {
+        "method": "PUT",
+        "url": "ObservationDefinition/21c57728-8fa5-55a6-82c6-87d4f56789aa"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:7454917b-8b2c-5e09-8802-4ef507a288af",
+      "resource": {
+        "id": "7454917b-8b2c-5e09-8802-4ef507a288af",
+        "resourceType": "ObservationDefinition",
+        "identifier": [
+          {
+            "system": "https://bio.medplum.com.ar/fhir/sid/biomarcador",
+            "value": "nt-probnp"
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "https://bio.medplum.com.ar/fhir/CodeSystem/panel-biomarcador",
+                "code": "cardiaco",
+                "display": "Cardíaco (estrés / injuria miocárdica)"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "33762-6",
+              "display": "NT-proBNP"
+            }
+          ],
+          "text": "NT-proBNP"
+        },
+        "permittedDataType": [
+          "Quantity"
+        ],
+        "quantitativeDetails": {
+          "unit": {
+            "coding": [
+              {
+                "system": "http://unitsofmeasure.org",
+                "code": "pg/mL"
+              }
+            ],
+            "text": "pg/mL"
+          }
+        },
+        "extension": [
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-convencional-texto",
+            "valueString": "< 125 pg/mL (ajustar por edad)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
+            "valueString": "Umbral de descarte de IC (edad-ajustado)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
+            "valueString": "Péptido natriurético: <125 pg/mL hace improbable la insuficiencia cardíaca; ≥125 sugiere estrés/disfunción miocárdica (ECV subclínica, estadío CKM 3). Ajustar por edad y fibrilación auricular."
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., DOI 10.1161/CIR.0000000000001453)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
           }
         ],
         "qualifiedInterval": [
@@ -5717,16 +5284,16 @@
               "coding": [
                 {
                   "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
-                  "code": "funcional-optimo",
-                  "display": "Funcional / óptimo (Medicina 3.0)"
+                  "code": "normal",
+                  "display": "Rango convencional"
                 }
               ]
             },
             "range": {
-              "low": {
-                "value": 50.0,
+              "high": {
+                "value": 125.0,
                 "system": "http://unitsofmeasure.org",
-                "code": "ms"
+                "code": "pg/mL"
               }
             }
           }
@@ -5734,7 +5301,202 @@
       },
       "request": {
         "method": "PUT",
-        "url": "ObservationDefinition/21c57728-8fa5-55a6-82c6-87d4f56789aa"
+        "url": "ObservationDefinition/7454917b-8b2c-5e09-8802-4ef507a288af"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4bb04ca2-8a89-5345-bd89-b27a89600958",
+      "resource": {
+        "id": "4bb04ca2-8a89-5345-bd89-b27a89600958",
+        "resourceType": "ObservationDefinition",
+        "identifier": [
+          {
+            "system": "https://bio.medplum.com.ar/fhir/sid/biomarcador",
+            "value": "troponina-hs"
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "https://bio.medplum.com.ar/fhir/CodeSystem/panel-biomarcador",
+                "code": "cardiaco",
+                "display": "Cardíaco (estrés / injuria miocárdica)"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "89579-7",
+              "display": "Troponina I ultrasensible"
+            }
+          ],
+          "text": "Troponina I ultrasensible"
+        },
+        "permittedDataType": [
+          "Quantity"
+        ],
+        "quantitativeDetails": {
+          "unit": {
+            "coding": [
+              {
+                "system": "http://unitsofmeasure.org",
+                "code": "ng/L"
+              }
+            ],
+            "text": "ng/L"
+          }
+        },
+        "extension": [
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-convencional-texto",
+            "valueString": "< percentil 99 (sexo/ensayo-específico; ~26 ng/L)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
+            "valueString": "Umbral = percentil 99 del ensayo"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
+            "valueString": "Troponina ultrasensible: por encima del percentil 99 (específico por sexo y ensayo) indica injuria miocárdica; la elevación crónica leve marca ECV subclínica (estadío CKM 3)."
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., DOI 10.1161/CIR.0000000000001453)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
+          }
+        ],
+        "qualifiedInterval": [
+          {
+            "category": "reference",
+            "context": {
+              "coding": [
+                {
+                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
+                  "code": "normal",
+                  "display": "Rango convencional"
+                }
+              ]
+            },
+            "range": {
+              "high": {
+                "value": 26.0,
+                "system": "http://unitsofmeasure.org",
+                "code": "ng/L"
+              }
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "ObservationDefinition/4bb04ca2-8a89-5345-bd89-b27a89600958"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:96f2573c-0de7-5efc-a9d2-20eaa4bb97c5",
+      "resource": {
+        "id": "96f2573c-0de7-5efc-a9d2-20eaa4bb97c5",
+        "resourceType": "ObservationDefinition",
+        "identifier": [
+          {
+            "system": "https://bio.medplum.com.ar/fhir/sid/biomarcador",
+            "value": "cistatina-c"
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "https://bio.medplum.com.ar/fhir/CodeSystem/panel-biomarcador",
+                "code": "renal-hepatico",
+                "display": "Función renal y hepática"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "33863-2",
+              "display": "Cistatina C"
+            }
+          ],
+          "text": "Cistatina C"
+        },
+        "permittedDataType": [
+          "Quantity"
+        ],
+        "quantitativeDetails": {
+          "unit": {
+            "coding": [
+              {
+                "system": "http://unitsofmeasure.org",
+                "code": "mg/L"
+              }
+            ],
+            "text": "mg/L"
+          }
+        },
+        "extension": [
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-convencional-texto",
+            "valueString": "0.5 – 1.0 mg/L (referencia)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/rango-optimo-texto",
+            "valueString": "Refina el eGFR (creatinina + cistatina)"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/interpretacion",
+            "valueString": "Cistatina C: el eGFR combinando creatinina y cistatina C es más preciso que con cualquiera de las dos sola (guía 2026 CKM); su disponibilidad es limitada."
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/fuente",
+            "valueString": "Guía 2026 AHA/ACC/ADA/ASN CKM (Ndumele et al., DOI 10.1161/CIR.0000000000001453); KDIGO"
+          },
+          {
+            "url": "https://bio.medplum.com.ar/fhir/StructureDefinition/tier",
+            "valueCode": "guia-cv"
+          }
+        ],
+        "qualifiedInterval": [
+          {
+            "category": "reference",
+            "context": {
+              "coding": [
+                {
+                  "system": "https://bio.medplum.com.ar/fhir/CodeSystem/contexto-rango",
+                  "code": "normal",
+                  "display": "Rango convencional"
+                }
+              ]
+            },
+            "range": {
+              "low": {
+                "value": 0.5,
+                "system": "http://unitsofmeasure.org",
+                "code": "mg/L"
+              },
+              "high": {
+                "value": 1.0,
+                "system": "http://unitsofmeasure.org",
+                "code": "mg/L"
+              }
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "ObservationDefinition/96f2573c-0de7-5efc-a9d2-20eaa4bb97c5"
       }
     }
   ]
