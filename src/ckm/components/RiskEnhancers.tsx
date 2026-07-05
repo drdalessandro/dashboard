@@ -8,6 +8,7 @@ import type { JSX } from 'react';
 import { RISK_ENHANCERS } from '../biomarkers';
 import type { EnhancerDefinition, EnhancerReading } from '../biomarkers';
 import { useRiskEnhancers } from '../hooks/useRiskEnhancers';
+import { formatUnit } from '../units';
 
 const SECTION_HELP =
   'Marcadores que, elevados, aumentan el riesgo más allá del score PREVENT y pueden justificar ' +
@@ -61,8 +62,9 @@ function EnhancerChip(props: { def: EnhancerDefinition; reading?: EnhancerReadin
   }
 
   const { value, unit, info } = reading;
+  const displayUnit = formatUnit(unit) ?? def.unit;
   const tooltip =
-    `${def.label} ${value} ${unit ?? def.unit} · ${info.label}. ` +
+    `${def.label} ${value} ${displayUnit} · ${info.label}. ` +
     `Óptimo < ${def.optimalBelow}, convencional < ${def.conventionalBelow} ${def.unit}. ` +
     `${def.interpretation} (Fuente: ${def.source})`;
 
@@ -72,10 +74,10 @@ function EnhancerChip(props: { def: EnhancerDefinition; reading?: EnhancerReadin
         color={info.color}
         variant="light"
         size="md"
-        aria-label={`${def.label} ${value} ${unit ?? def.unit} · ${info.label}`}
+        aria-label={`${def.label} ${value} ${displayUnit} · ${info.label}`}
         style={{ cursor: 'default' }}
       >
-        {def.label} {value} {unit ?? def.unit} · {info.label}
+        {def.label} {value} {displayUnit} · {info.label}
       </Badge>
     </Tooltip>
   );

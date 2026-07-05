@@ -1,4 +1,4 @@
-// Potenciadores de riesgo CV ("risk enhancers" ACC/AHA) del panel BioHacking.
+// Potenciadores de riesgo CV ("risk enhancers" ACC/AHA): ApoB y Lp(a).
 //
 // Marcadores que, elevados, aumentan el riesgo más allá del score PREVENT y
 // pueden justificar tratamiento más intensivo aunque el riesgo calculado sea

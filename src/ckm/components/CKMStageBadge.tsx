@@ -24,10 +24,24 @@ export function CKMStageBadge(props: CKMStageBadgeProps): JSX.Element {
     );
   }
 
+  // El número va dentro del texto (no como leftSection): con leftSection el
+  // grid interno del Badge envolvía el label a 2 líneas y la altura fija lo
+  // recortaba. Altura automática + wrap normal para que los labels largos
+  // bajen de línea limpiamente en columnas angostas en vez de cortarse.
   return (
     <Tooltip label={info.description} withArrow maw={320} multiline>
-      <Badge variant="filled" autoContrast color={info.color} size="sm" leftSection={stage} style={{ cursor: 'default' }}>
-        {info.label}
+      <Badge
+        variant="filled"
+        autoContrast
+        color={info.color}
+        size="sm"
+        tt="none"
+        styles={{
+          root: { height: 'auto', paddingTop: 3, paddingBottom: 3, cursor: 'default' },
+          label: { whiteSpace: 'normal', overflow: 'visible', lineHeight: 1.25 },
+        }}
+      >
+        Estadío {stage} · {info.label}
       </Badge>
     </Tooltip>
   );

@@ -65,6 +65,9 @@ export const CKM_STAGE_URL = 'https://seguimiento.medplum.com.ar/fhir/StructureD
 export const HGRAPH_DATA_URL = 'https://seguimiento.medplum.com.ar/fhir/StructureDefinition/hGraphData';
 export const PREVENT_INPUTS_URL = 'https://seguimiento.medplum.com.ar/fhir/StructureDefinition/PREVENTInputs';
 
+// CodeSystem propio para las Observations de score (serie histórica PREVENT)
+export const CKM_SCORES_SYSTEM = 'https://seguimiento.medplum.com.ar/fhir/CodeSystem/ckm-scores';
+
 // Canónico del cuestionario SDOH (el Questionnaire vive en el BackEnd)
 export const SDOH_QUESTIONNAIRE_URL = 'https://seguimiento.medplum.com.ar/fhir/Questionnaire/ckm-sdoh-screening-v1';
 

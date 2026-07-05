@@ -13,6 +13,7 @@ import type { MedplumClient } from '@medplum/core';
 import type { Observation } from '@medplum/fhirtypes';
 import { LOINC, LOINC_BP_PANEL, LOINC_SYSTEM } from './constants';
 import type { CKMParameterId } from './constants';
+import { normalizeCKMValue } from './unit-normalization';
 
 export interface CKMObservationValue {
   value: number;
@@ -50,7 +51,8 @@ export function extractCKMValues(observation: Observation): CKMObservationMap {
   for (const component of observation.component ?? []) {
     for (const [code, param] of CODE_TO_PARAM) {
       if (hasCode(component.code, code) && component.valueQuantity?.value !== undefined) {
-        result[param] = { value: component.valueQuantity.value, unit: component.valueQuantity.unit, date };
+        const norm = normalizeCKMValue(param, component.valueQuantity.value, component.valueQuantity.unit);
+        result[param] = { value: norm.value, unit: norm.unit, date };
       }
     }
   }
@@ -59,7 +61,8 @@ export function extractCKMValues(observation: Observation): CKMObservationMap {
   if (observation.valueQuantity?.value !== undefined) {
     for (const [code, param] of CODE_TO_PARAM) {
       if (hasCode(observation.code, code)) {
-        result[param] = { value: observation.valueQuantity.value, unit: observation.valueQuantity.unit, date };
+        const norm = normalizeCKMValue(param, observation.valueQuantity.value, observation.valueQuantity.unit);
+        result[param] = { value: norm.value, unit: norm.unit, date };
       }
     }
   }
@@ -96,17 +99,26 @@ export function latestCKMValues(observations: Observation[]): CKMObservationMap 
 }
 
 /**
- * Busca en el servidor las Observations CKM del paciente y devuelve el último
- * valor de cada parámetro, sin importar desde qué rol/app se cargaron.
+ * Busca en el servidor las Observations CKM utilizables del paciente
+ * (descarta entered-in-error). Base de los helpers de último valor e
+ * historial; útil cuando se necesitan ambos con una sola búsqueda.
  */
-export async function getLatestCKMObservations(medplum: MedplumClient, patientId: string): Promise<CKMObservationMap> {
+export async function fetchCKMObservations(medplum: MedplumClient, patientId: string): Promise<Observation[]> {
   const observations = await medplum.searchResources('Observation', {
     subject: `Patient/${patientId}`,
     code: CKM_OBSERVATION_CODES.join(','),
     _sort: '-date',
     _count: '500',
   });
-  return latestCKMValues(observations.filter((o) => o.status !== 'entered-in-error'));
+  return observations.filter((o) => o.status !== 'entered-in-error');
+}
+
+/**
+ * Busca en el servidor las Observations CKM del paciente y devuelve el último
+ * valor de cada parámetro, sin importar desde qué rol/app se cargaron.
+ */
+export async function getLatestCKMObservations(medplum: MedplumClient, patientId: string): Promise<CKMObservationMap> {
+  return latestCKMValues(await fetchCKMObservations(medplum, patientId));
 }
 
 /** Historial de un parámetro CKM: todas sus lecturas, de más nueva a más vieja. */
@@ -141,11 +153,5 @@ export async function getCKMObservationHistory(
   medplum: MedplumClient,
   patientId: string
 ): Promise<CKMObservationHistory> {
-  const observations = await medplum.searchResources('Observation', {
-    subject: `Patient/${patientId}`,
-    code: CKM_OBSERVATION_CODES.join(','),
-    _sort: '-date',
-    _count: '500',
-  });
-  return groupCKMValues(observations.filter((o) => o.status !== 'entered-in-error'));
+  return groupCKMValues(await fetchCKMObservations(medplum, patientId));
 }

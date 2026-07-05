@@ -233,6 +233,71 @@ Bajo <50.
 presión por medicación solo si hay antihipertensivos registrados; el compuesto
 exige los 8 (sin los conductuales del paciente, queda parcial).
 
+### Serie histórica de scores + tendencias (12 meses)
+
+De la revisión de UX ("la película, no la foto"), con diseño y decisiones en
+`docs/propuesta-serie-scores.md`:
+
+- **Bot** (`ckm-recalculate` + `ckm/score-history.ts`): cada recálculo persiste
+  los scores PREVENT como Observations del CodeSystem `ckm-scores` (regla
+  anti-inflado: solo si el valor cambió o pasaron 24 h), con `derivedFrom` a la
+  Observation disparadora. Alerta por **suba significativa** (≥2 pp, o cambio
+  de categoría con ≥0.5 pp) por el mismo circuito de las alertas de tendencia
+  (DetectedIssue + cooldown, Communication, Task, email).
+- **UI**: sparklines de los 3 scores en `PREVENTPanel` (`useScoreHistory`) y
+  columna "Tendencia" en la tabla LE8 para los 4 componentes clínicos
+  (`ckm/le8-history.ts`: recompute histórico con "último valor conocido" por
+  fecha; escala fija 0–100; los conductuales no tienen serie). Mínimo 3 puntos.
+- **Quick wins previos**: unidades UCUM legibles (`ckm/units.ts`), puntajes LE8
+  con color semántico, etiquetas del radar sin recorte.
+
+### Reconfiguración cardiológica del panel de biomarcadores
+
+El panel original citaba fuentes de medicina funcional/longevidad (Attia, Bryan
+Johnson, "Lapreire") con un "óptimo" que competía visualmente con umbrales de
+guía. Reorientado a cardiología, con **la guía 2026 AHA/ACC/ADA/ASN CKM**
+(Ndumele et al., *Circulation*; DOI 10.1161/CIR.0000000000001453) **como fuente
+de verdad**:
+
+- **Dos secciones por `tier`** (extensión FHIR en cada ObservationDefinition):
+  *Núcleo cardiovascular · guías (ACC/AHA · ADA · KDIGO)* — 11 biomarcadores:
+  LDL-C, ApoB, Lp(a), HDL, TG, glucosa, HbA1c, creatinina, eGFR, **UACR** y
+  hs-CRP — y *Complementario · fuera de guía CV* (los 40 restantes, con aviso).
+- **UACR agregado al núcleo** (LOINC 9318-7): la guía recomienda evaluar eGFR
+  **y** UACR para caracterizar ERC (albuminuria ≥30 mg/g = A2 aunque el eGFR sea
+  normal). Umbrales de la guía en el núcleo: LDL ≥130, HDL <40 H/<50 M, TG ≥150,
+  glucosa/HbA1c ADA, **hs-CRP ≥2.0 mg/L** (la guía usa 2.0, no 3.0).
+- **Objetivos lipídicos por riesgo** (`ckm/lipid-targets.ts`): LDL-C y ApoB no
+  tienen óptimo fijo; el objetivo baja a mayor riesgo (moderado <100/<90, alto
+  <70/<80, muy alto **<55**/<65 mg/dL — la guía 2026 fija LDL-C <55 en muy alto
+  riesgo y reducción ≥50 % en diabetes). El tramo se deriva del estadío CKM +
+  categoría ASCVD; la fila muestra "En objetivo / Sobre objetivo".
+- Se quitó el marco funcional ("Medicina 3.0", Attia, Bryan Johnson) del núcleo
+  y del display del contexto óptimo.
+- **Panel glucémico alineado a ADA/AHA**: glucemia y HbA1c (núcleo) usan el
+  ideal de AHA Life's Essential 8 (<100 / <5.7 %) en vez del óptimo funcional
+  (75–85 / <5.2). Insulina, HOMA-IR y fructosamina (complementario) quedan como
+  **referencia sin objetivo diagnóstico ADA/AHA** (ADA/AHA no definen cortes
+  para éstas); la fructosamina se cita como alternativa a la HbA1c cuando ésta
+  no es fiable. Ácido úrico: referencia (la guía CKM no lo incluye).
+- **Limpieza masiva de complementarios**: los ~36 biomarcadores que la guía
+  2026 CKM no cubre (inflamación, micronutrientes, hormonal, longevidad,
+  microbiota, tóxicos) pierden el "óptimo" funcional y las fuentes de medicina
+  funcional (Attia, Bryan Johnson, "Lapreire"); quedan como **referencia · sin
+  objetivo de guía CV**.
+- **Nuevos en el núcleo (respaldo de guía)**: NT-proBNP y troponina hs (panel
+  *Cardíaco*, ECV subclínica / estadío CKM 3) y **cistatina C** (renal, la guía
+  recomienda combinar creatinina + cistatina para un eGFR más preciso). El
+  núcleo pasó de 11 a 14 biomarcadores; el orden dentro de cada panel es
+  determinístico (`BIOMARKER_ORDER`).
+
+**Deploy (importante).** El panel lee las `ObservationDefinition` **del servidor
+Medplum**, no del JSON del build. Editar `data/ckm/biomarker-definitions.json` no
+cambia lo que se ve hasta **re-subir las definiciones**: (a) en la app, ir a
+`/upload/biomarkers` (usa la sesión del usuario) y confirmar; o (b) por CLI,
+`npm run upload-biomarker-defs` con `MEDPLUM_CLIENT_ID/SECRET`. El bundle es
+idempotente (PUT por id): actualiza sin duplicar.
+
 ---
 
 ## 7. Principios de "herramienta médica"

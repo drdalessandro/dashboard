@@ -13,6 +13,9 @@ export interface HGraphProps {
 
 const SIZE = 400;
 const CENTER = SIZE / 2;
+// Aire horizontal extra del viewBox: las etiquetas cercanas a la horizontal
+// ("Glucemia ayunas", "Colesterol no-HDL") exceden el cuadrado y se recortaban.
+const H_MARGIN = 56;
 const RING_RADIUS = 132;
 const LABEL_RADIUS = RING_RADIUS + 16;
 const GUIDE_SCORES = [0.25, 0.5, 0.75, 1];
@@ -54,7 +57,12 @@ export function HGraph(props: HGraphProps): JSX.Element {
       .curve(curveLinearClosed)(metrics) ?? undefined;
 
   return (
-    <svg viewBox={`0 0 ${SIZE} ${SIZE}`} width="100%" role="img" aria-label="hGraph de métricas CKM">
+    <svg
+      viewBox={`${-H_MARGIN} 0 ${SIZE + 2 * H_MARGIN} ${SIZE}`}
+      width="100%"
+      role="img"
+      aria-label="hGraph de métricas CKM"
+    >
       <g transform={`translate(${CENTER}, ${CENTER})`}>
         {/* Guías concéntricas */}
         {GUIDE_SCORES.map((score) => (

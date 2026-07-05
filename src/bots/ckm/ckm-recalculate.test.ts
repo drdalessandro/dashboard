@@ -3,7 +3,8 @@ import { readJson, SEARCH_PARAMETER_BUNDLE_FILES } from '@medplum/definitions';
 import type { Bundle, Communication, Observation, Patient, SearchParameter } from '@medplum/fhirtypes';
 import { MockClient } from '@medplum/mock';
 import { vi } from 'vitest';
-import { CKM_STAGE_URL, HGRAPH_DATA_URL, LOINC, LOINC_BP_PANEL, LOINC_SYSTEM } from '../../ckm/constants';
+import { CKM_SCORES_SYSTEM, CKM_STAGE_URL, HGRAPH_DATA_URL, LOINC, LOINC_BP_PANEL, LOINC_SYSTEM } from '../../ckm/constants';
+import { buildScoreObservation } from '../../ckm/score-history';
 import type { HGraphMetric } from '../../ckm/types';
 import { handler } from './ckm-recalculate';
 
@@ -263,6 +264,96 @@ describe('Bot CKM recalculate', () => {
     expect(await medplum.searchResources('DetectedIssue', `patient=Patient/${patient.id}`)).toHaveLength(1);
     expect(await medplum.searchResources('Task', `patient=Patient/${patient.id}`)).toHaveLength(1);
     expect(sendEmail).toHaveBeenCalledTimes(1);
+  });
+
+  // Paciente con todos los insumos PREVENT (edad 30-79, sexo, PA, colesterol,
+  // HDL, TFGe, IMC) para que el bot calcule scores y persista la serie.
+  async function seedPreventPatient(medplum: MockClient): Promise<{ patient: Patient; latest: Observation }> {
+    const patient = await medplum.createResource<Patient>({
+      resourceType: 'Patient',
+      gender: 'male',
+      birthDate: '1955-01-01',
+    });
+    const id = patient.id as string;
+    await medplum.createResource(labObservation(id, LOINC.cholesterolTotal, 240, 'mg/dL', '2026-06-01'));
+    await medplum.createResource(labObservation(id, LOINC.hdlc, 35, 'mg/dL', '2026-06-01'));
+    await medplum.createResource(labObservation(id, LOINC.egfr, 60, 'mL/min/1.73m²', '2026-06-01'));
+    await medplum.createResource(labObservation(id, LOINC.bmi, 32, 'kg/m²', '2026-06-01'));
+    const latest = await medplum.createResource(bpPanel(id, 160, 95, '2026-06-02'));
+    return { patient, latest };
+  }
+
+  async function scoreSeries(medplum: MockClient, patientId: string, code: string): Promise<Observation[]> {
+    return medplum.searchResources('Observation', {
+      subject: `Patient/${patientId}`,
+      code: `${CKM_SCORES_SYSTEM}|${code}`,
+    });
+  }
+
+  test('serie de scores: persiste una Observation por outcome con trazabilidad, sin duplicar corridas', async () => {
+    const medplum = new MockClient();
+    vi.spyOn(medplum, 'sendEmail').mockResolvedValue({} as never);
+    const { patient, latest } = await seedPreventPatient(medplum);
+
+    await handler(medplum, { bot, contentType, input: latest, secrets: {} });
+
+    const ascvd = await scoreSeries(medplum, patient.id as string, 'prevent-ascvd-10y');
+    expect(ascvd).toHaveLength(1);
+    expect(ascvd[0].valueQuantity?.unit).toBe('%');
+    expect(ascvd[0].valueQuantity?.value).toBeGreaterThan(0);
+    expect(ascvd[0].derivedFrom).toEqual([{ reference: `Observation/${latest.id}` }]);
+    expect(await scoreSeries(medplum, patient.id as string, 'prevent-hf-10y')).toHaveLength(1);
+    expect(await scoreSeries(medplum, patient.id as string, 'prevent-cvd-total-30y')).toHaveLength(1);
+
+    // Re-corrida inmediata con los mismos datos: mismo valor hace <24 h,
+    // la regla anti-inflado no agrega puntos
+    await handler(medplum, { bot, contentType, input: latest, secrets: {} });
+    expect(await scoreSeries(medplum, patient.id as string, 'prevent-ascvd-10y')).toHaveLength(1);
+  });
+
+  test('suba significativa de score: DetectedIssue + Communication + Task + email, con cooldown', async () => {
+    const medplum = new MockClient();
+    const sendEmail = vi.spyOn(medplum, 'sendEmail').mockResolvedValue({} as never);
+    const { patient, latest } = await seedPreventPatient(medplum);
+    // Línea de base vieja y baja: el score actual (perfil de alto riesgo)
+    // queda varios pp arriba -> suba significativa
+    await medplum.createResource(
+      buildScoreObservation(patient.id as string, 'ascvd10y', 0.5, '2026-01-01T00:00:00Z')
+    );
+
+    await handler(medplum, {
+      bot,
+      contentType,
+      input: latest,
+      secrets: { CKM_ALERT_EMAIL: { name: 'CKM_ALERT_EMAIL', valueString: 'cardio@example.com' } },
+    });
+
+    const issues = await medplum.searchResources('DetectedIssue', `patient=Patient/${patient.id}`);
+    expect(issues.map((i) => i.code?.coding?.[0]?.code)).toContain('score-rise-prevent-ascvd-10y');
+
+    const alerts = await medplum.searchResources('Communication', `subject=Patient/${patient.id}`);
+    const payloads = alerts.flatMap((a) => (a as Communication).payload?.map((p) => p.contentString ?? '') ?? []);
+    expect(payloads.join(' ')).toContain('subió de 0.5%');
+
+    const tasks = await medplum.searchResources('Task', `patient=Patient/${patient.id}`);
+    expect(tasks.length).toBeGreaterThan(0);
+    expect(sendEmail).toHaveBeenCalled();
+
+    // Re-corrida dentro del cooldown: no duplica el DetectedIssue de suba
+    await handler(medplum, { bot, contentType, input: latest, secrets: {} });
+    const issuesAfter = await medplum.searchResources('DetectedIssue', `patient=Patient/${patient.id}`);
+    expect(issuesAfter.filter((i) => i.code?.coding?.[0]?.code === 'score-rise-prevent-ascvd-10y')).toHaveLength(1);
+  });
+
+  test('sin insumos PREVENT completos no persiste puntos de score', async () => {
+    const medplum = new MockClient();
+    // Sin birthDate: no hay edad -> no se calcula PREVENT
+    const patient = await medplum.createResource<Patient>({ resourceType: 'Patient', gender: 'female' });
+    const observation = await medplum.createResource(bpPanel(patient.id as string, 118, 76, '2026-06-01'));
+
+    await handler(medplum, { bot, contentType, input: observation, secrets: {} });
+
+    expect(await scoreSeries(medplum, patient.id as string, 'prevent-ascvd-10y')).toHaveLength(0);
   });
 
   test('preserva los scores PREVENT ya guardados en la extensión', async () => {

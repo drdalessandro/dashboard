@@ -18,10 +18,18 @@ export const EXT_RANGO_CONVENCIONAL_TEXTO = EXT_BASE + 'rango-convencional-texto
 export const EXT_RANGO_OPTIMO_TEXTO = EXT_BASE + 'rango-optimo-texto';
 export const EXT_INTERPRETACION = EXT_BASE + 'interpretacion';
 export const EXT_FUENTE = EXT_BASE + 'fuente';
+export const EXT_TIER = EXT_BASE + 'tier';
 export const LOINC_SYSTEM = 'http://loinc.org';
 
 /** Contexto de un rango: convencional ('normal') u óptimo ('funcional-optimo'). */
 export type RangeContext = 'normal' | 'funcional-optimo';
+
+/**
+ * Jerarquía del biomarcador: 'guia-cv' = núcleo cardiovascular con respaldo de
+ * guía (ACC/AHA, ADA, KDIGO); 'complementario' = referencia general / longevidad
+ * fuera de guía CV. Determina cómo se agrupa y jerarquiza en el panel.
+ */
+export type BiomarkerTier = 'guia-cv' | 'complementario';
 
 export interface BiomarkerRange {
   low?: number;
@@ -42,6 +50,12 @@ export interface BiomarkerDefinition {
   /** Código del panel (metabolico, lipidico, inflamacion, …). */
   panelCode?: string;
   panelDisplay?: string;
+  /**
+   * Núcleo cardiovascular (guía) vs complementario. parseObservationDefinition
+   * siempre lo completa; opcional para construir definiciones mock en tests
+   * (ausente se trata como 'complementario').
+   */
+  tier?: BiomarkerTier;
   unit?: string;
   conventionalText?: string;
   optimalText?: string;
@@ -55,6 +69,11 @@ export interface BiomarkerDefinition {
 
 function extString(od: ObservationDefinition, url: string): string | undefined {
   return od.extension?.find((e) => e.url === url)?.valueString;
+}
+
+function extTier(od: ObservationDefinition): BiomarkerTier {
+  const code = od.extension?.find((e) => e.url === EXT_TIER)?.valueCode;
+  return code === 'guia-cv' ? 'guia-cv' : 'complementario';
 }
 
 function intervalsForContext(od: ObservationDefinition, context: RangeContext): BiomarkerRange[] {
@@ -74,6 +93,7 @@ export function parseObservationDefinition(od: ObservationDefinition): Biomarker
     system: coding?.system,
     panelCode: od.category?.[0]?.coding?.[0]?.code,
     panelDisplay: od.category?.[0]?.coding?.[0]?.display,
+    tier: extTier(od),
     unit: unit?.text ?? unit?.coding?.[0]?.code,
     conventionalText: extString(od, EXT_RANGO_CONVENCIONAL_TEXTO),
     optimalText: extString(od, EXT_RANGO_OPTIMO_TEXTO),
@@ -292,12 +312,13 @@ export function valuesByCodeHistory(observations: Observation[]): Map<string, Co
   return map;
 }
 
-// Orden de los paneles (foco cardiovascular primero, luego el resto BioHacking).
+// Orden de los paneles dentro de cada sección (lípidos y metabolismo primero).
 const PANEL_ORDER = [
-  'metabolico',
   'lipidico',
-  'inflamacion',
+  'metabolico',
   'renal-hepatico',
+  'cardiaco',
+  'inflamacion',
   'hormonal',
   'micronutrientes',
   'longevidad',
@@ -306,13 +327,55 @@ const PANEL_ORDER = [
   'autonomico',
 ];
 
+// Orden clínico dentro de cada panel. El servidor devuelve las
+// ObservationDefinitions en un orden arbitrario (no el del bundle), así que se
+// impone acá para que el panel sea determinístico. Los no listados van al final,
+// ordenados por etiqueta.
+const BIOMARKER_ORDER = [
+  // Lipídico
+  'ldl-colesterol',
+  'apob',
+  'hdl-colesterol',
+  'trigliceridos',
+  'lpa',
+  'ldl-particulas-ldl-p',
+  // Metabólico (glucemia antes que HbA1c)
+  'glucosa-en-ayunas',
+  'hba1c',
+  'insulina-en-ayunas',
+  'homa-ir',
+  'fructosamina',
+  'acido-urico',
+  // Renal / hepático
+  'creatinina',
+  'egfr-tfg-estimada',
+  'uacr-albumina-creatinina',
+  'cistatina-c',
+  'alt-tgp',
+  'bilirrubina-total',
+  'albumina',
+  // Cardíaco (estrés / injuria miocárdica)
+  'nt-probnp',
+  'troponina-hs',
+  // Inflamación
+  'pcr-ultrasensible-hs-crp',
+];
+
+function biomarkerRank(id: string | undefined): number {
+  const i = id ? BIOMARKER_ORDER.indexOf(id) : -1;
+  return i === -1 ? BIOMARKER_ORDER.length : i;
+}
+
 export interface BiomarkerPanelGroup {
   panelCode: string;
   panelDisplay: string;
   defs: BiomarkerDefinition[];
 }
 
-/** Agrupa las definiciones por panel, en el orden de PANEL_ORDER (resto al final). */
+/**
+ * Agrupa las definiciones por panel (orden de PANEL_ORDER, resto al final) y,
+ * dentro de cada panel, por el orden clínico de BIOMARKER_ORDER (luego etiqueta).
+ */
 export function groupByPanel(defs: BiomarkerDefinition[]): BiomarkerPanelGroup[] {
   const groups = new Map<string, BiomarkerDefinition[]>();
   for (const def of defs) {
@@ -327,5 +390,30 @@ export function groupByPanel(defs: BiomarkerDefinition[]): BiomarkerPanelGroup[]
   };
   return [...groups.entries()]
     .sort(([a], [b]) => rank(a) - rank(b) || a.localeCompare(b))
-    .map(([panelCode, list]) => ({ panelCode, panelDisplay: list[0].panelDisplay ?? panelCode, defs: list }));
+    .map(([panelCode, list]) => ({
+      panelCode,
+      panelDisplay: list[0].panelDisplay ?? panelCode,
+      defs: [...list].sort(
+        (a, b) => biomarkerRank(a.biomarcadorId) - biomarkerRank(b.biomarcadorId) || a.label.localeCompare(b.label)
+      ),
+    }));
+}
+
+export interface BiomarkerTierGroups {
+  /** Núcleo cardiovascular con respaldo de guía, agrupado por panel. */
+  core: BiomarkerPanelGroup[];
+  /** Complementario / fuera de guía CV, agrupado por panel. */
+  complementary: BiomarkerPanelGroup[];
+}
+
+/**
+ * Separa las definiciones en las dos secciones (núcleo CV con guía vs
+ * complementario) y agrupa cada una por panel. La UI muestra el núcleo primero
+ * y el complementario claramente etiquetado como fuera de guía cardiovascular.
+ */
+export function splitByTier(defs: BiomarkerDefinition[]): BiomarkerTierGroups {
+  return {
+    core: groupByPanel(defs.filter((d) => d.tier === 'guia-cv')),
+    complementary: groupByPanel(defs.filter((d) => d.tier !== 'guia-cv')),
+  };
 }
