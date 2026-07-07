@@ -20,6 +20,7 @@
     "verify-prevent": "tsx src/scripts/verify-prevent.ts",
     "verify-alerts": "tsx src/scripts/verify-alerts.ts",
     "verify-careplan": "tsx src/scripts/verify-careplan.ts",
+    "backfill-intake-response": "tsx src/scripts/backfill-intake-response.ts",
     "deploy-bots-server": "tsx src/scripts/deploy-bots-server.ts",
     "upload-access-policy": "tsx src/scripts/upload-access-policy.ts",
     "upload-sdoh": "tsx src/scripts/upload-sdoh-questionnaire.ts",
