@@ -30,6 +30,7 @@ import type {
   Resource,
 } from '@medplum/fhirtypes';
 import { INTAKE_QUESTIONNAIRE_URL } from '../../ckm/constants';
+import { tobaccoStatusFromText } from '../../ckm/intake';
 
 const INTAKE_IDENTIFIER_SYSTEM = 'https://seguimiento.medplum.com.ar/fhir/identifier/intake-clinico-item';
 const SIN_DETALLE = 'Reportado por el paciente en el intake digital, sin detalle adicional (confirmar en consulta).';
@@ -59,35 +60,21 @@ function textAt(answers: Answers, linkId: string): string | undefined {
   return answers.get(linkId)?.[0]?.valueString?.trim() || undefined;
 }
 
-/** Quita acentos y pasa a minúsculas para matchear texto libre de forma laxa. */
-function normalize(s: string): string {
-  return s
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(new RegExp('[\\u0300-\\u036f]', 'g'), '');
-}
-
 /**
- * Interpreta el texto libre de tabaquismo (ej. "Ex fumador/a") a un estado
- * SNOMED best-effort. El ítem no es coded (valueString), así que esto es una
- * aproximación por substring — si la app externa lo emitiera como choice
- * coded (como hace le8-tobacco-v1), esto no haría falta.
+ * Mapea el texto libre de tabaquismo del intake a una Condition SNOMED
+ * best-effort. La interpretación del texto vive en ckm/intake.ts (compartida
+ * con el fallback LE8); acá solo se traduce el status a código + estado
+ * clínico. "Nunca fumó" o texto no reconocible no generan Condition.
  */
 function interpretTobaccoText(raw: string): { code: string; display: string; clinicalStatus: 'active' | 'inactive' } | undefined {
-  const s = normalize(raw);
-  if (!s.includes('fum')) {
-    return undefined;
-  }
-  if (s.includes('ex')) {
+  const status = tobaccoStatusFromText(raw);
+  if (status === 'former') {
     return { code: '8517006', display: 'Ex-fumador/a', clinicalStatus: 'inactive' };
   }
-  if (s.includes('nunca')) {
-    return undefined;
+  if (status === 'current') {
+    return { code: '77176002', display: 'Fumador/a', clinicalStatus: 'active' };
   }
-  // Cualquier otra mención de tabaco ("Fumador/a actual", "Fumo", "Sí, fumo")
-  // se interpreta conservadoramente como tabaquismo activo: mejor marcarlo
-  // para que el médico lo revise que perderlo.
-  return { code: '77176002', display: 'Fumador/a', clinicalStatus: 'active' };
+  return undefined;
 }
 
 async function upsertCondition(

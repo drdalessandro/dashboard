@@ -38,6 +38,13 @@ export function LE8Panel(props: { patient: Patient }): JSX.Element {
   const result = computeLE8(inputs);
   const byKey = new Map(result.components.map((c) => [c.key, c]));
 
+  // El tabaco puede venir del intake clínico (fallback cuando el paciente no
+  // respondió el cuestionario LE8 de tabaco); la fuente lo hace explícito.
+  const sourceFor = (key: LE8ComponentKey): string =>
+    key === 'nicotine' && behavioral.nicotineSource === 'intake'
+      ? 'Intake clínico (tabaquismo, sin años desde que dejó)'
+      : SOURCE[key];
+
   return (
     <Stack gap="md">
       <Stack gap={4}>
@@ -159,7 +166,7 @@ export function LE8Panel(props: { patient: Patient }): JSX.Element {
                 </Table.Td>
                 <Table.Td>
                   <Text size="xs" c="dimmed">
-                    {SOURCE[key]}
+                    {sourceFor(key)}
                   </Text>
                 </Table.Td>
               </Table.Tr>
