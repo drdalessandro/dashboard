@@ -3,7 +3,7 @@ import { readJson, SEARCH_PARAMETER_BUNDLE_FILES } from '@medplum/definitions';
 import type { Bundle, Condition, Patient, QuestionnaireResponse, SearchParameter } from '@medplum/fhirtypes';
 import { MockClient } from '@medplum/mock';
 import { INTAKE_QUESTIONNAIRE_URL } from '../../ckm/constants';
-import { handler } from './intake-response';
+import { handler, parseEmergencyContact } from './intake-response';
 
 const bot = { reference: 'Bot/123' };
 const contentType = 'application/fhir+json';
@@ -150,7 +150,14 @@ describe('Bot intake-response', () => {
     });
     expect(allergies).toHaveLength(0);
 
-    expect(created).toHaveLength(3 + 1 + 4 + 1); // conditions + procedure + meds + family history
+    // Patient.contact: contacto de emergencia (solo nombre, sin teléfono)
+    const updated = await medplum.readResource('Patient', patient.id as string);
+    expect(updated.contact).toHaveLength(1);
+    expect(updated.contact?.[0]?.name?.text).toBe('Gaston Pagani');
+    expect(updated.contact?.[0]?.telecom).toBeUndefined();
+    expect(updated.contact?.[0]?.relationship?.[0]?.coding?.[0]?.code).toBe('C');
+
+    expect(created).toHaveLength(3 + 1 + 4 + 1 + 1); // conditions + procedure + meds + family history + patient
   });
 
   test('reprocesar la misma respuesta es idempotente (no duplica recursos)', async () => {
@@ -167,6 +174,9 @@ describe('Bot intake-response', () => {
     });
     expect(conditions).toHaveLength(3);
     expect(meds).toHaveLength(4);
+    // El contacto de emergencia tampoco se duplica al reprocesar.
+    const updated = await medplum.readResource('Patient', patient.id as string);
+    expect(updated.contact).toHaveLength(1);
   });
 
   test('alergias-tiene=true sin detalle crea AllergyIntolerance marcada para confirmar', async () => {
@@ -208,5 +218,56 @@ describe('Bot intake-response', () => {
     expect(conditions).toHaveLength(1);
     expect(conditions[0].code?.coding?.[0]?.code).toBe('77176002');
     expect(conditions[0].clinicalStatus?.coding?.[0]?.code).toBe('active');
+  });
+});
+
+describe('parseEmergencyContact', () => {
+  test('solo nombre (caso real Clara Podesta)', () => {
+    expect(parseEmergencyContact('Gaston Pagani')).toEqual({ name: 'Gaston Pagani', phone: undefined });
+  });
+
+  test('nombre y teléfono en el mismo texto', () => {
+    expect(parseEmergencyContact('Gaston Pagani 11-5555-1234')).toEqual({
+      name: 'Gaston Pagani',
+      phone: '11-5555-1234',
+    });
+    expect(parseEmergencyContact('Gaston Pagani, +54 9 11 5555 1234')).toEqual({
+      name: 'Gaston Pagani',
+      phone: '+54 9 11 5555 1234',
+    });
+  });
+
+  test('solo teléfono', () => {
+    expect(parseEmergencyContact('1155551234')).toEqual({ name: undefined, phone: '1155551234' });
+  });
+});
+
+describe('contacto de emergencia → Patient.contact', () => {
+  test('conserva los contactos cargados a mano y reemplaza solo el del intake', async () => {
+    const medplum = new MockClient();
+    const patient = await medplum.createResource<Patient>({
+      resourceType: 'Patient',
+      contact: [{ name: { text: 'Contacto Manual' }, telecom: [{ system: 'phone', value: '4444-5555' }] }],
+    });
+    const withContact = (text: string, authored: string): QuestionnaireResponse => ({
+      resourceType: 'QuestionnaireResponse',
+      status: 'completed',
+      questionnaire: INTAKE_QUESTIONNAIRE_URL,
+      subject: { reference: `Patient/${patient.id}` },
+      authored,
+      item: [{ linkId: 'general', item: [{ linkId: 'contacto-emergencia', answer: [{ valueString: text }] }] }],
+    });
+
+    const first = await medplum.createResource(withContact('Gaston Pagani', '2026-07-07T00:00:00Z'));
+    await handler(medplum, { bot, contentType, input: first, secrets: {} });
+    // Una respuesta posterior actualiza el contacto del intake (no lo duplica).
+    const second = await medplum.createResource(withContact('Maria Perez 11-5555-1234', '2026-07-08T00:00:00Z'));
+    await handler(medplum, { bot, contentType, input: second, secrets: {} });
+
+    const updated = await medplum.readResource('Patient', patient.id as string);
+    expect(updated.contact).toHaveLength(2);
+    expect(updated.contact?.[0]?.name?.text).toBe('Contacto Manual'); // intacto
+    expect(updated.contact?.[1]?.name?.text).toBe('Maria Perez');
+    expect(updated.contact?.[1]?.telecom?.[0]?.value).toBe('11-5555-1234');
   });
 });
