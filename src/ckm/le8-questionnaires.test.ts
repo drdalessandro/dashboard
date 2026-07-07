@@ -232,3 +232,64 @@ describe('interpretLE8Questionnaires', () => {
     expect(interpretLE8Questionnaires([])).toEqual({ inputs: {} });
   });
 });
+
+// ───────────────────────────────────────────────────────────────────────────
+// Respuestas del portal de pacientes (App.segundaopinionmedica.org): misma
+// versión de los instrumentos pero bajo su propia base canónica y, en el PSQI,
+// con linkIds de numeración estándar (psqi-qN) y horas con sufijo AM/PM.
+// Reproduce la respuesta real de sueño de Clara Podesta.
+// ───────────────────────────────────────────────────────────────────────────
+
+describe('respuestas del portal (segundaopinionmedica.org)', () => {
+  const APP_SLEEP_URL = 'https://segundaopinionmedica.org/fhir/Questionnaire/le8-sleep-psqi-v1';
+
+  test('acepta la URL del portal y los linkIds psqi-qN (caso real de sueño)', () => {
+    const response = resp(
+      APP_SLEEP_URL,
+      {
+        'psqi-q1': { valueString: '1:00 AM' },
+        'psqi-q2': { valueInteger: 5 },
+        'psqi-q3': { valueString: '8:00 AM' },
+        'psqi-q4': { valueDecimal: 6.5 },
+        'psqi-q6': { valueCoding: { code: '1' } },
+      },
+      '2026-07-07T10:49:37Z'
+    );
+    const r = interpretLE8Questionnaires([response]);
+    // Las horas de sueño (ítem 4) alimentan el score LE8 de sueño.
+    expect(r.inputs.sleepHoursPerNight).toBe(6.5);
+    // Componentes PSQI derivables con estos ítems: duración (6.5 h → 1) y
+    // eficiencia (6.5/7 h en cama ≈ 93 % → 0).
+    expect(r.psqi?.components.duration).toBe(1);
+    expect(r.psqi?.components.efficiency).toBe(0);
+    expect(r.psqi?.components.quality).toBe(1);
+  });
+
+  test('valueTime 24 h sigue funcionando y el canónico pisa al alias si vinieran ambos', () => {
+    const response = resp(APP_SLEEP_URL, {
+      'psqi-4-hours': { valueDecimal: 8 },
+      'psqi-q4': { valueDecimal: 4 },
+      'psqi-q1': { valueTime: '23:30:00' },
+    });
+    const r = interpretLE8Questionnaires([response]);
+    expect(r.inputs.sleepHoursPerNight).toBe(8); // el linkId canónico manda
+  });
+
+  test('12:xx AM/PM se convierten bien (medianoche y mediodía)', () => {
+    const response = resp(APP_SLEEP_URL, {
+      'psqi-q1': { valueString: '12:30 AM' }, // 00:30
+      'psqi-q3': { valueString: '12:15 PM' }, // 12:15
+      'psqi-q4': { valueDecimal: 7.5 },
+    });
+    const r = interpretLE8Questionnaires([response]);
+    // 00:30 → 12:15 = 11.75 h en cama; 7.5/11.75 ≈ 64 % → eficiencia 3.
+    expect(r.psqi?.components.efficiency).toBe(3);
+  });
+
+  test('la respuesta del portal más reciente le gana a una histórica más vieja', () => {
+    const oldHistoric = resp(LE8_SLEEP_QUESTIONNAIRE_URL, { 'psqi-4-hours': { valueDecimal: 4 } }, '2026-01-01T00:00:00Z');
+    const newFromApp = resp(APP_SLEEP_URL, { 'psqi-q4': { valueDecimal: 7.5 } }, '2026-07-07T00:00:00Z');
+    const r = interpretLE8Questionnaires([oldHistoric, newFromApp]);
+    expect(r.inputs.sleepHoursPerNight).toBe(7.5);
+  });
+});

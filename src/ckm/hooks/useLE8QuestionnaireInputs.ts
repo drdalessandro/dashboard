@@ -10,22 +10,10 @@ import { useMedplum } from '@medplum/react';
 import { useEffect, useState } from 'react';
 import { INTAKE_QUESTIONNAIRE_URL } from '../constants';
 import { latestIntakeTobacco } from '../intake';
-import {
-  interpretLE8Questionnaires,
-  LE8_ACTIVITY_QUESTIONNAIRE_URL,
-  LE8_DIET_QUESTIONNAIRE_URL,
-  LE8_SLEEP_QUESTIONNAIRE_URL,
-  LE8_TOBACCO_QUESTIONNAIRE_URL,
-} from '../le8-questionnaires';
+import { ALL_LE8_QUESTIONNAIRE_URLS, interpretLE8Questionnaires } from '../le8-questionnaires';
 import type { BehavioralLE8Inputs, PsqiResult } from '../le8-questionnaires';
 
-const LE8_QUESTIONNAIRE_URLS = [
-  LE8_SLEEP_QUESTIONNAIRE_URL,
-  LE8_DIET_QUESTIONNAIRE_URL,
-  LE8_ACTIVITY_QUESTIONNAIRE_URL,
-  LE8_TOBACCO_QUESTIONNAIRE_URL,
-  INTAKE_QUESTIONNAIRE_URL,
-];
+const LE8_QUESTIONNAIRE_URLS = [...ALL_LE8_QUESTIONNAIRE_URLS, INTAKE_QUESTIONNAIRE_URL];
 
 export interface LE8QuestionnaireInputs {
   inputs: BehavioralLE8Inputs;

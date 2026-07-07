@@ -15,11 +15,35 @@ import type {
 } from '@medplum/fhirtypes';
 import type { DietLevel, LE8Inputs, NicotineInput } from './le8';
 
-// URLs canónicas (base bio.medplum.com.ar). Una versión por instrumento.
-export const LE8_SLEEP_QUESTIONNAIRE_URL = 'https://bio.medplum.com.ar/fhir/Questionnaire/le8-sleep-psqi-v1';
-export const LE8_DIET_QUESTIONNAIRE_URL = 'https://bio.medplum.com.ar/fhir/Questionnaire/le8-diet-mepa-v1';
-export const LE8_ACTIVITY_QUESTIONNAIRE_URL = 'https://bio.medplum.com.ar/fhir/Questionnaire/le8-activity-evs-v1';
-export const LE8_TOBACCO_QUESTIONNAIRE_URL = 'https://bio.medplum.com.ar/fhir/Questionnaire/le8-tobacco-v1';
+// URLs canónicas, una versión por instrumento. Hay DOS bases aceptadas: la
+// histórica (bio.medplum.com.ar, los Questionnaire que carga upload-le8) y la
+// del portal de pacientes App.segundaopinionmedica.org, que emite los mismos
+// instrumentos bajo su propio dominio. El intérprete acepta ambas; las
+// constantes singulares (base histórica) se mantienen como primarias.
+const LE8_CANONICAL_BASES = [
+  'https://bio.medplum.com.ar/fhir/Questionnaire/',
+  'https://segundaopinionmedica.org/fhir/Questionnaire/',
+] as const;
+
+const le8Urls = (slug: string): string[] => LE8_CANONICAL_BASES.map((base) => base + slug);
+
+export const LE8_SLEEP_QUESTIONNAIRE_URLS = le8Urls('le8-sleep-psqi-v1');
+export const LE8_DIET_QUESTIONNAIRE_URLS = le8Urls('le8-diet-mepa-v1');
+export const LE8_ACTIVITY_QUESTIONNAIRE_URLS = le8Urls('le8-activity-evs-v1');
+export const LE8_TOBACCO_QUESTIONNAIRE_URLS = le8Urls('le8-tobacco-v1');
+
+export const LE8_SLEEP_QUESTIONNAIRE_URL = LE8_SLEEP_QUESTIONNAIRE_URLS[0];
+export const LE8_DIET_QUESTIONNAIRE_URL = LE8_DIET_QUESTIONNAIRE_URLS[0];
+export const LE8_ACTIVITY_QUESTIONNAIRE_URL = LE8_ACTIVITY_QUESTIONNAIRE_URLS[0];
+export const LE8_TOBACCO_QUESTIONNAIRE_URL = LE8_TOBACCO_QUESTIONNAIRE_URLS[0];
+
+/** Todas las URLs LE8 aceptadas (para armar la query del hook). */
+export const ALL_LE8_QUESTIONNAIRE_URLS: string[] = [
+  ...LE8_SLEEP_QUESTIONNAIRE_URLS,
+  ...LE8_DIET_QUESTIONNAIRE_URLS,
+  ...LE8_ACTIVITY_QUESTIONNAIRE_URLS,
+  ...LE8_TOBACCO_QUESTIONNAIRE_URLS,
+];
 
 // ───────────────────────────────────────────────────────────────────────────
 // Acceso a respuestas por linkId.
@@ -76,18 +100,29 @@ function codeAt(answers: Answers, linkId: string): string | undefined {
   return first(answers, linkId)?.valueCoding?.code;
 }
 
-/** Hora "HH:MM[:SS]" → minutos desde medianoche. */
+/**
+ * Hora → minutos desde medianoche. Acepta valueTime "HH:MM[:SS]" (24 h) y, como
+ * tolerancia para respuestas del portal de pacientes, valueString con sufijo
+ * AM/PM ("1:00 AM").
+ */
 function timeToMinutes(answers: Answers, linkId: string): number | undefined {
-  const t = first(answers, linkId)?.valueTime;
+  const answer = first(answers, linkId);
+  const t = answer?.valueTime ?? answer?.valueString;
   if (!t) {
     return undefined;
   }
-  const m = /^(\d{1,2}):(\d{2})/.exec(t);
+  const m = /^(\d{1,2}):(\d{2})(?::\d{2})?\s*(am|pm)?$/i.exec(t.trim());
   if (!m) {
     return undefined;
   }
-  const h = Number(m[1]);
+  let h = Number(m[1]);
   const min = Number(m[2]);
+  const meridiem = m[3]?.toLowerCase();
+  if (meridiem === 'am' && h === 12) {
+    h = 0;
+  } else if (meridiem === 'pm' && h < 12) {
+    h += 12;
+  }
   if (h > 23 || min > 59) {
     return undefined;
   }
@@ -114,6 +149,41 @@ export const PSQI_LINK = {
   stayingAwake: 'psqi-8-staying-awake',
   enthusiasm: 'psqi-9-enthusiasm',
 } as const;
+
+/**
+ * Alias de linkId: el portal de pacientes (App.segundaopinionmedica.org) emite
+ * el PSQI con la numeración estándar de Buysse ("psqi-q1".."psqi-q9",
+ * "psqi-q5a".."psqi-q5j") en vez de los linkId semánticos del contrato
+ * histórico. Ambos esquemas siguen el MISMO orden del instrumento oficial
+ * (q1=hora de acostarse, q2=latencia en minutos, q3=hora de levantarse,
+ * q4=horas de sueño, q5x=alteraciones, q6=calidad, q7=medicación,
+ * q8=mantenerse despierto, q9=entusiasmo), así que el mapeo es 1:1.
+ */
+const PSQI_LINK_ALIASES: Record<string, string> = {
+  'psqi-q1': PSQI_LINK.bedtime,
+  'psqi-q2': PSQI_LINK.latencyMin,
+  'psqi-q3': PSQI_LINK.waketime,
+  'psqi-q4': PSQI_LINK.hours,
+  ...Object.fromEntries(PSQI_LINK.disturbance.map((canonical, i) => [`psqi-q5${'abcdefghij'[i]}`, canonical])),
+  'psqi-q6': PSQI_LINK.quality,
+  'psqi-q7': PSQI_LINK.medication,
+  'psqi-q8': PSQI_LINK.stayingAwake,
+  'psqi-q9': PSQI_LINK.enthusiasm,
+};
+
+/**
+ * Copia las respuestas con linkId alias a su linkId canónico (sin pisar una
+ * respuesta canónica existente). Devuelve el mismo Map para encadenar.
+ */
+function applyLinkAliases(answers: Answers, aliases: Record<string, string>): Answers {
+  for (const [alias, canonical] of Object.entries(aliases)) {
+    const value = answers.get(alias);
+    if (value && !answers.has(canonical)) {
+      answers.set(canonical, value);
+    }
+  }
+  return answers;
+}
 
 export interface PsqiAnswers {
   bedtimeMinutes?: number;
@@ -207,7 +277,7 @@ export function scorePsqi(a: PsqiAnswers): PsqiResult {
 }
 
 export function extractPsqiAnswers(response: QuestionnaireResponse): PsqiAnswers {
-  const ans = answersByLinkId(response);
+  const ans = applyLinkAliases(answersByLinkId(response), PSQI_LINK_ALIASES);
   return {
     bedtimeMinutes: timeToMinutes(ans, PSQI_LINK.bedtime),
     waketimeMinutes: timeToMinutes(ans, PSQI_LINK.waketime),
@@ -352,10 +422,10 @@ export interface LE8QuestionnaireData {
   mepaScore?: number;
 }
 
-/** Devuelve la respuesta más reciente (por authored) de cada cuestionario. */
-function latestByQuestionnaire(responses: QuestionnaireResponse[], url: string): QuestionnaireResponse | undefined {
+/** Devuelve la respuesta más reciente (por authored) de un cuestionario, en cualquiera de sus URLs canónicas. */
+function latestByQuestionnaire(responses: QuestionnaireResponse[], urls: string[]): QuestionnaireResponse | undefined {
   return responses
-    .filter((r) => r.questionnaire === url && r.status !== 'entered-in-error')
+    .filter((r) => r.questionnaire !== undefined && urls.includes(r.questionnaire) && r.status !== 'entered-in-error')
     .sort((a, b) => (b.authored ?? '').localeCompare(a.authored ?? ''))[0];
 }
 
@@ -363,7 +433,7 @@ export function interpretLE8Questionnaires(responses: QuestionnaireResponse[]): 
   const inputs: BehavioralLE8Inputs = {};
   const result: LE8QuestionnaireData = { inputs };
 
-  const sleep = latestByQuestionnaire(responses, LE8_SLEEP_QUESTIONNAIRE_URL);
+  const sleep = latestByQuestionnaire(responses, LE8_SLEEP_QUESTIONNAIRE_URLS);
   if (sleep) {
     const { sleepHoursPerNight, psqi } = interpretSleep(sleep);
     if (sleepHoursPerNight !== undefined) {
@@ -372,7 +442,7 @@ export function interpretLE8Questionnaires(responses: QuestionnaireResponse[]): 
     result.psqi = psqi;
   }
 
-  const diet = latestByQuestionnaire(responses, LE8_DIET_QUESTIONNAIRE_URL);
+  const diet = latestByQuestionnaire(responses, LE8_DIET_QUESTIONNAIRE_URLS);
   if (diet) {
     const { diet: dietInput, mepaScore } = interpretDiet(diet);
     if (dietInput) {
@@ -381,7 +451,7 @@ export function interpretLE8Questionnaires(responses: QuestionnaireResponse[]): 
     result.mepaScore = mepaScore;
   }
 
-  const activity = latestByQuestionnaire(responses, LE8_ACTIVITY_QUESTIONNAIRE_URL);
+  const activity = latestByQuestionnaire(responses, LE8_ACTIVITY_QUESTIONNAIRE_URLS);
   if (activity) {
     const { physicalActivityMinPerWeek } = interpretActivity(activity);
     if (physicalActivityMinPerWeek !== undefined) {
@@ -389,7 +459,7 @@ export function interpretLE8Questionnaires(responses: QuestionnaireResponse[]): 
     }
   }
 
-  const tobacco = latestByQuestionnaire(responses, LE8_TOBACCO_QUESTIONNAIRE_URL);
+  const tobacco = latestByQuestionnaire(responses, LE8_TOBACCO_QUESTIONNAIRE_URLS);
   if (tobacco) {
     const { nicotine } = interpretTobacco(tobacco);
     if (nicotine) {
