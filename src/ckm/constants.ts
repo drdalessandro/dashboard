@@ -71,6 +71,12 @@ export const CKM_SCORES_SYSTEM = 'https://seguimiento.medplum.com.ar/fhir/CodeSy
 // Canónico del cuestionario SDOH (el Questionnaire vive en el BackEnd)
 export const SDOH_QUESTIONNAIRE_URL = 'https://seguimiento.medplum.com.ar/fhir/Questionnaire/ckm-sdoh-screening-v1';
 
+// Canónico del intake clínico del portal de pacientes App.segundaopinionmedica.org
+// (el Questionnaire vive en ESE portal, no en este proyecto — solo nos suscribimos
+// a sus QuestionnaireResponse). No es LE8 ni SDOH: es un intake general de
+// antecedentes/factores de riesgo/cirugías/medicación/alergias. Ver intake-response.ts.
+export const INTAKE_QUESTIONNAIRE_URL = 'https://segundaopinionmedica.org/Questionnaire/intake-clinico';
+
 /**
  * Nombres de los Bots en el servidor Medplum (recurso Bot.name), única fuente
  * de verdad para deploy, doctores y lookups en runtime. Convención del proyecto
@@ -84,6 +90,7 @@ export const SDOH_QUESTIONNAIRE_URL = 'https://seguimiento.medplum.com.ar/fhir/Q
 export const BOT_NAMES = {
   ckmRecalculate: 'som-recalcular-ckm',
   sdohResponse: 'som-respuesta-sdoh',
+  intakeResponse: 'som-respuesta-intake',
   careplanGenerate: 'som-generar-plan-cuidado',
   generalEncounterNote: 'som-nota-encuentro-general',
   obstetricEncounterNote: 'som-nota-encuentro-obstetrico',
