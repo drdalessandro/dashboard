@@ -5,7 +5,7 @@ import type { Bundle, BundleEntry } from '@medplum/fhirtypes';
 import { randomUUID } from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import { BOT_NAMES, SDOH_QUESTIONNAIRE_URL } from '../ckm/constants';
+import { BOT_NAMES, INTAKE_QUESTIONNAIRE_URL, SDOH_QUESTIONNAIRE_URL } from '../ckm/constants';
 import { CKM_OBSERVATION_CODES } from '../ckm/observations';
 
 interface BotDescription {
@@ -57,6 +57,13 @@ const Bots: BotDescription[] = [
     dist: 'dist/bots/ckm/sdoh-response.js',
     name: BOT_NAMES.sdohResponse,
     criteria: `QuestionnaireResponse?questionnaire=${SDOH_QUESTIONNAIRE_URL}`,
+    runtimeVersion: CKM_RUNTIME,
+  },
+  {
+    src: 'src/bots/ckm/intake-response.ts',
+    dist: 'dist/bots/ckm/intake-response.js',
+    name: BOT_NAMES.intakeResponse,
+    criteria: `QuestionnaireResponse?questionnaire=${INTAKE_QUESTIONNAIRE_URL}`,
     runtimeVersion: CKM_RUNTIME,
   },
   {
