@@ -293,3 +293,57 @@ describe('respuestas del portal (segundaopinionmedica.org)', () => {
     expect(r.inputs.sleepHoursPerNight).toBe(7.5);
   });
 });
+
+// Contrato con la respuesta REAL de sueño de Clara Podesta
+// (QuestionnaireResponse/6339e693, portal segundaopinionmedica.org): ítems
+// verbatim, incluyendo el grupo psqi-q5 con sub-ítems anidados.
+describe('contrato: respuesta real de sueño del portal (Clara Podesta)', () => {
+  const claraSleep: QuestionnaireResponse = {
+    resourceType: 'QuestionnaireResponse',
+    status: 'completed',
+    questionnaire: 'https://segundaopinionmedica.org/fhir/Questionnaire/le8-sleep-psqi-v1',
+    authored: '2026-07-07T13:49:37.081Z',
+    item: [
+      { linkId: 'psqi-q1', answer: [{ valueTime: '01:00:00' }] },
+      { linkId: 'psqi-q2', answer: [{ valueInteger: 5 }] },
+      { linkId: 'psqi-q3', answer: [{ valueTime: '08:00:00' }] },
+      { linkId: 'psqi-q4', answer: [{ valueDecimal: 7 }] },
+      {
+        linkId: 'psqi-q5',
+        item: [
+          { linkId: 'psqi-q5a', answer: [{ valueCoding: { code: '0' } }] },
+          { linkId: 'psqi-q5b', answer: [{ valueCoding: { code: '0' } }] },
+          { linkId: 'psqi-q5c', answer: [{ valueCoding: { code: '0' } }] },
+          { linkId: 'psqi-q5d', answer: [{ valueCoding: { code: '0' } }] },
+          { linkId: 'psqi-q5e', answer: [{ valueCoding: { code: '0' } }] },
+          { linkId: 'psqi-q5f', answer: [{ valueCoding: { code: '0' } }] },
+          { linkId: 'psqi-q5g', answer: [{ valueCoding: { code: '1' } }] },
+          { linkId: 'psqi-q5h', answer: [{ valueCoding: { code: '0' } }] },
+          { linkId: 'psqi-q5i', answer: [{ valueCoding: { code: '0' } }] },
+          { linkId: 'psqi-q5j', answer: [{ valueCoding: { code: '0' } }] },
+        ],
+      },
+      { linkId: 'psqi-q6', answer: [{ valueCoding: { code: '0' } }] },
+      { linkId: 'psqi-q7', answer: [{ valueCoding: { code: '0' } }] },
+      { linkId: 'psqi-q8', answer: [{ valueCoding: { code: '0' } }] },
+      { linkId: 'psqi-q9', answer: [{ valueCoding: { code: '0' } }] },
+    ],
+  };
+
+  test('interpreta la respuesta completa: 7 h para LE8 y PSQI global 2/21', () => {
+    const r = interpretLE8Questionnaires([claraSleep]);
+    // Horas reales (ítem 4) → LE8 sueño (7 h cae en el óptimo 7–<9 = 100).
+    expect(r.inputs.sleepHoursPerNight).toBe(7);
+    // PSQI: acostarse 01:00, levantarse 08:00 → 7 h en cama, eficiencia 100 %.
+    expect(r.psqi?.components).toEqual({
+      quality: 0,
+      latency: 0, // 5 min + 5a=0
+      duration: 1, // 7 h exactas (el 0 exige >7)
+      efficiency: 0, // 7/7 h
+      disturbances: 1, // solo 5g=1
+      medication: 0,
+      daytime: 0,
+    });
+    expect(r.psqi?.global).toBe(2);
+  });
+});
