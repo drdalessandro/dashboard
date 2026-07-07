@@ -2,9 +2,9 @@
 // (App.segundaopinionmedica.org, cuestionario intake-clinico) y estructura sus
 // respuestas como recursos FHIR nativos — Condition (antecedentes/factores de
 // riesgo), Procedure (cirugías), MedicationRequest (medicación),
-// AllergyIntolerance (alergias) y FamilyMemberHistory (antecedentes
-// familiares) — en vez de dejarlas solo dentro de un QuestionnaireResponse que
-// ninguna pantalla del chart lista.
+// AllergyIntolerance (alergias), FamilyMemberHistory (antecedentes
+// familiares) y Patient.contact (contacto de emergencia) — en vez de dejarlas
+// solo dentro de un QuestionnaireResponse que ninguna pantalla del chart lista.
 //
 // El cuestionario NO es LE8 ni SDOH (linkIds y contenido distintos; ver
 // constants.ts). Los campos codificados (hipertensión/diabetes/dislipemia) se
@@ -23,6 +23,8 @@ import type {
   Condition,
   FamilyMemberHistory,
   MedicationRequest,
+  Patient,
+  PatientContact,
   Procedure,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
@@ -158,6 +160,60 @@ async function upsertAllergy(medplum: MedplumClient, patientId: string, response
   return medplum.upsertResource(allergy, `identifier=${INTAKE_IDENTIFIER_SYSTEM}|${identifierValue}`);
 }
 
+/**
+ * Marca de los contactos que administra este bot dentro de Patient.contact
+ * (el elemento no tiene identifier en FHIR). Reprocesar reemplaza el contacto
+ * con esta marca y nunca toca los cargados a mano por el equipo.
+ */
+const EMERGENCY_CONTACT_MARKER = 'Contacto de emergencia (intake)';
+
+/**
+ * Separa nombre y teléfono del texto libre del intake ("Gaston Pagani",
+ * "Gaston Pagani 11-5555-1234"). El teléfono es la primera secuencia numérica
+ * larga (≥7 caracteres de dígitos/separadores); el resto es el nombre.
+ */
+export function parseEmergencyContact(raw: string): { name?: string; phone?: string } {
+  const phoneMatch = /(\+?\d[\d\s().-]{5,}\d)/.exec(raw);
+  const phone = phoneMatch?.[1]?.trim();
+  const name =
+    raw
+      .replace(phoneMatch?.[1] ?? '', ' ')
+      .replace(/^[\s,;:·|-]+|[\s,;:·|-]+$/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim() || undefined;
+  return { name, phone };
+}
+
+/**
+ * Escribe el contacto de emergencia en Patient.contact con la relación
+ * estándar v2-0131 "C" (Emergency Contact). Reemplaza el contacto previo del
+ * intake (marca EMERGENCY_CONTACT_MARKER) y conserva el resto.
+ */
+async function upsertEmergencyContact(medplum: MedplumClient, patientId: string, raw: string): Promise<Patient> {
+  const patient = await medplum.readResource('Patient', patientId);
+  const { name, phone } = parseEmergencyContact(raw);
+  const contact: PatientContact = {
+    relationship: [
+      {
+        coding: [
+          { system: 'http://terminology.hl7.org/CodeSystem/v2-0131', code: 'C', display: 'Emergency Contact' },
+        ],
+        text: EMERGENCY_CONTACT_MARKER,
+      },
+    ],
+  };
+  if (name) {
+    contact.name = { text: name };
+  }
+  if (phone) {
+    contact.telecom = [{ system: 'phone', value: phone }];
+  }
+  const manualContacts = (patient.contact ?? []).filter(
+    (c) => !c.relationship?.some((r) => r.text === EMERGENCY_CONTACT_MARKER)
+  );
+  return medplum.updateResource({ ...patient, contact: [...manualContacts, contact] });
+}
+
 async function upsertFamilyHistory(
   medplum: MedplumClient,
   patientId: string,
@@ -287,6 +343,12 @@ export async function handler(medplum: MedplumClient, event: BotEvent<Questionna
   // Alergias (el cuestionario no captura detalle, solo el flag)
   if (boolAt(answers, 'alergias-tiene')) {
     created.push(await upsertAllergy(medplum, patientId, responseId));
+  }
+
+  // Contacto de emergencia → Patient.contact (relación estándar "C")
+  const contactoEmergencia = textAt(answers, 'contacto-emergencia');
+  if (contactoEmergencia) {
+    created.push(await upsertEmergencyContact(medplum, patientId, contactoEmergencia));
   }
 
   return created;
